@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace ClinicApp.MSServiceLog.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/infrastructure/[controller]")]
 [ApiController]
 public class ServiceLogController : ControllerBase
 {
