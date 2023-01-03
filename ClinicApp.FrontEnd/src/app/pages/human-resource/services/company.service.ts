@@ -9,7 +9,7 @@ import { Company } from '../models/company.model';
   providedIn: 'root'
 })
 export class CompanyService {
-  private companyUrl = environment.apiUrl + 'companies';
+  private companyUrl = environment.apiUrl + 'infrastructure/companies';
 
   constructor(private http: HttpClient) { }
  

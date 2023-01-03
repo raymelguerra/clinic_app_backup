@@ -10,7 +10,7 @@ import { Diagnosis } from '../models/diagnosis.model';
 })
 export class DiagnosisService {
 
-  private diagnosisUrl = environment.apiUrl + 'diagnoses';
+  private diagnosisUrl = environment.apiUrl + 'infrastructure/diagnoses';
 
   constructor(private http: HttpClient) { }
 

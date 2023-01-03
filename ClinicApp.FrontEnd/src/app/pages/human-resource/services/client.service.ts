@@ -12,7 +12,7 @@ import { Client } from '../models/client.model';
 })
 export class ClientService {
 
-  private clientUrl = environment.apiUrl + 'clients';
+  private clientUrl = environment.apiUrl + 'client';
 
    constructor(private http: HttpClient) { }
   

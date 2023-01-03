@@ -10,7 +10,7 @@ import { ReleaseInformation } from '../models/release-information.model';
 })
 export class ReleaseInformationService {
 
-  private releaseInformationUrl = environment.apiUrl + 'releaseinformations';
+  private releaseInformationUrl = environment.apiUrl + 'infrastructure/releaseinformations';
 
   constructor(private http: HttpClient) { }
 
