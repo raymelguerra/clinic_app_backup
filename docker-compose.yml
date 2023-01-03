@@ -26,10 +26,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
   
   frontend:
-    image: asomafrut_front:v1
+    image: frontend:v1.2
     build: 
-      context: .
-      dockerfile: ClinicApp.FrontEnd/Dockerfile
+      context: ./ClinicApp.FrontEnd
+      dockerfile: Dockerfile
     ports:
       - "80"
     environment:
@@ -121,7 +121,7 @@ volumes:
   certs:
   html:
   vhostd:
-  
+
 # networks:
 #     clinicapp.network:
 #         driver:
