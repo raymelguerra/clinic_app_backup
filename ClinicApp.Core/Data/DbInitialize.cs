@@ -19,6 +19,7 @@ namespace ClinicApp.Core.Data
         }
         public void Initialize()
         {
+            // Console.WriteLine(context.Database.)
             context.Database.EnsureCreated();
 
             // Look for any Contractor type.
