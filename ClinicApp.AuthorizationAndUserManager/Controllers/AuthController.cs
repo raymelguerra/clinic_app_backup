@@ -11,7 +11,7 @@ using ClinicApp.Core.Services;
 
 namespace ClinicApp.AuthorizationAndUserManager.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/auth/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
 {
