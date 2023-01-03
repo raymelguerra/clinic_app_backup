@@ -3,6 +3,7 @@ using ClinicApp.Core.Interfaces;
 using ClinicApp.Core.Services;
 using ClinicApp.Infrastructure.Interfaces;
 using ClinicApp.Infrastructure.Services;
+using ClinicApp.MSInfrastructure.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -11,12 +12,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); ;
 
 /** Custom configurations **/
 builder.Services.AddScoped<ICompanies, CompaniesService>();
@@ -26,6 +28,7 @@ builder.Services.AddScoped<IPlaceOfService, PlaceOfServiceService>();
 builder.Services.AddScoped<IProcedure, ProcedureService>();
 builder.Services.AddScoped<IReleaseInformation, ReleaseInformationService>();
 builder.Services.AddScoped<ISubProcedure, SubProcedureService>();
+builder.Services.AddScoped<IContractorType, ContractorTypeService>();
 builder.Services.AddScoped<IDbInitialize, DbInitializer>();
 
 builder.Services.AddScoped<JwtHandler>();
