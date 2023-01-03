@@ -33,8 +33,8 @@ services:
     ports:
       - "80"
     environment:
-      - VIRTUAL_HOST=migration.abaanalystgroup.live,www.migration.abaanalystgroup.live
-      - LETSENCRYPT_HOST=migration.abaanalystgroup.live,www.migration.abaanalystgroup.live
+      - VIRTUAL_HOST=migration.abaanalystgroup.live
+      - LETSENCRYPT_HOST=migration.abaanalystgroup.live
       - LETSENCRYPT_EMAIL=raymelguerra@gmail.com
     depends_on:
       - clinicapp.backend.proxy
