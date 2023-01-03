@@ -28,7 +28,7 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 }));
 
 // Database configuration
-builder.Services.AddDbContext<clinicbdContext>();
+builder.Services.AddDbContext<AbaTestContext>();
 
 // Authentication support
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -36,7 +36,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequiredLength = 5;
-}).AddEntityFrameworkStores<clinicbdContext>()
+}).AddEntityFrameworkStores<AbaTestContext>()
 .AddDefaultTokenProviders();
 
 // Pagination

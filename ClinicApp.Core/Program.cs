@@ -1,6 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ClinicApp.Core.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using static System.Formats.Asn1.AsnWriter;
 
 using IHost host = Host.CreateDefaultBuilder(args).Build();
 
@@ -13,6 +18,8 @@ using IHost host = Host.CreateDefaultBuilder(args).Build();
 //// Write the values to the console.
 //// Console.WriteLine($"KeyThree:Message = {keyThreeNestedValue}");
 
-//// Application code which might rely on the config could start here.
+//// Application code which might rely on the config could start here
+///
+
 
 await host.RunAsync();

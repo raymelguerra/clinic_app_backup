@@ -7,8 +7,8 @@ namespace ClinicApp.Infrastructure.Services
 {
     public class SubProcedureService : ISubProcedure
     {
-        private readonly clinicbdContext _context;
-        public SubProcedureService(clinicbdContext context)
+        private readonly ClinicbdMigrationContext _context;
+        public SubProcedureService(ClinicbdMigrationContext context)
         {
             _context = context;
         }

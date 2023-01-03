@@ -7,6 +7,7 @@ using ClinicApp.AuthorizationAndUserManager.Interfaces;
 using ClinicApp.Core.Data;
 using ClinicApp.Core.Interfaces;
 using ClinicApp.AuthorizationAndUserManager.Models;
+using ClinicApp.Core.Services;
 
 namespace ClinicApp.AuthorizationAndUserManager.Controllers;
 
@@ -15,11 +16,12 @@ namespace ClinicApp.AuthorizationAndUserManager.Controllers;
 public class AuthController : ControllerBase
 {
     private IUserService _userService;
-    private readonly clinicbdContext _context;
-    public AuthController(clinicbdContext context, IUserService userService)
+    private readonly ClinicbdMigrationContext _context;
+
+    public AuthController(ClinicbdMigrationContext context, IUserService userService)
     {
         _userService = userService;
-        _context = context;
+        _context = context;;
     }
 
     // /api/auth/register
@@ -58,14 +60,14 @@ public class AuthController : ControllerBase
         return BadRequest("Some properties are not valid");
     }
 
-    [HttpGet(Name ="GET All")]
-    public async Task<ActionResult<IEnumerable<UserViewModel>>> Get() 
+    [HttpGet(Name = "GET All")]
+    public async Task<ActionResult<IEnumerable<UserViewModel>>> Get()
     {
         var result = await _userService.GetAllUsersAsync(); ;
         return Ok(result);
     }
 
-   [HttpPost("ResetPassword"), Authorize(Roles = "Administrator,Operator,Biller")]
+    [HttpPost("ResetPassword"), Authorize(Roles = "Administrator,Operator,Biller")]
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
         if (ModelState.IsValid)

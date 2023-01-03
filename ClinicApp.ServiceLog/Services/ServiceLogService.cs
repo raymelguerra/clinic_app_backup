@@ -10,9 +10,9 @@ namespace ClinicApp.MSServiceLog.Services;
 
 public class ServiceLogService : IServiceLog
 {
-    private readonly clinicbdContext _context;
+    private readonly ClinicbdMigrationContext _context;
     private readonly IUriService _uriService;
-    public ServiceLogService(clinicbdContext context, IUriService uriService)
+    public ServiceLogService(ClinicbdMigrationContext context, IUriService uriService)
     {
         _context = context;
         _uriService = uriService;
@@ -26,6 +26,10 @@ public class ServiceLogService : IServiceLog
             return null;
         }
 
+        var unitDetails = await _context.UnitDetails.Where(x => x.ServiceLogId == serviceLog.Id).ToListAsync();
+        _context.UnitDetails.RemoveRange(unitDetails);
+        await _context.SaveChangesAsync();
+
         _context.ServiceLogs.Remove(serviceLog);
         await _context.SaveChangesAsync();
 
@@ -36,8 +40,7 @@ public class ServiceLogService : IServiceLog
     {
         var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
         var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
-            .AsNoTracking()
-            .OrderBy(x => x.Period.StartDate)
+            .OrderByDescending(x => x.CreatedDate)
             .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
             .Take(validFilter.PageSize)
             .ToListAsync();
@@ -56,16 +59,16 @@ public class ServiceLogService : IServiceLog
             return null;
         }
 
-        return await _context.ServiceLogs.Include("Contractor").Include("Client").Include("Period").Select(x => new ServiceLog
+        return await _context.ServiceLogs.Include("Contractor").Include("Client").Include("Period").Select(x =>  new ServiceLog
         {
             Id = x.Id,
             Period = x.Period,
             PeriodId = x.PeriodId,
-            UnitDetails = _context.UnitDetails.Include("SubProcedure").Include("PlaceOfService").Where(ud => ud.ServiceLogId == x.Id).ToList(),
             Contractor = x.Contractor,
             ContractorId = x.ContractorId,
             Client = x.Client,
-            ClientId = x.ClientId
+            ClientId = x.ClientId,
+            UnitDetails = _context.UnitDetails.Include("SubProcedure").Include("PlaceOfService").Where(ud => ud.ServiceLogId == x.Id).ToList(),
         }).Where(x => x.Id == serviceLog.Id).FirstOrDefaultAsync();
     }
 
@@ -79,7 +82,7 @@ public class ServiceLogService : IServiceLog
                 .Include("Contractor")
                 .Include("Period")
                 .Where(x => (x.Client.Name!.ToUpper().Contains(name.ToUpper())))
-                .OrderBy(x => x.Period.StartDate)
+                .OrderByDescending(x => x.CreatedDate)
                 .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                 .Take(validFilter.PageSize)
                 .ToListAsync();
@@ -94,7 +97,7 @@ public class ServiceLogService : IServiceLog
         {
             var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
                     .Where(x => (x.Contractor.Name!.ToUpper().Contains(name.ToUpper())))
-                    .OrderBy(x => x.Period.StartDate)
+                    .OrderByDescending(x => x.CreatedDate)
                     .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                     .Take(validFilter.PageSize)
                     .ToListAsync();
@@ -109,14 +112,16 @@ public class ServiceLogService : IServiceLog
 
     public async Task<IEnumerable<ServiceLogWithoutDetailsDto>> GetServiceLogWithoutDetails()
     {
-        var list = await(from sl in _context.ServiceLogs
-                         select new ServiceLogWithoutDetailsDto
-                         {
-                             ClientName = sl.Client.Name,
-                             ContractorName = sl.Contractor.Name,
-                             StartDate = sl.Period.StartDate,
-                             EndDate = sl.Period.EndDate
-                         }).ToListAsync();
+        var list = await (from sl in _context.ServiceLogs
+                          select new ServiceLogWithoutDetailsDto
+                          {
+                              ClientName = sl.Client.Name,
+                              ContractorName = sl.Contractor.Name,
+                              StartDate = sl.Period.StartDate,
+                              EndDate = sl.Period.EndDate,
+                              OrderBY = sl.CreatedDate
+                          }
+                               ).OrderByDescending(x => x.OrderBY).ToListAsync();
         return list;
     }
 
@@ -132,7 +137,7 @@ public class ServiceLogService : IServiceLog
     public async Task<object?> PutServiceLog(int id, ServiceLog serviceLog, bool partial = true)
     {
 
-        var oldServiceLog = await _context.ServiceLogs.Include("UnitDetails").Where(x => x.Id == id).FirstOrDefaultAsync();
+        var oldServiceLog = await _context.ServiceLogs.Include("UnitDetail").Where(x => x.Id == id).FirstOrDefaultAsync();
         // Add olds
         foreach (var olds in oldServiceLog!.UnitDetails)
         {
@@ -187,7 +192,7 @@ public class ServiceLogService : IServiceLog
             }
         }
 
-        return new ServiceLog {};
+        return new ServiceLog { };
     }
 
     public bool ServiceLogExists(int id)

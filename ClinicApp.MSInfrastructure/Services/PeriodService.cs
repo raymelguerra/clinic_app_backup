@@ -9,8 +9,8 @@ namespace ClinicApp.Infrastructure.Services
 {
     public class PeriodService : IPeriod
     {
-        private readonly clinicbdContext _context;
-        public PeriodService(clinicbdContext context)
+        private readonly ClinicbdMigrationContext _context;
+        public PeriodService(ClinicbdMigrationContext context)
         {
             _context = context;
         }

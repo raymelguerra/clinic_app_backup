@@ -10,8 +10,8 @@ public interface IClient
     public Task<IEnumerable<Client>> GetClientWithoutDetails();
     public Task<PagedResponse<IEnumerable<Client>>> GetClientByName([FromQuery] PaginationFilter filter, string name, string route);
     public Task<IEnumerable<Client>> GetClientsByContractor(int id);
-    public Task<object?> PutClient(int id, Client biller);
-    public Task<Client?> PostClient(Client biller);
+    public Task<object?> PutClient(int id, Client client);
+    public Task<Client?> PostClient(Client client);
     public Task<object?> DeleteClient(int id);
     public bool ClientExists(int id);
 }

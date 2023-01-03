@@ -9,9 +9,9 @@ namespace ClinicApp.MSClient.Services;
 
 public class ClientService : IClient
 {
-    private readonly clinicbdContext _context;
+    private readonly ClinicbdMigrationContext _context;
     private readonly IUriService _uriService;
-    public ClientService(clinicbdContext context, IUriService uriService)
+    public ClientService(ClinicbdMigrationContext context, IUriService uriService)
     {
         _context = context;
         _uriService = uriService;
@@ -74,7 +74,34 @@ public class ClientService : IClient
 
     public async Task<Client?> GetClient(int id)
     {
-        var client = await _context.Clients.FindAsync(id);
+        var client = await _context.Clients.Include(x => x.ReleaseInformation).Include(x => x.Diagnosis).Select(c => new Client
+        {
+            Id = c.Id,
+            Name = c.Name,
+            PatientAccount = c.PatientAccount,
+            RecipientId = c.RecipientId,
+            ReferringProvider = c.ReferringProvider,
+            ReleaseInformation = c.ReleaseInformation,
+            ReleaseInformationId = c.ReleaseInformationId,
+            Sequence = c.Sequence,
+            WeeklyApprovedAnalyst = c.WeeklyApprovedAnalyst,
+            WeeklyApprovedRbt = c.WeeklyApprovedRbt,
+            AuthorizationNumber = c.AuthorizationNumber,
+            Diagnosis = c.Diagnosis,
+            DiagnosisId = c.DiagnosisId,
+            Enabled = c.Enabled,
+            Agreements = _context.Agreements.Include("Payroll").Include("Company").Select(ag => new Agreement
+            {
+                Payroll = _context.Payrolls.Include("Procedure").Include("ContractorType").Include("Contractor").Where(p => p.Id == ag.PayrollId).First(),
+                ClientId = ag.ClientId,
+                Company = ag.Company,
+                CompanyId = ag.CompanyId,
+                PayrollId = ag.PayrollId,
+                RateEmployees = ag.RateEmployees
+            }).Where(a => a.ClientId == id).ToList()
+
+        }).FirstOrDefaultAsync(x => x.Id == id);
+
         if (client == null)
         {
             return null;
@@ -116,7 +143,7 @@ public class ClientService : IClient
 
         var totalRecords = list.Count();
 
-        var pagedReponse = PaginationHelper.CreatePagedReponse<Client>(list, validFilter, totalRecords, _uriService, route);
+        var pagedReponse = PaginationHelper.CreatePagedReponse(list, validFilter, totalRecords, _uriService, route);
         return pagedReponse;
     }
 

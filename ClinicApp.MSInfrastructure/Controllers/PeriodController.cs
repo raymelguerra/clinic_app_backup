@@ -28,7 +28,7 @@ public class PeriodController : ControllerBase
 
     // GET: api/Diagnoses/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Period>> GetSubProcedure(int id)
+    public async Task<ActionResult<Period>> GetPeriod(int id)
     {
         var period = await _period.Get(id);
 

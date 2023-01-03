@@ -6,6 +6,7 @@ using ClinicApp.MSServiceLog.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -28,7 +29,8 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 }));
 
 // Database configuration
-builder.Services.AddDbContext<clinicbdContext>();
+builder.Services.AddDbContext<ClinicbdMigrationContext>(
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("ClinicbdMigrationContext")));
 
 // Authentication support
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -36,7 +38,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequiredLength = 5;
-}).AddEntityFrameworkStores<clinicbdContext>()
+}).AddEntityFrameworkStores<ClinicbdMigrationContext>()
 .AddDefaultTokenProviders();
 
 // Pagination

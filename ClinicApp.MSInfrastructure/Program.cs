@@ -6,6 +6,8 @@ using ClinicApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -24,6 +26,7 @@ builder.Services.AddScoped<IPlaceOfService, PlaceOfServiceService>();
 builder.Services.AddScoped<IProcedure, ProcedureService>();
 builder.Services.AddScoped<IReleaseInformation, ReleaseInformationService>();
 builder.Services.AddScoped<ISubProcedure, SubProcedureService>();
+builder.Services.AddScoped<IDbInitialize, DbInitializer>();
 
 builder.Services.AddScoped<JwtHandler>();
 //Add cors support
@@ -35,7 +38,8 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 }));
 
 // Database configuration
-builder.Services.AddDbContext<clinicbdContext>();
+builder.Services.AddDbContext<ClinicbdMigrationContext>(
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("ClinicbdMigrationContext")));
 
 // Authentication support
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -43,7 +47,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequiredLength = 5;
-}).AddEntityFrameworkStores<clinicbdContext>()
+}).AddEntityFrameworkStores<ClinicbdMigrationContext>()
 .AddDefaultTokenProviders();
 
 // Pagination
@@ -51,8 +55,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUriService>(o =>
 {
     var accessor = o.GetRequiredService<IHttpContextAccessor>();
-    var request = accessor.HttpContext.Request;
-    var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+    var request = accessor.HttpContext?.Request;
+    var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
     return new UriService(uri);
 });
 
@@ -108,6 +112,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialize>();
+    // use dbInitializer
+    dbInitializer.Initialize();
+}
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

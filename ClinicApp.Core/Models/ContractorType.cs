@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ClinicApp.Core.Models
+namespace ClinicApp.Core.Models;
+
+public partial class ContractorType
 {
-    public partial class ContractorType
-    {
-        public ContractorType()
-        {
-            Payrolls = new HashSet<Payroll>();
-        }
+    public int Id { get; set; }
 
-        public int Id { get; set; }
-        public string? Name { get; set; }
+    public string? Name { get; set; }
 
-        public virtual ICollection<Payroll> Payrolls { get; set; }
-    }
+    public virtual ICollection<Payroll> Payrolls { get; } = new List<Payroll>();
 }

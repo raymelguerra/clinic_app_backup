@@ -7,8 +7,8 @@ namespace ClinicApp.Infrastructure.Services
 {
     public class ReleaseInformationService : IReleaseInformation
     {
-        private readonly clinicbdContext _context;
-        public ReleaseInformationService(clinicbdContext context)
+        private readonly ClinicbdMigrationContext _context;
+        public ReleaseInformationService(ClinicbdMigrationContext context)
         {
             _context = context;
         }
