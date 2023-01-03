@@ -1,41 +1,41 @@
 version: '3.4'
 services:
-  # clinicapp.authorizationandusermanager:
-  #   image: authorizationandusermanager:v1.2
-  #   build:
-  #     context: .
-  #     dockerfile: ClinicApp.AuthorizationAndUserManager/Dockerfile
-  #   restart: always
-  #   ports:
-  #      - 81:80
-  #      - 1443:443
-  #   environment: 
-  #      - ASPNETCORE_ENVIRONMENT=Development
-  #      - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  # clinicapp.client:
-  #   image: client:v1.2
-  #   build:
-  #     context: .
-  #     dockerfile: ClinicApp.Client/Dockerfile
-  #   restart: always
-  #   ports:
-  #      - 83:80
-  #      - 1445:443
-  #   environment: 
-  #      - ASPNETCORE_ENVIRONMENT=Development
-  #      - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  # clinicapp.contractor:
-  #   image: contractor:v1.2
-  #   build:
-  #     context: .
-  #     dockerfile: ClinicApp.Contractor/Dockerfile
-  #   restart: always
-  #   ports:
-  #      - 84:80
-  #      - 1446:443
-  #   environment: 
-  #      - ASPNETCORE_ENVIRONMENT=Development
-  #      - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.authorizationandusermanager:
+    image: authorizationandusermanager:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.AuthorizationAndUserManager/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.client:
+    image: client:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.Client/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.contractor:
+    image: contractor:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.Contractor/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
    # volumes:
    #   - ./conf_summary/appsettings.json:/app/appsettings.json
   clinicapp.infrastructure:
@@ -44,25 +44,25 @@ services:
       context: .
       dockerfile: ClinicApp.MSInfrastructure/Dockerfile
     restart: always
-    ports:
-       - 85:80
-       - 1447:443
+    expose:
+       - 80
+       - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  # clinicapp.servicelog:
-  #   image: servicelog:v1.2
-  #   build:
-  #     context: .
-  #     dockerfile: ClinicApp.ServiceLog/Dockerfile
-  #   restart: always
-  #   ports:
-  #      - 86:80
-  #      - 1448:443
-  #   environment: 
-  #      - ASPNETCORE_ENVIRONMENT=Development
-  #      - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  nginx_proxy:
+  clinicapp.servicelog:
+    image: servicelog:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.ServiceLog/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.backend.proxy:
     image: nginx:latest
     ports:
       - 88:80
