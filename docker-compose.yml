@@ -117,6 +117,11 @@ services:
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
 
+volumes: 
+  certs:
+  html:
+  vhostd:
+  
 # networks:
 #     clinicapp.network:
 #         driver:
