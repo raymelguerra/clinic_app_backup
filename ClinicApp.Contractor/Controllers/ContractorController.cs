@@ -84,7 +84,7 @@ public class ContractorController : ControllerBase
     }
 
     // GET: api/Contractors/GetAnalystByCompany
-    [HttpGet("GetAnalystByCompany")]
+    [HttpGet("GetAnalystByCompany/{id}")]
     public async Task<ActionResult<IEnumerable<Contractor>>> GetAnalystByCompany(int id) 
     {
         try
@@ -100,7 +100,7 @@ public class ContractorController : ControllerBase
     }
 
     // GET: api/Contractors/GetContractorByCompany
-    [HttpGet("GetContractorByCompany")]
+    [HttpGet("GetContractorByCompany/{id}")]
     public async Task<ActionResult<IEnumerable<Contractor>>> GetContractorByCompany(int id)
     {
         try
