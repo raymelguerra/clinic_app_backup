@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace ClinicApp.MSContractor.Controllers;
 
-[Route("api/contractor/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class ContractorController : ControllerBase
 {

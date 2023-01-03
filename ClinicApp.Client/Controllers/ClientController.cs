@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace ClinicApp.MSClient.Controllers;
 
-[Route("api/client/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class ClientController : ControllerBase
 {
