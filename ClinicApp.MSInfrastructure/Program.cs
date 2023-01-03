@@ -38,6 +38,7 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 }));
 
 // Database configuration
+Console.WriteLine("Connection String: " + builder.Configuration.GetConnectionString("ClinicbdMigrationContext"));
 builder.Services.AddDbContext<ClinicbdMigrationContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("ClinicbdMigrationContext")));
 
