@@ -9,7 +9,7 @@ import { ContractorType } from '../models/contractor-type.model';
   providedIn: 'root'
 })
 export class ContractorTypeService {
-  private contractorTypeUrl = environment.apiUrl + 'contractortypes';
+  private contractorTypeUrl = environment.apiUrl + 'infrastructure/contractortype';
 
   constructor(private http: HttpClient) { }
 
