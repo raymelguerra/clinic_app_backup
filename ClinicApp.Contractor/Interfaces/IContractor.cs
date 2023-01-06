@@ -15,4 +15,11 @@ public interface IContractor
     public Task<Contractor?> PostContractor(Contractor contractor);
     public Task<object?> DeleteContractor(int id);
     public bool ContractorExists(int id);
+    public Task<IEnumerable<Payroll>> GetPayroll();
+    public  Task<IEnumerable<Payroll>> GetPayrollsByContractorAndCompany(int idCo, int idCont);
+    public Task<Payroll?> GetPayroll(int id);
+    public Task<object?> PutPayroll(int id, Payroll payroll);
+    public Task<Payroll?> PostPayroll(Payroll payroll);
+    public Task<object?> DeletePayroll(int id);
+    public bool PayrollExists(int id);
 }

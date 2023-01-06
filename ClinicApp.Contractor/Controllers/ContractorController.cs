@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Contracts;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -164,4 +166,83 @@ public class ContractorController : ControllerBase
         return NoContent();
 
     }
+
+    // GET: api/Payrolls
+    [HttpGet("payroll")]
+    public async Task<ActionResult<IEnumerable<Payroll>>> GetPayroll()
+    {
+        return Ok(await _contractor.GetPayroll());
+    }
+
+    // GET: api/Payrolls
+    [HttpGet("payroll/GetPayrollsByContractorAndCompany/{idCo}/{idCont}")]
+    public async Task<ActionResult<IEnumerable<Payroll>>> GetPayrollsByContractorAndCompany(int idCo, int idCont)
+    {
+        return Ok(await _contractor.GetPayrollsByContractorAndCompany(idCo, idCont));
+    }
+
+    // GET: api/Payrolls/5
+    [HttpGet("payroll/{id}")]
+    public async Task<ActionResult<Payroll>> GetPayroll(int id)
+    {
+        var payroll = await _contractor.GetPayroll(id);
+
+        if (payroll == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(payroll);
+    }
+
+    // PUT: api/Payrolls/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("payroll/{id}")]
+    public async Task<IActionResult> PutPayroll(int id, Payroll payroll)
+    {
+        if (id != payroll.Id)
+        {
+            return BadRequest();
+        }
+        try
+        {
+            var created = await _contractor.PutPayroll(id, payroll);
+            if (created == null)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+
+            return BadRequest(e.Message);
+        }
+    }
+
+    // POST: api/Payrolls
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost("payroll")]
+    public async Task<ActionResult<Payroll>> PostPayroll(Payroll payroll)
+    {
+        try
+        {
+            var created = await _contractor.PostPayroll(payroll);
+            return Ok(created);
+        }
+        catch (Exception e)
+        {
+
+            return BadRequest(e.Message);
+        }
+    }
+
+    // DELETE: api/Payrolls/5
+    [HttpDelete("payroll/{id}")]
+    public async Task<IActionResult> DeletePayroll(int id)
+    {
+        var payroll = await _contractor.DeletePayroll(id);
+        if (payroll == null)
+            return NotFound();
+        return NoContent();
+    }    
 }

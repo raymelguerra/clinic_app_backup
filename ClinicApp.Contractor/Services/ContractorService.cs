@@ -205,4 +205,76 @@ public class ContractorService : IContractor
 
         return contractor;
     }
+
+    public async Task<IEnumerable<Payroll>> GetPayroll()
+    {
+        return await _context.Payrolls.Include("Procedure").Include("ContractorType").ToListAsync();
+    }
+
+    public async Task<IEnumerable<Payroll>> GetPayrollsByContractorAndCompany(int idCo, int idCont)
+    {
+        return await _context.Payrolls.Include("Procedure").Include("ContractorType").Where(x => x.CompanyId == idCo && x.ContractorId == idCont).ToListAsync();
+    }
+
+    public async Task<Payroll?> GetPayroll(int id)
+    {
+        var payroll = await _context.Payrolls.FindAsync(id);
+
+        if (payroll == null)
+        {
+            return null;
+        }
+
+        return payroll;
+    }
+
+    public async Task<object?> PutPayroll(int id, Payroll payroll)
+    {
+        _context.Entry(payroll).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PayrollExists(id))
+            {
+                return null;
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return new Payroll { };
+    }
+
+    public async Task<Payroll?> PostPayroll(Payroll payroll)
+    {
+        _context.Payrolls.Add(payroll);
+        await _context.SaveChangesAsync();
+
+        return await GetPayroll(payroll.Id);
+    }
+
+    public async Task<object?> DeletePayroll(int id)
+    {
+        var payroll = await _context.Payrolls.FindAsync(id);
+        if (payroll == null)
+        {
+            return null;
+        }
+
+        _context.Payrolls.Remove(payroll);
+        await _context.SaveChangesAsync();
+
+        return new Payroll { };
+    }
+
+    public bool PayrollExists(int id)
+    {
+        return _context.Payrolls.Any(e => e.Id == id);
+    }
 }
