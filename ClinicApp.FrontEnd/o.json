@@ -1,6 +1,6 @@
 {
     "name": "string",
-    "recipientID": "string",
+    "recipientId": "string",
     "patientAccount": "string",
     "releaseInformation": null,
     "releaseInformationId": 0,

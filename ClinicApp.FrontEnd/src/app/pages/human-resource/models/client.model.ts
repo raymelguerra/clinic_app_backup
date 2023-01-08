@@ -6,7 +6,7 @@ import { ReleaseInformation } from "./release-information.model";
 export class Client {
     id: number;
     name: string;
-    recipientID: string;
+    recipientId: string;
     patientAccount: string;
     releaseInformationId: number;
     releaseInformation: ReleaseInformation;
