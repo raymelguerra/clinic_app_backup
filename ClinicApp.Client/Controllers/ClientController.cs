@@ -179,7 +179,7 @@ public class ClientController : ControllerBase
         if (agreement == null)
         {
             return NotFound();
-        }
+        } 
 
         return Ok(agreement);
     }

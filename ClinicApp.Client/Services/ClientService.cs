@@ -57,7 +57,7 @@ public class ClientService : IClient
 
     public async Task<IEnumerable<Agreement>> GetAgreement()
     {
-        return await _context.Agreements.Include("Client").Include("Payroll").ToListAsync();
+         return await _context.Agreements.Include("Client").Include("Payroll").ToListAsync();
     }
 
     public async Task<Agreement?> GetAgreement(int id)

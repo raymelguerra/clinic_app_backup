@@ -20,5 +20,5 @@ public interface IClient
     public Task<object?> PutAgreement(int id, Agreement agreement);
     public Task<Agreement?> PostAgreement(Agreement agreement);
     public Task<object?> DeleteAgreement(int id);
-    public bool AgreementExists(int id);
+    public bool AgreementExists(int id); 
 }
