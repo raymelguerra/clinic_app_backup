@@ -31,7 +31,7 @@ export class PayrollService {
     );
 }
 
- getPayroll(id: number): Observable<Payroll> {                                                                                                                                                                                                  
+ getPayroll(id: number): Observable<Payroll> {
   return this.http.get<Payroll>(`${this.payrollUrl}/${id}`)
     .pipe(
       tap(data => console.log('All: ' + JSON.stringify(data))),

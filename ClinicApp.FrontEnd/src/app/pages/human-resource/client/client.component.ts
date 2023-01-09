@@ -96,7 +96,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
       name: {
         required: 'The name is required.'
       },
-      recipientID: {
+      recipientId: {
         required: 'The recipient ID is required'
       },
       patientAccount: {
@@ -137,7 +137,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     //     console.log(params)
     //     this.id_client_param =+ params.get('client_id')
     //     console.log(`Client ID: ${this.id_client_param}`)
-    //     if(this.id_client_param != null) 
+    //     if(this.id_client_param != null)
     //     {
     //       this.loadDataInFields(this.client_list.findIndex(x=> x.id==this.id_client_param))
     //     }
@@ -238,6 +238,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     };
     this.clientService.getClients(this.paginations_status).subscribe(x => {
       this.client_list = x.data;
+      console.log(this.client_list)
       this.config.currentPage = x.pageNumber;
       this.config.totalItems = x.totalRecords;
 
@@ -261,7 +262,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     // Create form
     this.clientForm = this.fb.group({
       name: ['', [Validators.required]],
-      recipientID: ['', [Validators.required]],
+      recipientId: ['', [Validators.required]],
       patientAccount: ['', [Validators.required]],
       releaseInformation: ['', [Validators.required]],
       releaseInformationId: '',
@@ -294,7 +295,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     //   // console.log(list);
     //   this.payrollList = list.map(this.payrollAdapter);
     // }
-    // else 
+    // else
     // {
     //       this.payrollService.getPayrolls().subscribe(x => {
     //   const payrolls = x.filter(p => p.contractorId == contractor.id && p.companyId == this.clientForm.get('company').value[0].id);
@@ -451,7 +452,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   });
   clientAdapter = (val) => ({
     name: val.name,
-    recipientID: val.recipientID,
+    recipientId: val.recipientId,
     patientAccount: val.patientAccount,
     releaseInformation: null,
     releaseInformationId: val.releaseInformation[0].id,
@@ -468,7 +469,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   adaptClientLoad = (value) => ({
     name: value.name,
-    recipientID: value.recipientID,
+    recipientId: value.recipientId,
     patientAccount: value.patientAccount,
     releaseInformation: [value.releaseInformation],
     referringProvider: value.referringProvider,

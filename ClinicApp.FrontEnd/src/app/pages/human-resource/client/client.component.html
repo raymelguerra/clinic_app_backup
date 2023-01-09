@@ -16,10 +16,10 @@
                     <div class="col-md-4 px-1">
                         <div class="form-group">
                             <label>Recipient ID</label>
-                            <input type="text" class="form-control" formControlName="recipientID"
-                                placeholder="Recipient ID" [ngClass]="{'is-invalid': displayMessage.recipientID }">
+                            <input type="text" class="form-control" formControlName="recipientId"
+                                placeholder="Recipient ID" [ngClass]="{'is-invalid': displayMessage.recipientId }">
                             <span class="invalid-feedback">
-                                {{displayMessage.recipientID}}
+                                {{displayMessage.recipientId}}
                             </span>
                         </div>
                     </div>
@@ -271,9 +271,10 @@
                             </thead>
                             <tbody>
                                 <tr class="d-flex" *ngFor="let item of client_list | paginate: config; let i = index;">
+                                  <pre>{{item}}</pre>
                                     <th class="col-1" scope="row">{{i+1}}</th>
                                     <td class="col-4">{{item.name}}</td>
-                                    <td class="col-3">{{item.recipientID}}</td>
+                                    <td class="col-3">{{item.recipientId}}</td>
                                     <td class="col-2">{{item.patientAccount}}</td>
                                     <!-- <td class="col-3"></td>{{getListContractors(item.agreement)}} -->
                                     <td class="col-2">
