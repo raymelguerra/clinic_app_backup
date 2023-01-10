@@ -79,7 +79,7 @@
                             <div class="form-group ">
                                 <label>Procedure</label>
                                 <ng-multiselect-dropdown [placeholder]=" 'Procedure' " formControlName="procedure"
-                                    [settings]="procedureDropdownSettings " [data]="procedureList "
+                                    [settings]="procedureDropdownSettings " [data]="procedureList"
                                     (onselect)="onProcedureSelected($event, i)" [ngClass]="{'is-invalid': !item.get('procedure')?.valid }">
                                 </ng-multiselect-dropdown>
                                 <span class="invalid-feedback"> <!---item.get('company')?.touched-->
@@ -155,8 +155,8 @@
                                     <th class="col-1 " scope="row ">{{i+1}}</th>
                                     <td class="col-2 ">{{item.name}}</td>
                                     <td class="col-2 ">{{item.renderingProvider}}</td>
-                                    <td class="col-3 ">{{getListProcedures(item.payroll)}}</td>
-                                    <td class="col-2 ">{{getListContractorType(item.payroll)}}</td>
+                                    <td class="col-3 ">{{getListProcedures(item.payrolls)}}</td>
+                                    <td class="col-2 ">{{getListContractorType(item.payrolls)}}</td>
                                     <td class="col-2 ">
                                         <div>
                                             <button class="btn btn-sm btn-info btn-outline-info " data-toggle="tooltip "
@@ -187,7 +187,7 @@
     </div>
     <div class="modal-body">
       <p><strong>Are you sure you want to delete <span class="text-primary">{{contractor_del}}</span> profile?</strong></p>
-      
+
       <p>All data related to the contractor will be permanently deleted. If this contractor has an associated customer, it cannot be removed from the system
       </p>
     </div>

@@ -21,10 +21,10 @@ export class ContractorTypeService {
      );
  }
 
- getContractorType(id: number): Observable<ContractorType> {                                                                                                                                                                                                  
+ getContractorType(id: number): Observable<ContractorType> {
   return this.http.get<ContractorType>(`${this.contractorTypeUrl}/${id}`)
     .pipe(
-      tap(data => console.log('All: ' + JSON.stringify(data))),
+      tap(data => console.log(JSON.stringify(data))),
       catchError(this.handleError)
     );
 }

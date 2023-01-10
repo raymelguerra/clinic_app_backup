@@ -14,7 +14,7 @@ export class ContractorService {
   private contractorUrl = environment.apiUrl + 'contractor';
 
   constructor(private http: HttpClient) { }
- 
+
  createContractor(contractor: Contractor): Observable<Contractor> {
    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
    return this.http.post<Contractor>(this.contractorUrl, contractor, { headers })
@@ -49,7 +49,7 @@ export class ContractorService {
  getContractorByCompany(id: Number): Observable<Contractor[]> {
   return this.http.get<Contractor[]>(this.contractorUrl+'/getContractorByCompany/' + id)
     .pipe(
-      tap(data => console.log('All: ' + JSON.stringify(data))),
+      tap(data => console.log(data)),
       catchError(this.handleError)
     );
 }
@@ -57,7 +57,7 @@ export class ContractorService {
 getContractorWithoutDetails(): Observable<Contractor[]> {
   return this.http.get<Contractor[]>(this.contractorUrl+'/getContractorWithoutDetails')
     .pipe(
-      tap(data => console.log('All: ' + JSON.stringify(data))),
+      tap(data => console.log(data)),
       catchError(this.handleError)
     );
 }
@@ -69,7 +69,7 @@ getContractors(data): Observable<PagedResponse<Contractor[]>> {
 });
   return this.http.get<PagedResponse<Contractor[]>>(this.contractorUrl, {params})
     .pipe(
-      tap(data => console.log('All: ' + JSON.stringify(data))),
+      tap(data => console.log(data)),
       catchError(this.handleError)
     );
 }
@@ -77,7 +77,7 @@ getContractors(data): Observable<PagedResponse<Contractor[]>> {
 getAnalystByCompany(id: number): Observable<Contractor[]> {
   return this.http.get<Contractor[]>(`${this.contractorUrl}/GetAnalystByCompany/${id}`)
     .pipe(
-      tap(data => console.log('All: ' + JSON.stringify(data))),
+      tap(data => console.log(data)),
       catchError(this.handleError)
     );
 }
@@ -85,7 +85,7 @@ getAnalystByCompany(id: number): Observable<Contractor[]> {
  getContractor(id: number): Observable<Contractor> {
   return this.http.get<Contractor>(`${this.contractorUrl}/${id}`)
     .pipe(
-      tap(data => console.log('All: ' + JSON.stringify(data))),
+      tap(data => console.log(JSON.stringify(data))),
       catchError(this.handleError)
     );
 }
@@ -94,7 +94,7 @@ getAnalystByCompany(id: number): Observable<Contractor[]> {
   getContractortByName(name: string): Observable<PagedResponse<Contractor[]>> {
     return this.http.get<PagedResponse<Contractor[]>>(`${this.contractorUrl}/GetContractorByName/${name}`)
       .pipe(
-        tap(data => console.log('All: ' + JSON.stringify(data))),
+        tap(data => console.log(JSON.stringify(data))),
         catchError(this.handleError)
       );
   }
