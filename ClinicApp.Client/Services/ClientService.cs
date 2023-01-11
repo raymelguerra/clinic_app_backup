@@ -17,9 +17,28 @@ public class ClientService : IClient
         _uriService = uriService;
     }
 
+    public bool AgreementExists(int id)
+    {
+        return _context.Agreements.Any(e => e.Id == id);
+    }
+
     public bool ClientExists(int id)
     {
         return _context.Clients.Any(e => e.Id == id);
+    }
+
+    public async Task<object?> DeleteAgreement(int id)
+    {
+        var agreement = await _context.Agreements.FindAsync(id);
+        if (agreement == null)
+        {
+            return null;
+        }
+
+        _context.Agreements.Remove(agreement);
+        await _context.SaveChangesAsync();
+
+        return new Agreement { };
     }
 
     public async Task<object?> DeleteClient(int id)
@@ -34,6 +53,35 @@ public class ClientService : IClient
         await _context.SaveChangesAsync();
 
         return new Client { };
+    }
+
+    public async Task<IEnumerable<Agreement>> GetAgreement()
+    {
+         return await _context.Agreements.Include("Client").Include("Payroll").ToListAsync();
+    }
+
+    public async Task<Agreement?> GetAgreement(int id)
+    {
+        var agreement = await _context.Agreements.FindAsync(id);
+
+        if (agreement == null)
+        {
+            return null;
+        }
+
+        return agreement;
+    }
+
+    public async Task<IEnumerable<Agreement>?> GetAgreementByContractor(int id)
+    {
+        var agreement = await _context.Agreements.Where(x => x.Payroll.ContractorId == id).ToListAsync();
+
+        if (agreement.Count == 0)
+        {
+            return null;
+        }
+
+        return agreement;
     }
 
     public async Task<PagedResponse<IEnumerable<Client>>> GetClient([FromQuery] PaginationFilter filter, string route)
@@ -168,6 +216,14 @@ public class ClientService : IClient
         return clients;
     }
 
+    public async Task<Agreement?> PostAgreement(Agreement agreement)
+    {
+        _context.Agreements.Add(agreement);
+        await _context.SaveChangesAsync();
+
+        return await GetAgreement(agreement.Id);
+    }
+
     public async Task<Client?> PostClient(Client client)
     {
         _context.Clients.Add(client);
@@ -194,6 +250,29 @@ public class ClientService : IClient
                 }).FirstOrDefaultAsync(x => x.Id == client.Id);
         
         return client_new;
+    }
+
+    public async Task<object?> PutAgreement(int id, Agreement agreement)
+    {
+        _context.Entry(agreement).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!AgreementExists(id))
+            {
+                return null;
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return new Agreement { };
     }
 
     public async Task<object?> PutClient(int id, Client client)

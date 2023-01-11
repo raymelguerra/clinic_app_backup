@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -145,6 +146,90 @@ public class ClientController : ControllerBase
         if(client == null)
            return NotFound();
         return NoContent();
+    }
 
+    // GET: api/Agreements
+    [HttpGet("Agreement")]
+    public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreement()
+    {
+        var ag = await _client.GetAgreement();
+        return Ok(ag);
+    }
+
+    // GET: api/Agreements/5
+    [HttpGet("Agreement/GetAgreementByContractor{id}")]
+    public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreementByContractor(int id)
+    {
+        var agreements = await _client.GetAgreementByContractor(id);
+
+        if (agreements == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(agreements);
+    }
+
+    // GET: api/Agreements/5
+    [HttpGet("Agreement/{id}")]
+    public async Task<ActionResult<Agreement>> GetAgreement(int id)
+    {
+        var agreement = await _client.GetAgreement(id);
+
+        if (agreement == null)
+        {
+            return NotFound();
+        }  
+
+        return Ok(agreement);
+    }
+
+    // PUT: api/Agreements/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("Agreement/{id}")]
+    public async Task<IActionResult> PutAgreement(int id, Agreement agreement)
+    {
+        if (id != agreement.Id)
+        {
+            return BadRequest();
+        }
+        try
+        {
+            var created = await _client.PutAgreement(id, agreement);
+            if (created == null)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    // POST: api/Agreements
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost("Agreement")]
+    public async Task<ActionResult<Agreement>> PostAgreement(Agreement agreement)
+    {
+        try
+        {
+            var created = await _client.PostAgreement(agreement);
+            return Ok(created);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    // DELETE: api/Agreements/5
+    [HttpDelete("Agreement/{id}")]
+    public async Task<IActionResult> DeleteAgreement(int id)
+    {
+        var agreement = await _client.DeleteAgreement(id);
+        if (agreement == null)
+            return NotFound();
+        return NoContent();
     }
 }
