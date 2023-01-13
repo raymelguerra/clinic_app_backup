@@ -10,7 +10,7 @@ import { Procedure } from '../models/procedure.model';
 })
 export class ProcedureService {
 
-  private procedureUrl = environment.apiUrl + 'procedures';
+  private procedureUrl = environment.apiUrl + 'infrastructure/procedure';
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +22,7 @@ export class ProcedureService {
      );
  }
 
- getProcedure(id: number): Observable<Procedure> {                                                                                                                                                                                                  
+ getProcedure(id: number): Observable<Procedure> {
   return this.http.get<Procedure>(`${this.procedureUrl}/${id}`)
     .pipe(
       tap(data => console.log('All: ' + JSON.stringify(data))),
