@@ -9,8 +9,8 @@ import { environment } from '../../../../environments/environment';
 })
 export class AuthService {
 
-  // private clientUrl = environment.apiUrl + 'auth';
-  private clientUrl = 'http://localhost:5143/api/' + 'auth';
+  private clientUrl = environment.apiUrl + 'auth';
+  // private clientUrl = 'http://localhost:5143/api/' + 'auth';
   
    constructor(private http: HttpClient) { }
   

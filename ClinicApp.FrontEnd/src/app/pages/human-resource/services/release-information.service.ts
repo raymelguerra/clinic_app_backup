@@ -10,8 +10,8 @@ import { ReleaseInformation } from '../models/release-information.model';
 })
 export class ReleaseInformationService {
 
-  // private releaseInformationUrl = environment.apiUrl + 'infrastructure/releaseinformation';
-  private releaseInformationUrl = 'http://localhost:5233/api/' + 'infrastructure/releaseinformation';
+  private releaseInformationUrl = environment.apiUrl + 'infrastructure/releaseinformation';
+  // private releaseInformationUrl = 'http://localhost:5233/api/' + 'infrastructure/releaseinformation';
 
   constructor(private http: HttpClient) { }
 

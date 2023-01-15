@@ -9,8 +9,8 @@ import { Company } from '../models/company.model';
   providedIn: 'root'
 })
 export class CompanyService {
-  // private companyUrl = environment.apiUrl + 'infrastructure/companies';
-  private companyUrl = 'http://localhost:5233/api/' + 'infrastructure/companies';
+  private companyUrl = environment.apiUrl + 'infrastructure/companies';
+  // private companyUrl = 'http://localhost:5233/api/' + 'infrastructure/companies';
 
   constructor(private http: HttpClient) { }
  

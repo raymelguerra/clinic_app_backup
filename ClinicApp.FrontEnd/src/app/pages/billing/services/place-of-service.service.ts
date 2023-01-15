@@ -10,8 +10,8 @@ import { PlaceOfService } from '../models/place-of-service.model';
 })
 export class PlaceOfServiceService {
 
-  // private placeOfServicesUrl = environment.apiUrl + 'placeofservices';
-  private placeOfServicesUrl = 'http://localhost:5233/api/infrastructure/' + 'placeofservice';
+  private placeOfServicesUrl = environment.apiUrl + 'placeofservice';
+  // private placeOfServicesUrl = 'http://localhost:5233/api/infrastructure/' + 'placeofservice';
 
   constructor(private http: HttpClient) { }
 

@@ -12,8 +12,8 @@ import { Client } from '../models/client.model';
 })
 export class ClientService {
 
-  // private clientUrl = environment.apiUrl + 'client';
-  private clientUrl = 'http://localhost:5175/api/' + 'client';
+  private clientUrl = environment.apiUrl + 'client';
+  // private clientUrl = 'http://localhost:5175/api/' + 'client';
 
    constructor(private http: HttpClient) { }
   

@@ -9,8 +9,8 @@ import { ContractorType } from '../models/contractor-type.model';
   providedIn: 'root'
 })
 export class ContractorTypeService {
-  // private contractorTypeUrl = environment.apiUrl + 'infrastructure/contractortype';
-  private contractorTypeUrl = 'http://localhost:5233/api/' + 'infrastructure/contractortype';
+  private contractorTypeUrl = environment.apiUrl + 'infrastructure/contractortype';
+  // private contractorTypeUrl = 'http://localhost:5233/api/' + 'infrastructure/contractortype';
 
   constructor(private http: HttpClient) { }
 

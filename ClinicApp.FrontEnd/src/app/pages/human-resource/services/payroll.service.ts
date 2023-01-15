@@ -10,8 +10,8 @@ import { tap, catchError } from 'rxjs/operators';
 })
 export class PayrollService {
 
-  // private payrollUrl = environment.apiUrl + 'contractor/payroll';
-  private payrollUrl = 'http://localhost:5108/api/' + 'contractor/payroll';
+  private payrollUrl = environment.apiUrl + 'contractor/payroll';
+  // private payrollUrl = 'http://localhost:5108/api/' + 'contractor/payroll';
 
   constructor(private http: HttpClient) { }
 
