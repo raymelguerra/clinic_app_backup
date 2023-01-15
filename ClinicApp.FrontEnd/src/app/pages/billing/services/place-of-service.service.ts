@@ -10,7 +10,8 @@ import { PlaceOfService } from '../models/place-of-service.model';
 })
 export class PlaceOfServiceService {
 
-  private placeOfServicesUrl = environment.apiUrl + 'placeofservices';
+  // private placeOfServicesUrl = environment.apiUrl + 'placeofservices';
+  private placeOfServicesUrl = 'http://localhost:5233/api/infrastructure/' + 'placeofservice';
 
   constructor(private http: HttpClient) { }
 
@@ -18,13 +19,14 @@ export class PlaceOfServiceService {
     return this.http.get<PlaceOfService[]>(this.placeOfServicesUrl)
       .pipe(
         tap(data => console.log('All: ' + JSON.stringify(data))),
-        catchError(this.handleError)
+        // catchError(this.handleError)
       );
   }
   private handleError(err: HttpErrorResponse): Observable<never> {
     // in a real world app, we may send the server to some remote logging infrastructure
     // instead of just logging it to the console
     let errorMessage = '';
+    console.log(err)
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       errorMessage = `An error occurred: ${err.error.message}`;

@@ -11,5 +11,5 @@ export class Contractor {
     enabled: boolean;
     extra: string;
     
-    payroll: Payroll[];
+    payrolls: Payroll[];
 }

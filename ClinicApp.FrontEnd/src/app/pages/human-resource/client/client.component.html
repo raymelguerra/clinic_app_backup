@@ -55,11 +55,11 @@
                     <div class="col-md-3 px-1">
                         <div class="form-group">
                             <label>Authorization number account</label>
-                            <input type="text" class="form-control" formControlName="authorizationNUmber"
+                            <input type="text" class="form-control" formControlName="authorizationNumber"
                                 placeholder="Authorization number account"
-                                [ngClass]="{'is-invalid': displayMessage.authorizationNUmber }">
+                                [ngClass]="{'is-invalid': displayMessage.authorizationNumber }">
                             <span class="invalid-feedback">
-                                {{displayMessage.authorizationNUmber}}
+                                {{displayMessage.authorizationNumber}}
                             </span>
                         </div>
                     </div>
@@ -121,11 +121,11 @@
                     <div class="col-md-4 px-1">
                         <div class="form-group">
                             <label>Weekly approved RBT (Hr)</label>
-                            <input type="number" class="form-control" formControlName="weeklyApprovedRBT"
+                            <input type="number" class="form-control" formControlName="weeklyApprovedRbt"
                                 placeholder="Weekly approved RBT"
-                                [ngClass]="{'is-invalid': displayMessage.weeklyApprovedRBT }">
+                                [ngClass]="{'is-invalid': displayMessage.weeklyApprovedRbt }">
                             <span class="invalid-feedback">
-                                {{displayMessage.weeklyApprovedRBT}}
+                                {{displayMessage.weeklyApprovedRbt}}
                             </span>
                         </div>
                     </div>
@@ -159,13 +159,13 @@
                     <div class="row">
                         <div class="col-md-2">
                             <button type="button" class="btn btn-success btn-small " (click)="addAgreement()"
-                                [disabled]="!clientForm.get('agreement').valid">Add</button>
+                                [disabled]="!clientForm.get('agreements').valid">Add</button>
                         </div>
 
                     </div>
                 </div>
-                <div formArrayName="agreement"
-                    *ngFor="let item of clientForm.get('agreement')['controls']; let i = index;">
+                <div formArrayName="agreements"
+                    *ngFor="let item of clientForm.get('agreements')['controls']; let i = index;">
                     <div class="row" [formGroupName]="i">
                         <div class="col-md-4 px-1">
                             <div class="form-group">
@@ -311,7 +311,7 @@
         <p><strong>Are you sure you want to delete <span class="text-primary">{{client_del}}</span> profile?</strong>
         </p>
 
-        <p>All data related to the client will be permanently deleted. If this client has an associated agreement, it
+        <p>All data related to the client will be permanently deleted. If this client has an associated agreements, it
             cannot be removed from the system
         </p>
     </div>

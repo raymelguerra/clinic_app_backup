@@ -10,7 +10,8 @@ import { Agreement } from '../models/agreement.model';
 })
 export class AgreementService {
 
-  private agreementUrl = environment.apiUrl + 'agreements';
+  // private agreementUrl = environment.apiUrl + 'agreements';
+  private agreementUrl = 'http://localhost:5175/api/client/' + 'agreements';
 
    constructor(private http: HttpClient) { }
   

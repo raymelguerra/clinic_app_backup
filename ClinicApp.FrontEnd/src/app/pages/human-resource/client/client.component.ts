@@ -108,13 +108,13 @@ export class ClientComponent implements OnInit, AfterViewInit {
       referringProvider: {
         required: 'The referring provider is required.'
       },
-      authorizationNUmber: {
+      authorizationNumber: {
         required: 'The authorization number is required.',
       },
       diagnosis: {
         required: 'The diagnosis is required.',
       },
-      weeklyApprovedRBT: {
+      weeklyApprovedRbt: {
         required: 'The weekly approved for RBT is required.'
       },
       weeklyApprovedAnalyst: {
@@ -267,15 +267,15 @@ export class ClientComponent implements OnInit, AfterViewInit {
       releaseInformation: ['', [Validators.required]],
       releaseInformationId: '',
       referringProvider: ['', [Validators.required]],
-      authorizationNUmber: ['', [Validators.required]],
+      authorizationNumber: ['', [Validators.required]],
       sequence: [''],
       diagnosis: ['', [Validators.required]],
       diagnosisId: '',
       enabled: '',
-      weeklyApprovedRBT: [0, [Validators.required]],
+      weeklyApprovedRbt: [0, [Validators.required]],
       weeklyApprovedAnalyst: [0, [Validators.required]],
       company: ['', [Validators.required]],
-      agreement: this.fb.array([]),
+      agreements: this.fb.array([]),
     });
   }
 
@@ -327,20 +327,20 @@ export class ClientComponent implements OnInit, AfterViewInit {
     })
   }
   addAgreement(): void {
-    this.agreement_list = this.clientForm.get('agreement') as FormArray;
+    this.agreement_list = this.clientForm.get('agreements') as FormArray;
     this.agreement_list.push(this.createAgreement());
   }
   removeAgreement(index): void {
-    this.clientForm.get('agreement')['controls'].splice(index, 1);
-    this.clientForm.get('agreement').value.splice(index, 1);
+    this.clientForm.get('agreements')['controls'].splice(index, 1);
+    this.clientForm.get('agreements').value.splice(index, 1);
   }
   onSubmit() {
     this.spinnerService.show();
-    var t = this.clientForm.get('agreement').value as Array<any>
+    var t = this.clientForm.get('agreements').value as Array<any>
     var list_agreement = [] as Agreement[];
     var a = this.clientForm.value;
-    // console.log(this.clientForm.value);
     var final_client = this.clientAdapter(this.clientForm.value) as any;
+    console.log(final_client);
     t.forEach(x => {
       //console.log(x);
       const data = {} as Agreement;
@@ -353,7 +353,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
       data.rateEmployees = x.rateEmployees;
       list_agreement.push(data);
     });
-    final_client.agreement = list_agreement;
+    final_client.agreements = list_agreement;
     if (!this.edit_mode) {
       this.clientService.createClient(final_client).subscribe(x => {
         this.client_list.push(x);
@@ -394,7 +394,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   clearData() {
     this.filterName = "";
     this.clientForm.reset();
-    this.clearFormArray(this.clientForm.get("agreement") as FormArray);
+    this.clearFormArray(this.clientForm.get("agreements") as FormArray);
     this.clientCopy = null;
     this.payrollList = [];
     this.contractorList = [];
@@ -407,11 +407,11 @@ export class ClientComponent implements OnInit, AfterViewInit {
       this.clientCopy = x;
       var client = this.adaptClientLoad(x);
       console.log(client);
-      if (client.agreement.length > 0) {
+      if (client.agreements.length > 0) {
         this.onSelectCompany(client.company[0] as Company);
-        this.onSelectContractor(client.agreement.length > 0 ? client.agreement[0].contractor[0] as Contractor : null, client.company[0] as Company)
+        this.onSelectContractor(client.agreements.length > 0 ? client.agreements[0].contractor[0] as Contractor : null, client.company[0] as Company)
 
-        client.agreement.forEach(item => {
+        client.agreements.forEach(item => {
           this.addAgreement();
         });
       }
@@ -446,10 +446,12 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
 
   // Adapters
-  payrollAdapter = (elem) => ({
-    id: elem.id,
-    name: `${elem.contractorType.name} - ${elem.procedure.name}` // ${elem.procedure.name}
-  });
+  payrollAdapter = (elem) => {
+    return {
+      id: elem.id,
+      name: `${elem.contractorType.name} - ${elem.procedure.name}` // ${elem.procedure.name}
+    }
+  };
   clientAdapter = (val) => ({
     name: val.name,
     recipientId: val.recipientId,
@@ -457,12 +459,12 @@ export class ClientComponent implements OnInit, AfterViewInit {
     releaseInformation: null,
     releaseInformationId: val.releaseInformation[0].id,
     referringProvider: val.referringProvider,
-    authorizationNUmber: val.authorizationNUmber,
+    authorizationNumber: val.authorizationNumber,
     sequence: 1,
     diagnosis: null,
     diagnosisId: val.diagnosis[0].id,
     enabled: true,
-    weeklyApprovedRBT: val.weeklyApprovedRBT,
+    weeklyApprovedRbt: val.weeklyApprovedRbt,
     weeklyApprovedAnalyst: val.weeklyApprovedAnalyst,
     // agreement: val.agreement.map(this.agreementAdapter)
   })
@@ -473,20 +475,20 @@ export class ClientComponent implements OnInit, AfterViewInit {
     patientAccount: value.patientAccount,
     releaseInformation: [value.releaseInformation],
     referringProvider: value.referringProvider,
-    authorizationNUmber: value.authorizationNUmber,
+    authorizationNumber: value.authorizationNumber,
     sequence: 1,
     diagnosis: [value.diagnosis],
     enabled: true,
-    weeklyApprovedRBT: value.weeklyApprovedRBT,
+    weeklyApprovedRbt: value.weeklyApprovedRbt,
     weeklyApprovedAnalyst: value.weeklyApprovedAnalyst,
-    company: (value.agreement != undefined && value.agreement.length > 0) ? [value.agreement[0].company] : [],
-    agreement: (value.agreement != undefined && value.agreement.length > 0) ? value.agreement.map(this.adaptAgreementLoad) : []
+    company: (value.agreements != undefined && value.agreements.length > 0) ? [value.agreements[0].company] : [],
+    agreements: (value.agreements != undefined && value.agreements.length > 0) ? value.agreements.map(this.adaptAgreementLoad) : []
   })
 
   adaptAgreementLoad = (value) => ({
-    payroll: value.payroll.map(this.payrollAdapter),
+    payroll: [this.payrollAdapter(value.payroll)],
     payrolId: '0',
-    contractor: [value.payroll[0].contractor],
+    contractor: [value.payroll.contractor],
     rateEmployees: value.rateEmployees
   })
   // Modal Delete Action

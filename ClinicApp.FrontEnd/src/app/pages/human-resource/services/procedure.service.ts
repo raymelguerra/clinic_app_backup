@@ -10,7 +10,8 @@ import { Procedure } from '../models/procedure.model';
 })
 export class ProcedureService {
 
-  private procedureUrl = environment.apiUrl + 'infrastructure/procedure';
+  // private procedureUrl = environment.apiUrl + 'infrastructure/procedure';
+  private procedureUrl = 'http://localhost:5233/api/' + 'infrastructure/procedure';
 
   constructor(private http: HttpClient) { }
 

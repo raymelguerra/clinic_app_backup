@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -8,11 +8,9 @@ import { debounceTime } from 'rxjs/operators';
 import { NotificationService } from '../../../shared/notifications/notification.service';
 import { GenericValidator } from '../../generic.validator';
 import { Contractor } from '../../human-resource/models/contractor.model';
-import { AgreementService } from '../../human-resource/services/agreement.service';
 import { ContractorService } from '../../human-resource/services/contractor.service';
 import { Period } from '../models/period.model';
 import { ServiceLog } from '../models/service-log.model';
-import { UnitDetails } from '../models/unit-details.model';
 import { PeriodService } from '../services/period.service';
 import { PlaceOfServiceService } from '../services/place-of-service.service';
 import { SeviceLogService } from '../services/sevice-log.service';
@@ -236,7 +234,7 @@ export class ServiceLogComponent implements OnInit {
     }, err => console.error(err));
     this.placeOfServiceService.getPlaceOfService().subscribe(x => {
       this.placeOfServicesList = x;
-    }, err => console.error(err));
+    }, err => { console.error(err) });
 
     this.serviceLogService.getServiceLog(this.paginations_status).subscribe(x => {
       this.list_service_log = x.data;
@@ -248,7 +246,10 @@ export class ServiceLogComponent implements OnInit {
         this.showServiceLog(this.id_servicelog_param)
       }
       this.spinnerService.hide();
-    }, err => { this.spinnerService.hide() });
+    }, err => {
+      console.log(err)
+      this.spinnerService.hide()
+    });
 
     this.serviceLogForm = this.fb.group({
       contractor: ['', [Validators.required]],
@@ -257,7 +258,7 @@ export class ServiceLogComponent implements OnInit {
       contractorId: null,
       clientId: null,
       periodId: null,
-      unitDetail: this.fb.array([])
+      unitDetails: this.fb.array([])
     });
   }
 
@@ -267,7 +268,7 @@ export class ServiceLogComponent implements OnInit {
     }
   }
   clearData() {
-    this.clearFormArray(this.serviceLogForm.get("unitDetail") as FormArray);
+    this.clearFormArray(this.serviceLogForm.get("unitDetails") as FormArray);
     this.serviceLogForm.reset();
     this.edit_mode = false;
   }
@@ -302,8 +303,8 @@ export class ServiceLogComponent implements OnInit {
   }
 
   addUnitDetail() {
-    if (this.serviceLogForm.get('unitDetail').value.length <= this.TIME_VALID_PERIOD - 1) {
-      this.unitDetail_list = this.serviceLogForm.get('unitDetail') as FormArray;
+    if (this.serviceLogForm.get('unitDetails').value.length <= this.TIME_VALID_PERIOD - 1) {
+      this.unitDetail_list = this.serviceLogForm.get('unitDetails') as FormArray;
       this.unitDetail_list.push(this.createUnitDetails());
     }
     else {
@@ -312,8 +313,8 @@ export class ServiceLogComponent implements OnInit {
 
   }
   removeUnitDetail(index: number) {
-    this.serviceLogForm.get('unitDetail')['controls'].splice(index, 1);
-    this.serviceLogForm.get('unitDetail').value.splice(index, 1);
+    this.serviceLogForm.get('unitDetails')['controls'].splice(index, 1);
+    this.serviceLogForm.get('unitDetails').value.splice(index, 1);
   }
   createUnitDetails(): FormGroup {
     return this.fb.group({
@@ -338,6 +339,7 @@ export class ServiceLogComponent implements OnInit {
   onSubmit() {
     this.spinnerService.show()
     var serviceLog = this.adaptServiceLog(this.serviceLogForm.value);
+    console.log(serviceLog)
     if (!this.edit_mode) {
       serviceLog.createdDate = new Date();
       this.serviceLogService.postServiceLog(serviceLog).subscribe(x => {
@@ -376,12 +378,12 @@ export class ServiceLogComponent implements OnInit {
     this.serviceLogService.getServiceLogById(index).subscribe(x => {
       this.old_serviceLog = x;
       this.edit_mode = true;
-
+      console.log(x)
       this.subProcedure.getSubProcedure(x.clientId, x.contractorId).subscribe(x => {
         this.subProcedureList = x
       }, err => console.error(err));
 
-      x.unitDetail.map(this.adaptUnitDetailsLoad).forEach(item => {
+      x.unitDetails.map(this.adaptUnitDetailsLoad).forEach(item => {
         this.addUnitDetail();
       });
       this.serviceLogForm.patchValue(this.adaptServiceLogLoad(x));
@@ -401,7 +403,8 @@ export class ServiceLogComponent implements OnInit {
       this.spinnerService.hide();
     }, err => {
       console.log(err)
-      this.spinnerService.hide()});
+      this.spinnerService.hide()
+    });
   }
 
   cleanFilter() {
@@ -428,7 +431,7 @@ export class ServiceLogComponent implements OnInit {
     contractorId: null,
     clientId: null,
     periodId: null,
-    unitDetail: val.unitDetail.map(this.adaptUnitDetailsLoad)
+    unitDetails: val.unitDetails.map(this.adaptUnitDetailsLoad)
   });
 
   adaptUnitDetailsLoad = (val) => ({
@@ -448,7 +451,7 @@ export class ServiceLogComponent implements OnInit {
     contractorId: val.contractor[0].id,
     clientId: val.client[0].id,
     periodId: val.period[0].id, // this.list_period[this.list_period.length - 1].id
-    unitDetail: val.unitDetail.map(this.adaptUnitDetails),
+    unitDetails: val.unitDetails.map(this.adaptUnitDetails),
     createdDate: null
   })
 
@@ -469,7 +472,7 @@ export class ServiceLogComponent implements OnInit {
 
   // Modal Delete Action
   closeModal: string;
-  triggerModal(content, index) {    
+  triggerModal(content, index) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((res) => {
       if (res === 'Ok') {
         this.deleteServiceLog(index);

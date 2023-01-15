@@ -54,7 +54,7 @@
                     <div class="col-md-2 px-1">
                         <div class="form-group">
                             <button type="button" class="btn btn-success btn-small " (click)="addUnitDetail()"
-                                [disabled]="!serviceLogForm.get('unitDetail').valid">Add</button>
+                                [disabled]="!serviceLogForm.get('unitDetails').valid">Add</button>
                         </div>
                     </div>
                 </div>
@@ -74,8 +74,8 @@
                                 </tbody>
                             </table>-
                         </div> -->
-                        <div formArrayName="unitDetail"
-                            *ngFor="let item of serviceLogForm.get('unitDetail')['controls']; let i = index;">
+                        <div formArrayName="unitDetails"
+                            *ngFor="let item of serviceLogForm.get('unitDetails')['controls']; let i = index;">
                             <div class="row" [formGroupName]="i">
                                 <div class="col-sm-4">
                                     <div class="form-group">

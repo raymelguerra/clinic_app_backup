@@ -10,7 +10,8 @@ import { Period } from '../models/period.model';
 })
 export class PeriodService {
 
-  private periodUrl = environment.apiUrl + 'periods';
+  // private periodUrl = environment.apiUrl + 'periods';
+  private periodUrl = 'http://localhost:5233/api/infrastructure/' + 'period';
 
   constructor(private http: HttpClient) { }
 

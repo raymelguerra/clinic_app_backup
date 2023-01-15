@@ -13,7 +13,6 @@ export class ErrorHandlerService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token: string = localStorage.getItem('token');
     let request = req;
-
     if (token) {
       request = req.clone({
         setHeaders: {
@@ -75,7 +74,7 @@ export class ErrorHandlerService implements HttpInterceptor {
     return error.message;
   }
   private handleUnuthorizeRequest = (error: HttpErrorResponse): string => {
-    this.notificationService.errorMessagesNotification("Validation", error.error.message);
+    this.notificationService.errorMessagesNotification("Validation", error.message);
     this._router.navigate(['/authentication/login']);
     return error.message;
   }

@@ -11,13 +11,13 @@ export class Client {
     releaseInformationId: number;
     releaseInformation: ReleaseInformation;
     referringProvider: string;
-    authorizationNUmber: string;
+    authorizationNumber: string;
     sequence: number = 1;
-    weeklyApprovedRBT: number;
+    weeklyApprovedRbt: number;
     weeklyApprovedAnalyst: Number;
     enabled: boolean;
     diagnosis: Diagnosis;
     company: Company;
 
-    agreement: Agreement[];
+    agreements: Agreement[];
 }

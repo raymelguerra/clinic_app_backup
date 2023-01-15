@@ -12,7 +12,8 @@ import { ServiceLog } from '../models/service-log.model';
 })
 export class SeviceLogService {
 
-  private serviceLogUrl = environment.apiUrl + 'servicelogs';
+  // private serviceLogUrl = environment.apiUrl + 'servicelogs';
+  private serviceLogUrl = 'http://localhost:5107/api/' + 'servicelog';
 
   constructor(private http: HttpClient) { }
 

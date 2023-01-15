@@ -94,9 +94,8 @@ export class PatientAccountComponent implements OnInit {
     this.edit_patientId = this.patient_list[index].id
 
     var patient = this.patient_list[index] as PatientAccount
-    console.log(patient)
+    
     this.patientAccountForm.patchValue({auxiliar_check: patient.auxiliar === null})
-
     this.patientAccountForm.patchValue(patient)
   }
   /**
@@ -124,8 +123,10 @@ export class PatientAccountComponent implements OnInit {
   onSubmit(): void {
     this.spinnerService.show();
     var patient = this.patientAccountForm.value as PatientAccount;
+    patient.licenseNumber = patient.licenseNumber || 'DOES NOT APPLY'
     // patient.licenseNumber = patient.auxiliar === '' || patient.auxiliar === null ? patient.licenseNumber : 'NOT '  
     patient.clientId = this.clientId
+    console.log(patient)
     if (this.edit_patientId == -1) {
       this.patientAccountService.createPatientAccount(patient).subscribe(
         (x: PatientAccount) => {
@@ -193,19 +194,4 @@ export class PatientAccountComponent implements OnInit {
       clientId: x.clientId,
       auxiliar: x.auxiliar
     })
-
-  // test purpose
-  // (async () => { 
-  //     // Do something before delay
-  //     console.log('before delay')
-
-  //     await this.delay(1000);
-
-  //     // Do something after
-  //     console.log('after delay')
-  // })();
-  //   delay(ms: number) {
-  //     return new Promise( resolve => setTimeout(resolve, ms) );
-  //   }
-
 }

@@ -10,7 +10,8 @@ import { SubProcedure } from '../models/subProcedure.model';
 })
 export class SubProcedureService {
 
-  private subProcedureUrl = environment.apiUrl + 'subProcedures';
+  // private subProcedureUrl = environment.apiUrl + 'subProcedures';
+  private subProcedureUrl = 'http://localhost:5233/api/infrastructure/' + 'subProcedure';
 
   constructor(private http: HttpClient) { }
 

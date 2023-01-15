@@ -222,7 +222,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
       name: ["", [Validators.required]],
       renderingProvider: ["", [Validators.required]],
       extra: ["", [Validators.required]],
-      payroll: this.fb.array([]),
+      payrolls: this.fb.array([]),
     });
   }
   onContractorTypeSelected(item: ContractorType, index: number) {
@@ -238,15 +238,15 @@ export class ContractorComponent implements OnInit, AfterViewInit {
           );
           // this.contractorForm.get('payroll')['controls'][index].value.procedure = [];
         }
-        this.contractorForm.get("payroll")["controls"][index].value
+        this.contractorForm.get("payrolls")["controls"][index].value
           .contractorType != null
-          ? (this.contractorForm.get("payroll")["controls"][
+          ? (this.contractorForm.get("payrolls")["controls"][
               index
             ].value.contractorType =
-              this.contractorForm.get("payroll")["controls"][
+              this.contractorForm.get("payrolls")["controls"][
                 index
               ].value.contractorType[0])
-          : (this.contractorForm.get("payroll")["controls"][
+          : (this.contractorForm.get("payrolls")["controls"][
               index
             ].value.contractorType = null);
         // sthis.contractorForm.get('payroll')['controls'][index].value.procedure = [];
@@ -255,13 +255,13 @@ export class ContractorComponent implements OnInit, AfterViewInit {
     });
   }
   onProcedureSelected(item: Procedure, index: Number) {
-    this.contractorForm.get("payroll")["controls"][index].value.procedure !=
+    this.contractorForm.get("payrolls")["controls"][index].value.procedure !=
     null
-      ? (this.contractorForm.get("payroll")["controls"][index].value.procedure =
-          this.contractorForm.get("payroll")["controls"][
+      ? (this.contractorForm.get("payrolls")["controls"][index].value.procedure =
+          this.contractorForm.get("payrolls")["controls"][
             index
           ].value.procedure[0])
-      : (this.contractorForm.get("payroll")["controls"][index].value.procedure =
+      : (this.contractorForm.get("payrolls")["controls"][index].value.procedure =
           null);
     //console.log(this.contractorForm.get('payroll')['controls'][index].value.procedure);
   }
@@ -276,12 +276,12 @@ export class ContractorComponent implements OnInit, AfterViewInit {
     });
   }
   addPayroll(): void {
-    this.payroll_list = this.contractorForm.get("payroll") as FormArray;
+    this.payroll_list = this.contractorForm.get("payrolls") as FormArray;
     this.payroll_list.push(this.createPayroll());
   }
   removePayroll(index): void {
-    this.contractorForm.get("payroll")["controls"].splice(index, 1);
-    this.contractorForm.get("payroll").value.splice(index, 1);
+    this.contractorForm.get("payrolls")["controls"].splice(index, 1);
+    this.contractorForm.get("payrolls").value.splice(index, 1);
     //console.log(this.contractorForm.value);
   }
 
@@ -324,8 +324,8 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   onSubmit() {
     this.spinnerService.show();
     try {
+      console.log(this.contractorForm.value);
       var contractor = this.adapterContractorUpgrade(this.contractorForm.value);
-      // console.log(contractor);
 
       if (!this.edit_mode) {
         this.contractorService
@@ -372,7 +372,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   loadDataInFields(index: number) {
     this.edit_mode = true;
     this.contractorForm.reset();
-    this.clearFormArray(this.contractorForm.get("payroll") as FormArray);
+    this.clearFormArray(this.contractorForm.get("payrolls") as FormArray);
     this.contractorService.getContractor(index).subscribe(
       (x) => {
         this.contractorCopy = x;
@@ -389,7 +389,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   };
   clearData() {
     this.contractorForm.reset();
-    this.clearFormArray(this.contractorForm.get("payroll") as FormArray);
+    this.clearFormArray(this.contractorForm.get("payrolls") as FormArray);
     // this.clearFormArray(this.contractorForm.get("company") as FormArray);
     this.contractorCopy = null;
     this.edit_mode = false;
@@ -428,7 +428,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
     name: value.name,
     renderingProvider: value.renderingProvider,
     extra: value.extra,
-    payroll: value.payrolls.map((x, index) => {
+    payrolls: value.payrolls.map((x, index) => {
       this.onContractorTypeSelected(x.contractorType, index);
       this.addPayroll();
       return this.adapterPayroll(x);
@@ -466,7 +466,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
     name: value.name,
     renderingProvider: value.renderingProvider,
     extra: value.extra,
-    payroll:
+    payrolls:
       value.payrolls !== null && value.payrolls.length > 0
         ? value.payrolls.map(this.adapterPayrollAdd)
         : [],

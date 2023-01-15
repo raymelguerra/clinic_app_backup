@@ -10,11 +10,13 @@ import { ReleaseInformation } from '../models/release-information.model';
 })
 export class ReleaseInformationService {
 
-  private releaseInformationUrl = environment.apiUrl + 'infrastructure/releaseinformation';
+  // private releaseInformationUrl = environment.apiUrl + 'infrastructure/releaseinformation';
+  private releaseInformationUrl = 'http://localhost:5233/api/' + 'infrastructure/releaseinformation';
 
   constructor(private http: HttpClient) { }
 
  getReleaseInformations(): Observable<ReleaseInformation[]> {
+  console.log(this.releaseInformationUrl)
    return this.http.get<ReleaseInformation[]>(this.releaseInformationUrl)
      .pipe(
        tap(data => console.log('All: ' + JSON.stringify(data))),

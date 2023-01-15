@@ -9,12 +9,14 @@ import { environment } from '../../../../environments/environment';
 })
 export class AuthService {
 
-  private clientUrl = environment.apiUrl + 'auth';
+  // private clientUrl = environment.apiUrl + 'auth';
+  private clientUrl = 'http://localhost:5143/api/' + 'auth';
   
    constructor(private http: HttpClient) { }
   
   login(client: any): any {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    console.log(`URL: ${this.clientUrl}/login`)
     return this.http.post<any>(`${this.clientUrl}/login`, client, { headers })
       .pipe(
         tap(data => console.log('createClient: ' + JSON.stringify(data))),

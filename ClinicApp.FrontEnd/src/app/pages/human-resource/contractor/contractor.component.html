@@ -42,11 +42,11 @@
                     </div>
                     <div class="col-3">
                         <button type="button" class="btn btn-success btn-small " (click)="addPayroll()"
-                            [disabled]="!contractorForm.get('payroll').valid">Add</button>
+                            [disabled]="!contractorForm.get('payrolls').valid">Add</button>
                     </div>
                 </div>
-                <div formArrayName="payroll"
-                    *ngFor="let item of contractorForm.get('payroll')['controls']; let i = index;">
+                <div formArrayName="payrolls"
+                    *ngFor="let item of contractorForm.get('payrolls')['controls']; let i = index;">
                     <div class="row" [formGroupName]="i">
                         <div class="col-md-4 px-1">
                             <div class="form-group">

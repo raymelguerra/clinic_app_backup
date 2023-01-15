@@ -11,7 +11,7 @@ export class ServiceLog {
     client: Client;
     periodId: number;
     period: Period;
-    unitDetail: UnitDetails[];
+    unitDetails: UnitDetails[];
     createdDate: Date;
     pending: string;
 }

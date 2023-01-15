@@ -7,4 +7,5 @@ export class PatientAccount {
     expireDate: string;
     clientId: number;
     auxiliar: string;
+    auxiliar_check: boolean;
 }

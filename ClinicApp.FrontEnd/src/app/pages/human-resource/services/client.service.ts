@@ -12,7 +12,8 @@ import { Client } from '../models/client.model';
 })
 export class ClientService {
 
-  private clientUrl = environment.apiUrl + 'client';
+  // private clientUrl = environment.apiUrl + 'client';
+  private clientUrl = 'http://localhost:5175/api/' + 'client';
 
    constructor(private http: HttpClient) { }
   
@@ -93,6 +94,7 @@ export class ClientService {
     // in a real world app, we may send the server to some remote logging infrastructure
     // instead of just logging it to the console
     let errorMessage = '';
+    console.log(err)
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       errorMessage = `An error occurred: ${err.error.message}`;
