@@ -11,7 +11,7 @@ import { Contractor } from '../models/contractor.model';
 })
 export class ContractorService {
 
-  private contractorUrl = environment.apiUrl + 'contractor';
+  private contractorUrl = environment.apiUrl + 'contractors';
 
   constructor(private http: HttpClient) { }
 

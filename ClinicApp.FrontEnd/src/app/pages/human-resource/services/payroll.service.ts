@@ -11,7 +11,7 @@ import { Diagnosis } from '../models/diagnosis.model';
 })
 export class PayrollService {
 
-  private payrollUrl = environment.apiUrl + 'payrolls';
+  private payrollUrl = environment.apiUrl + 'contractors/payrolls';
 
   constructor(private http: HttpClient) { }
 

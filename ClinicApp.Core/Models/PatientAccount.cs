@@ -7,7 +7,7 @@ public partial class PatientAccount
 {
     public int Id { get; set; }
 
-    public string LicenseNumber { get; set; } = null!;
+    public string? LicenseNumber { get; set; }
 
     public string? Auxiliar { get; set; }
 
@@ -17,5 +17,5 @@ public partial class PatientAccount
 
     public int ClientId { get; set; }
 
-    public virtual Client Client { get; set; } = null!;
+    public virtual Client? Client { get; set; }
 }

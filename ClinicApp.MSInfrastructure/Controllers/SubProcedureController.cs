@@ -36,4 +36,11 @@ public class SubProcedureController : ControllerBase
 
         return subprocedure;
     }
+
+    // GET: api/Procedures
+    [HttpGet("GetSubProceduresByAgreement/{clientId}/{contractorId}")]
+    public async Task<ActionResult<IEnumerable<SubProcedure>>> GetSubProceduresByAgreement(int clientId, int contractorId)
+    {
+        return Ok(await _subprocedure.GetSubProceduresByAgreement(clientId, contractorId));
+    }
 }

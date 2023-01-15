@@ -19,5 +19,4 @@
   <ItemGroup>
     <ProjectReference Include="..\ClinicApp.Core\ClinicApp.Core.csproj" />
   </ItemGroup>
-
 </Project>

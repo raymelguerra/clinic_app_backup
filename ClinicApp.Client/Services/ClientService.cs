@@ -4,6 +4,8 @@ using ClinicApp.Core.Interfaces;
 using ClinicApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
+using ClinicApp.MSClient.Dtos;
 
 namespace ClinicApp.MSClient.Services;
 
@@ -55,9 +57,23 @@ public class ClientService : IClient
         return new Client { };
     }
 
+    public async Task<object?> DeletePatientAccount(int id)
+    {
+        var patient = await _context.PatientAccounts.FindAsync(id);
+        if (patient == null)
+        {
+            return null;
+        }
+
+        _context.PatientAccounts.Remove(patient);
+        await _context.SaveChangesAsync();
+
+        return new PatientAccount { };
+    }
+
     public async Task<IEnumerable<Agreement>> GetAgreement()
     {
-         return await _context.Agreements.Include("Client").Include("Payroll").ToListAsync();
+        return await _context.Agreements.Include("Client").Include("Payroll").ToListAsync();
     }
 
     public async Task<Agreement?> GetAgreement(int id)
@@ -82,6 +98,21 @@ public class ClientService : IClient
         }
 
         return agreement;
+    }
+
+    public async Task<IEnumerable<PatientAccount>> GetBilling()
+    {
+        return await _context.PatientAccounts.ToListAsync();
+    }
+
+    public async Task<IEnumerable<PatientAccount>> GetBilling(int idclient)
+    {
+        var test = await _context.PatientAccounts
+                .Where(x => x.ClientId == idclient)
+                .OrderByDescending(date => date.ExpireDate)
+                .Take(10)
+                .ToListAsync();
+        return test;
     }
 
     public async Task<PagedResponse<IEnumerable<Client>>> GetClient([FromQuery] PaginationFilter filter, string route)
@@ -201,7 +232,7 @@ public class ClientService : IClient
                           join p in _context.Payrolls on a.PayrollId equals p.Id
                           join c in _context.Clients on a.ClientId equals c.Id
                           where p.ContractorId == id
-                          select new { Id = c.Id, Name = c.Name }).Distinct().ToListAsync();
+                          select new Client { Id = c.Id, Name = c.Name }).Distinct().ToListAsync<Client>();
         return (IEnumerable<Client>)list;
     }
 
@@ -212,8 +243,25 @@ public class ClientService : IClient
             Id = c.Id,
             Name = c.Name
         }).OrderBy(o => o.Id).ToListAsync();
-        
+
         return clients;
+    }
+
+    public async Task<PatientAccount?> GetPatientAccount(int id)
+    {
+        var patient = await _context.PatientAccounts.FindAsync(id);
+
+        if (patient == null)
+        {
+            return null;
+        }
+
+        return patient;
+    }
+
+    public bool PatientAccountExists(int id)
+    {
+        return _context.PatientAccounts.Any(e => e.Id == id);
     }
 
     public async Task<Agreement?> PostAgreement(Agreement agreement)
@@ -248,8 +296,17 @@ public class ClientService : IClient
                     WeeklyApprovedAnalyst = c.WeeklyApprovedAnalyst,
                     WeeklyApprovedRbt = c.WeeklyApprovedRbt
                 }).FirstOrDefaultAsync(x => x.Id == client.Id);
-        
+
         return client_new;
+    }
+
+    public async Task<PatientAccount?> PostPatientAccount(PatientAccount patient)
+    {
+        patient.LicenseNumber = patient.LicenseNumber ?? "DOES NOT APPLY";
+        _context.PatientAccounts.Add(patient);
+        await _context.SaveChangesAsync();
+
+        return await GetPatientAccount(patient.Id);
     }
 
     public async Task<object?> PutAgreement(int id, Agreement agreement)
@@ -278,7 +335,11 @@ public class ClientService : IClient
     public async Task<object?> PutClient(int id, Client client)
     {
         var clientOld = await _context.Clients.Include(p => p.Agreements).FirstOrDefaultAsync(p => p.Id == client.Id);
-        clientOld!.Agreements.Clear();
+
+        foreach (var item in clientOld!.Agreements)
+        {
+            _context.Agreements.Remove(item);
+        }
 
         foreach (var item in client.Agreements)
         {
@@ -312,5 +373,30 @@ public class ClientService : IClient
             }
         }
         return new Client();
+    }
+
+    public async Task<object?> PutPatientAccount(int id, PatientAccount patient)
+    {
+        patient.LicenseNumber = patient.LicenseNumber ?? "DOES NOT APPLY";
+
+        _context.Entry(patient).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PatientAccountExists(id))
+            {
+                return null;
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return new PatientAccount { };
     }
 }

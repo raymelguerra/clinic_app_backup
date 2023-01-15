@@ -75,11 +75,11 @@ public class ContractorService : IContractor
             Name = x.Name,
             Extra = x.Extra,
             RenderingProvider = x.RenderingProvider,
-            Payrolls = x.Payrolls.Select(y => new Payroll 
-            { 
-                ContractorType = y.ContractorType, 
+            Payrolls = x.Payrolls.Select(y => new Payroll
+            {
+                ContractorType = y.ContractorType,
                 Procedure = y.Procedure,
-                Company  = y.Company 
+                Company = y.Company
             }).ToList()
         }).FirstOrDefaultAsync();
 
@@ -104,10 +104,10 @@ public class ContractorService : IContractor
             Extra = x.Extra,
             RenderingProvider = x.RenderingProvider,
             Payrolls = x.Payrolls.Select(y => new Payroll
-            { 
-                ContractorType = y.ContractorType, 
+            {
+                ContractorType = y.ContractorType,
                 Procedure = y.Procedure,
-                Company  = y.Company 
+                Company = y.Company
             })
             .ToList(),
         }).FirstOrDefaultAsync();
@@ -131,10 +131,14 @@ public class ContractorService : IContractor
                 return null;
             }
 
-            contractorOld!.Payrolls.Clear();
-
-            foreach (var item in contractor.Payrolls)
+            foreach (var item in contractorOld!.Payrolls.ToList())
             {
+                contractorOld!.Payrolls.Remove(item);
+            }
+
+            foreach (var item in contractor.Payrolls.ToList())
+            {
+                item.ContractorId = contractor.Id;
                 contractorOld.Payrolls.Add(item);
             }
         }
@@ -204,18 +208,18 @@ public class ContractorService : IContractor
 
     public async Task<IEnumerable<Contractor>> GetAnalystByCompany(int id)
     {
-        var contractor = await(from pr in _context.Payrolls
-                               where pr.CompanyId == id && pr.ContractorType.Name == "Analyst"
-                               select pr.Contractor).ToListAsync();
+        var contractor = await (from pr in _context.Payrolls
+                                where pr.CompanyId == id && pr.ContractorType.Name == "Analyst"
+                                select pr.Contractor).ToListAsync();
 
         return contractor;
     }
 
     public async Task<IEnumerable<Contractor>> GetContractorByCompany(int id)
     {
-        var contractor = await(from pr in _context.Payrolls
-                               where pr.CompanyId == id
-                               select pr.Contractor).ToListAsync();
+        var contractor = await (from pr in _context.Payrolls
+                                where pr.CompanyId == id
+                                select pr.Contractor).ToListAsync();
 
         return contractor;
     }

@@ -4,6 +4,7 @@ using ClinicApp.MSServiceLog.Interfaces;
 using ClinicApp.MSServiceLog.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Xml.Linq;
 
@@ -132,5 +133,32 @@ public class ServiceLogController : ControllerBase
            return NotFound();
         return NoContent();
 
+    }
+
+    // GET: api/ServiceLogs
+    [HttpGet("GetPendingServiceLog"), Authorize(Roles = "Administrator,Operator")]
+    public async Task<ActionResult<IEnumerable<ServiceLog>>> GetPendingServiceLog([FromQuery] PaginationFilter filter)
+    {
+        var route = Request.Path.Value;
+        var pagedReponse = await _serviceLog.GetPendingServiceLog(filter, route!);
+        return Ok(pagedReponse);
+    }
+
+
+    [HttpPatch("UpdatePendingStatus/{id}"), Authorize(Roles = "Administrator,Operator")]
+    public async Task<ActionResult<ServiceLog>> UpdatePendingStatus(int id)
+    {
+        var response = await _serviceLog.UpdatePendingStatus(id);
+        if (response == null)
+            return NotFound();
+        return NoContent();
+    }
+
+    [HttpGet("GetServiceLogsByName/{name}/{type}"), Authorize(Roles = "Administrator,Operator")]
+    public async Task<ActionResult<IEnumerable<Client>>> GetServiceLogsByName([FromQuery] PaginationFilter filter, string name, string type)
+    {
+        var route = Request.Path.Value!;
+        var pagedResponse = await _serviceLog.GetServiceLogsByName(filter, name, type, route);
+            return Ok(pagedResponse);
     }
 }

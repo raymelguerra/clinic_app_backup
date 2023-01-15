@@ -1,6 +1,7 @@
 ﻿using ClinicApp.Core.Data;
 using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClinicApp.Infrastructure.Services
@@ -28,6 +29,16 @@ namespace ClinicApp.Infrastructure.Services
             }
 
             return company;
+        }
+
+        public async Task<IEnumerable<SubProcedure>> GetSubProceduresByAgreement(int clientId, int contractorId)
+        {
+            var query = await (from a in _context.Agreements
+                               join p in _context.Payrolls on a.PayrollId equals p.Id
+                               join c in _context.Clients on a.ClientId equals c.Id
+                               where p.ContractorId == contractorId && c.Id == clientId
+                               select new { procedureId = p.ProcedureId }).Distinct().FirstOrDefaultAsync();
+            return await _context.SubProcedures.Include(x => x.Procedure).Where(x => x.ProcedureId == query!.procedureId).ToListAsync<SubProcedure>();
         }
     }
 }

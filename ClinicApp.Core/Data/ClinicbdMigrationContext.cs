@@ -44,8 +44,11 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     public virtual DbSet<UnitDetail> UnitDetails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-    => optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+        optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
+    }
+
     // => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=clinicbd_migration;Username=postgres;Password=postgres");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -177,7 +180,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
 
             entity.HasOne(d => d.Contractor).WithMany(p => p.Payrolls)
                 .HasForeignKey(d => d.ContractorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.ClientCascade)
                 .HasConstraintName("FK_ContractorPayroll");
 
             entity.HasOne(d => d.ContractorType).WithMany(p => p.Payrolls)
@@ -234,9 +237,9 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
 
             entity.HasIndex(e => e.PeriodId, "IX_FK_PeriodServiceLog");
 
-            entity.Property(e => e.BilledDate).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.BilledDate).HasColumnType("timestamp with time zone");
             entity.Property(e => e.Biller).HasMaxLength(450);
-            entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.CreatedDate).HasColumnType("timestamp with time zone");
             entity.Property(e => e.Pending).HasMaxLength(500);
 
             entity.HasOne(d => d.Client).WithMany(p => p.ServiceLogs)
@@ -279,7 +282,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
 
             entity.HasIndex(e => e.SubProcedureId, "IX_FK_SubProcedureUnitDetail");
 
-            entity.Property(e => e.DateOfService).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.DateOfService).HasColumnType("timestamp with time zone");
             entity.Property(e => e.Modifiers).HasMaxLength(5);
 
             entity.HasOne(d => d.PlaceOfService).WithMany(p => p.UnitDetails)

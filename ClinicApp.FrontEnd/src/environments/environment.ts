@@ -5,7 +5,8 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'https://migration.abaanalystgroup.live/api/', // Development
+  apiUrl: 'http://localhost:88/api/', // Development
+  // apiUrl: 'https://migration.abaanalystgroup.live/api/', // Development
   // apiUrl: 'http://34.224.222.1:8082/api/', // Expanding y VillaLyan
   // apiUrl: 'http://34.224.222.1:8088/api/', // Principles of learning
   // apiUrl: 'http://34.224.222.1:8084/api/', // Test
