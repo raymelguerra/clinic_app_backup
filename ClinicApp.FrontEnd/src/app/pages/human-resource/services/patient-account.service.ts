@@ -10,7 +10,7 @@ import { PatientAccount } from '../models/patient-account.model';
 })
 export class PatientAccountService {
 
-  private patientUrl = environment.apiUrl + 'patientAccount';
+  private patientUrl = environment.apiUrl + 'client/patientAccount';
   // private patientUrl = 'http://localhost:5175/api/client/' + 'patientAccount';
 
   constructor(private http: HttpClient) { }
