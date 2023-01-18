@@ -143,8 +143,10 @@ public class ContractorController : ControllerBase
         try
         {
             var created = await _contractor.PutContractor(id, contractor, partial);
-            if (created == null)
-                return NotFound();
+            if (created == null) {
+                return BadRequest("This contractor has been assigned to one or many clients.");
+            }
+            
             
             return NoContent();
         }
