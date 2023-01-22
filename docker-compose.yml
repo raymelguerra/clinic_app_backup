@@ -65,7 +65,47 @@ services:
     - clinicapp.client
     - clinicapp.servicelog
     - clinicapp.contractor
+    - clinicapp.billing
+    - clinicapp.dashboard
+    - clinicapp.excelgen
 
+  clinicapp.billing:
+    image: billing:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.MSBilling/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.dashboard:
+    image: dashboard:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.MSDashboard/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.excelgen:
+    image: excelgen:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.MSExcelGen/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  
   clinicapp.authorizationandusermanager:
     image: authorizationandusermanager:v1.2
     build:
