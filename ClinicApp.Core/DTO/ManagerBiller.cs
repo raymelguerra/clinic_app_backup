@@ -13,7 +13,7 @@ namespace ClinicApp.Core.DTO
         public string ContractorName { get; set; }
         public DateTime CreationDate { get; set; }
         public string Biller { get; set; }
-        public DateTime BilledDate { get; set; }
+        public DateTime? BilledDate { get; set; }
     }
 }
 

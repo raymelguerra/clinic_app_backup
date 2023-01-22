@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClinicApp.MSBilling.Services;
 
-public class BillingService: IBilling
+public class BillingService : IBilling
 {
     private readonly IConfiguration _config;
     private readonly ClinicbdMigrationContext _context;
@@ -211,62 +211,56 @@ public class BillingService: IBilling
     {
         var servLog = await _context.ServiceLogs.SingleOrDefaultAsync(x => x.Id == serviceLogId);
 
-        if (servLog == null)
-        {
-            servLog.BilledDate = DateTime.Now;
-            servLog.Biller = userId;
-            servLog.Pending = null;
-            _context.SaveChanges();
-            return new object { };
-        }
-        else return null;
+        if (servLog == null) return null;
+
+        servLog.BilledDate = DateTime.Now;
+        servLog.Biller = userId;
+        servLog.Pending = null;
+        _context.SaveChanges();
+        return new object { };
     }
 
     public async Task<object?> SetServiceLogBilled(int periodId, int contratorId, int clientId, string userId)
     {
         var servLog = await _context.ServiceLogs.SingleOrDefaultAsync(x => (x.PeriodId == periodId && x.ContractorId == contratorId && x.ClientId == clientId));
 
-        if (servLog == null)
-        {
-            servLog.BilledDate = DateTime.Now;
-            servLog.Biller = userId;
-            servLog.Pending = null;
-            _context.SaveChanges();
+        if (servLog == null) return null;
 
-            return new object { };
-        }
-        else return null;
+        servLog.BilledDate = DateTime.Now;
+        servLog.Biller = userId;
+        servLog.Pending = null;
+        _context.SaveChanges();
+
+        return new object { };
     }
 
     public async Task<object?> SetServiceLogPendingReason(int serviceLogId, string reason)
     {
         var servLog = await _context.ServiceLogs.SingleOrDefaultAsync(x => x.Id == serviceLogId);
 
-        if (servLog == null)
-        {
-            servLog.Pending = reason;
-            _context.SaveChanges();
-            return new object { };
-        }
-        else return null;
+        if (servLog == null) return null;
+
+        servLog.Pending = reason;
+        _context.SaveChanges();
+        return new object { };
     }
 
     public async Task<IEnumerable<ManagerBiller>> GetServiceLogsBilled(int period, int company)
     {
-        var query = await(from sl in _context.ServiceLogs
-                          join cl in _context.Clients on sl.ClientId equals cl.Id
-                          join co in _context.Contractors on sl.ContractorId equals co.Id
-                          join us in _context.Users on sl.Biller equals us.Id
-                          where sl.PeriodId == period && cl.Agreements.Any(ag => ag.CompanyId == company) && sl.Biller != null
-                          select new ManagerBiller
-                          {
-                              Id = sl.Id,
-                              BilledDate = (DateTime)sl.BilledDate,
-                              Biller = us.UserName,
-                              ClientName = cl.Name,
-                              ContractorName = co.Name,
-                              CreationDate = (DateTime)sl.CreatedDate
-                          }).OrderBy(x => x.ClientName).ToListAsync();
+        var query = await (from sl in _context.ServiceLogs
+                           join cl in _context.Clients on sl.ClientId equals cl.Id
+                           join co in _context.Contractors on sl.ContractorId equals co.Id
+                           join us in _context.Users on sl.Biller equals us.Id
+                           where sl.PeriodId == period && cl.Agreements.Any(ag => ag.CompanyId == company) && sl.Biller != null
+                           select new ManagerBiller
+                           {
+                               Id = sl.Id,
+                               BilledDate = (DateTime)sl.BilledDate,
+                               Biller = us.UserName,
+                               ClientName = cl.Name,
+                               ContractorName = co.Name,
+                               CreationDate = (DateTime)sl.CreatedDate
+                           }).OrderBy(x => x.ClientName).ToListAsync();
         return query;
     }
 
@@ -274,13 +268,11 @@ public class BillingService: IBilling
     {
         var service = await _context.ServiceLogs.FirstOrDefaultAsync(sl => sl.Id == servicelog);
         if (service == null) return null;
-        else
-        {
-            service.Biller = null;
-            service.BilledDate = null;
 
-            await _context.SaveChangesAsync();
-            return new object { };
-        }
+        service.Biller = null;
+        service.BilledDate = null;
+
+        await _context.SaveChangesAsync();
+        return new object { };
     }
 }
