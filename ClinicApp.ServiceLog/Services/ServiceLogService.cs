@@ -67,6 +67,31 @@ public class ServiceLogService : IServiceLog
         return pagedReponse;
     }
 
+    /*
+     .Select(serv => new ServiceLog
+        {
+            CreatedDate = serv.CreatedDate,
+            BilledDate= serv.BilledDate,
+            ClientId = serv.ClientId,
+            ContractorId = serv.ContractorId,
+            Id = serv.Id,
+            PeriodId = serv.PeriodId,
+            Biller = serv.Biller,
+            Pending = serv.Pending,
+            Client = _context.Clients.Select( cl => new Client {
+                Id = cl.Id,
+                Name = cl.Name
+            }).FirstOrDefault(x=> x.Id == serv.ClientId),
+            Contractor = _context.Clients.Select(cl => new Contractor
+            {
+                Id = cl.Id,
+                Name = cl.Name
+            }).FirstOrDefault(x => x.Id == serv.ClientId),
+
+
+        })
+     */
+
     public async Task<ServiceLog?> GetServiceLog(int id)
     {
         var serviceLog = await _context.ServiceLogs.FindAsync(id);

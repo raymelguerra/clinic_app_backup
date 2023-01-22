@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ClinicApp.Core.Models;
+using ClinicApp.Core.DTO;
 
 namespace ClinicApp.Core.Data;
 
@@ -13,6 +12,9 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     {
     }
 
+    public virtual DbSet<ProfitHistory>? ProfitHistory { get; set; }
+    public virtual DbSet<ServicesLogStatus>? ServicesLogStatus { get; set; }
+    public virtual DbSet<ServiceLogWithoutPatientAccount>? ServiceLogWithoutPatientAccount { get; set; }
     public virtual DbSet<Agreement> Agreements { get; set; }
 
     public virtual DbSet<Client> Clients { get; set; }
