@@ -63,7 +63,7 @@ namespace ClinicApp.MSDashboard.Services
 
         public async Task<IEnumerable<ServiceLogWithoutPatientAccount>> GetServiceLogWithoutPatientAccount(int company_id, int period_id)
         {
-            var sqlQuery = $"SELECT cl.\"Id\" ClientId, cl.\"Name\" Client, ct.\"Id\", ct.\"Name\" Contractor, " +
+            var sqlQuery = $"SELECT cl.\"Id\" ClientId, cl.\"Name\" Client, ct.\"Id\" ContractorId, ct.\"Name\" Contractor, " +
                $"ud.\"DateOfService\", ud.\"SubProcedureId\" SubProcedureId, sp.\"Name\" \"Procedure\" " +
                $"FROM \"Agreement\" ag " +
                $"INNER JOIN \"Company\" c ON c.\"Id\" = ag.\"CompanyId\" AND c.\"Id\" = {company_id} " +
