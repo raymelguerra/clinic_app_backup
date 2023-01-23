@@ -46,11 +46,11 @@ public class BillingService : IBilling
     public async Task<List<TvFullData>> GetContractorAndClientsAsync(string CompanyCode, int PeriodId)
     {
         _context.ChangeTracker.LazyLoadingEnabled = false;
-        try
-        {
+        //try
+        //{
             var sufixList = _config.GetValue<string>("ExtraProceduresList") + ";";
 
-            return await (from ag in _context.Agreements
+            var qFullData = (from ag in _context.Agreements
                           join co in _context.Companies on new { ag.CompanyId, CompanyCode } equals new { CompanyId = co.Id, CompanyCode = co.Acronym }
                           join pr in _context.Payrolls on ag.PayrollId equals pr.Id
                           join ctt in _context.ContractorTypes on pr.ContractorTypeId equals ctt.Id
@@ -62,15 +62,15 @@ public class BillingService : IBilling
                           join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
                           where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
                           && (((sufixList.Contains(sp.Name.Substring(3) + ";") ? pa.Auxiliar : pa.LicenseNumber) ?? "DOES NOT APPLY") != "DOES NOT APPLY")
-                          select new TvFullData { client = cl, contractor = ct, contractorType = ctt, patientAccount = pa, serviceLog = sl, unitDetail = ud, subProcedure = sp })
+                          select new TvFullData { clientId = cl.Id, clientName = cl.Name, contractorId = ct.Id, contractorName = ct.Name, contractorTypeName = ctt.Name, patientAccountAuxiliar = pa.Auxiliar, patientAccountLicenseNumber = pa.LicenseNumber, serviceLogId = sl.Id, serviceLogCreatedDate = sl.CreatedDate, serviceLogBilledDate = sl.BilledDate }) //, unitDetail = ud, subProcedure = sp })
                                       .Distinct()
-                                      .OrderBy(it => it.client.Name.Trim())
-                                      .ThenBy(it => it.client.Id)
-                                      .ThenBy(it => it.patientAccount.Auxiliar != null ? it.patientAccount.Auxiliar : it.patientAccount.LicenseNumber)
-                                      .ThenBy(it => it.contractor.Name)
-                                      .ToListAsync();
-        }
-        finally { _context.ChangeTracker.LazyLoadingEnabled = true; }
+                                      .OrderBy(it => it.clientName.Trim())
+                                      .ThenBy(it => it.clientId)
+                                      .ThenBy(it => it.patientAccountAuxiliar != null ? it.patientAccountAuxiliar : it.patientAccountLicenseNumber)
+                                      .ThenBy(it => it.contractorName);
+        return await qFullData.ToListAsync();
+        //}
+        //finally { _context.ChangeTracker.LazyLoadingEnabled = true; }
     }
 
     public async Task<Agreement> GetAgreementAsync(string companyCode, int periodID, int contractorID, int clientID)
