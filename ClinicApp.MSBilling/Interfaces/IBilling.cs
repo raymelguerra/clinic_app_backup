@@ -9,7 +9,7 @@ namespace ClinicApp.MSBilling.Interfaces
         public Task<List<ExtendedPeriod>> GetPeriodsAsync();
         public Task<Period> GetPeriodAsync(int periodID);
         public Task<List<Company>> GetCompaniesAsync();
-        public Task<List<TvClient>> GetContractorAndClientsAsync(string CompanyCode, int PeriodId);
+        public Task<List<TvFullData>> GetContractorAndClientsAsync(string CompanyCode, int PeriodId);
         public Task<Agreement> GetAgreementAsync(string companyCode, int periodID, int contractorID, int clientID);
         public Task<List<ExtendedUnitDetail>> GetExUnitDetailsAsync(int periodID, int contractorID, int clientID, string pAccount, string sufixList);
         public Task<List<ExtendedUnitDetail>> GetExUnitDetailsAsync(int serviceLogId, string pAccount, string sufixList);

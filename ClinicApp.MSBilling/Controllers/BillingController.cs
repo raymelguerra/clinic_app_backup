@@ -42,7 +42,7 @@ namespace ClinicApp.MSBilling.Controllers
         }
 
         [HttpGet("GetContractorAndClients/{companyCode}/{periodId}")]
-        public async Task<ActionResult<IEnumerable<TvClient>>> GetContractorAndClientsAsync(string companyCode, int periodId)
+        public async Task<ActionResult<IEnumerable<TvFullData>>> GetContractorAndClientsAsync(string companyCode, int periodId)
         {
             var result = await _billing.GetContractorAndClientsAsync(companyCode, periodId);
             return Ok(result);
