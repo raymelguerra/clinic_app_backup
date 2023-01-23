@@ -62,7 +62,7 @@ namespace ClinicApp.MSBilling.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetExUnitDetailsAux/{periodId}/{contractorId}/{clientId}/{paccount}/{sufixList}")]
+        [HttpGet("GetExUnitDetailsAux/{serviceLogId}/{paccount}/{sufixList}")]
         public async Task<ActionResult<IEnumerable<ExtendedUnitDetail>>> GetExUnitDetailsAuxAsync(int serviceLogId, string pAccount, string sufixList)
         {
             {
@@ -97,7 +97,7 @@ namespace ClinicApp.MSBilling.Controllers
             }
         }
 
-        [HttpPut("SetServiceLogPendingReason")]
+        [HttpPut("SetServiceLogPendingReason/{serviceLogId}")]
         public async Task<IActionResult> SetServiceLogPendingReason(int serviceLogId, [FromBody] Dictionary<string, string> reason)
         {
             var result = await _billing.SetServiceLogBilled(serviceLogId, reason["reason"]);

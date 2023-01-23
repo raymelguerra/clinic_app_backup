@@ -143,10 +143,18 @@ public class ClientController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var client = await _client.DeleteClient(id);
-        if (client == null)
-            return NotFound();
-        return NoContent();
+        try
+        {
+            var client = await _client.DeleteClient(id);
+            if (client == null)
+                return NotFound();
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+
+            return BadRequest(e.Message);
+        }
     }
 
     // GET: api/Agreements
