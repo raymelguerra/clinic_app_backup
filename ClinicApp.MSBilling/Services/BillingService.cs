@@ -43,75 +43,34 @@ public class BillingService : IBilling
         return await companyQry.ToListAsync();
     }
 
-    public async Task<List<TvClient>> GetContractorAndClientsAsync(string CompanyCode, int PeriodId)
+    public async Task<List<TvFullData>> GetContractorAndClientsAsync(string CompanyCode, int PeriodId)
     {
         _context.ChangeTracker.LazyLoadingEnabled = false;
-
-        var sufixList = _config.GetValue<string>("ExtraProceduresList") + ";";
-
-        var queryRes = await (from ag in _context.Agreements
-                              join co in _context.Companies on new { ag.CompanyId, CompanyCode } equals new { CompanyId = co.Id, CompanyCode = co.Acronym }
-                              join pr in _context.Payrolls on ag.PayrollId equals pr.Id
-                              join ctt in _context.ContractorTypes on pr.ContractorTypeId equals ctt.Id
-                              join ct in _context.Contractors on pr.ContractorId equals ct.Id
-                              join cl in _context.Clients on ag.ClientId equals cl.Id
-                              join pa in _context.PatientAccounts on ag.ClientId equals pa.ClientId
-                              join sl in _context.ServiceLogs on new { ag.ClientId, pr.ContractorId, PeriodId } equals new { sl.ClientId, sl.ContractorId, sl.PeriodId }
-                              join ud in _context.UnitDetails on sl.Id equals ud.ServiceLogId
-                              join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
-                              where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
-                              && (((sufixList.Contains(sp.Name.Substring(3) + ";") ? pa.Auxiliar : pa.LicenseNumber) ?? "DOES NOT APPLY") != "DOES NOT APPLY")
-                              select new { cl, ct, ctt, pa, sl, ud, sp })
-                                  .Distinct()
-                                  .OrderBy(it => it.cl.Name.Trim())
-                                  .ThenBy(it => it.cl.Id)
-                                  .ThenBy(it => it.pa.Auxiliar != null ? it.pa.Auxiliar : it.pa.LicenseNumber)
-                                  .ThenBy(it => it.ct.Name)
-                                  .ToListAsync();
-
-        TvClient lastClient = null;
-        TvContractor lastContractor = null;
-        TvServiceLog lastServiceLog = null;
-
-        var clientList = new List<TvClient>();
-        foreach (var it in queryRes)
+        try
         {
-            if (it.cl != null && it.ct != null && it.sl != null)
-            {
-                var paNum = it.pa.Auxiliar != null ? it.pa.Auxiliar : it.pa.LicenseNumber; //it.pa != null ? (sufixList.Contains(it.sp.Name.Substring(3) + ";") ? it.pa.Auxiliar : it.pa.LicenseNumber) : it.cl.AuthorizationNUmber;
-                if (it.cl.Id.ToString() + $"_{paNum}" != lastClient?.Id)
-                {
-                    clientList.Add(lastClient = new TvClient()
-                    {
-                        Id = it.cl.Id.ToString() + $"_{paNum}",
-                        Name = it.cl.Name.Trim() + $" ({paNum})",
-                    });
-                    lastContractor = null; lastServiceLog = null;
-                }
-                if (lastContractor == null || int.Parse(lastContractor.Id) != it.ct.Id)
-                {
-                    lastClient.Contractors.Add(lastContractor = new TvContractor()
-                    {
-                        Id = it.ct.Id.ToString(),
-                        Name = it.ct.Name.Trim(),
-                        ContratorType = it.ctt.Name,
-                        Client = lastClient
-                    });
-                    lastServiceLog = null;
-                }
+            var sufixList = _config.GetValue<string>("ExtraProceduresList") + ";";
 
-                if (lastServiceLog == null || int.Parse(lastServiceLog.Id) != it.sl.Id)
-                    lastContractor.ServiceLogs.Add(lastServiceLog = new TvServiceLog()
-                    {
-                        Id = it.sl.Id.ToString(),
-                        CreatedDate = it.sl.CreatedDate,
-                        Status = (it.sl.BilledDate != null) ? "billed" : "empty",
-                        Contractor = lastContractor
-                    });
-            }
+            return await (from ag in _context.Agreements
+                          join co in _context.Companies on new { ag.CompanyId, CompanyCode } equals new { CompanyId = co.Id, CompanyCode = co.Acronym }
+                          join pr in _context.Payrolls on ag.PayrollId equals pr.Id
+                          join ctt in _context.ContractorTypes on pr.ContractorTypeId equals ctt.Id
+                          join ct in _context.Contractors on pr.ContractorId equals ct.Id
+                          join cl in _context.Clients on ag.ClientId equals cl.Id
+                          join pa in _context.PatientAccounts on ag.ClientId equals pa.ClientId
+                          join sl in _context.ServiceLogs on new { ag.ClientId, pr.ContractorId, PeriodId } equals new { sl.ClientId, sl.ContractorId, sl.PeriodId }
+                          join ud in _context.UnitDetails on sl.Id equals ud.ServiceLogId
+                          join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
+                          where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
+                          && (((sufixList.Contains(sp.Name.Substring(3) + ";") ? pa.Auxiliar : pa.LicenseNumber) ?? "DOES NOT APPLY") != "DOES NOT APPLY")
+                          select new TvFullData { client = cl, contractor = ct, contractorType = ctt, patientAccount = pa, serviceLog = sl, unitDetail = ud, subProcedure = sp })
+                                      .Distinct()
+                                      .OrderBy(it => it.client.Name.Trim())
+                                      .ThenBy(it => it.client.Id)
+                                      .ThenBy(it => it.patientAccount.Auxiliar != null ? it.patientAccount.Auxiliar : it.patientAccount.LicenseNumber)
+                                      .ThenBy(it => it.contractor.Name)
+                                      .ToListAsync();
         }
-        _context.ChangeTracker.LazyLoadingEnabled = true;
-        return clientList;
+        finally { _context.ChangeTracker.LazyLoadingEnabled = true; }
     }
 
     public async Task<Agreement> GetAgreementAsync(string companyCode, int periodID, int contractorID, int clientID)
