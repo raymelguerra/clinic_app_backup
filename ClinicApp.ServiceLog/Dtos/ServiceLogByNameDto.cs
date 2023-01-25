@@ -4,8 +4,6 @@ namespace ClinicApp.MSServiceLog.Dtos
 {
     public class ServiceLogByNameDto : ServiceLogsDto
     {
-        public int Id { get; set; }
-
         public int PeriodId { get; set; }
 
         public int ContractorId { get; set; }
