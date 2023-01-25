@@ -54,17 +54,37 @@ public class ServiceLogService : IServiceLog
         return pagedReponse!;
     }
 
-    public async Task<PagedResponse<IEnumerable<ServiceLog>>> GetServiceLog(PaginationFilter filter, string route)
+    public async Task<PagedResponse<IEnumerable<AllServicesLogDto>>> GetServiceLog(PaginationFilter filter, string route)
     {
         var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
         var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
+            .Select(x => new AllServicesLogDto
+            {
+                CreatedDate = x.CreatedDate,
+                Client = new()
+                {
+                    Id = x.ClientId,
+                    Name = x.Client.Name
+                },
+                Contractor = new()
+                {
+                    Id = x.ContractorId,
+                    Name = x.Contractor.Name
+                },
+                Period = new()
+                {
+                    EndDate = x.Period.EndDate,
+                    Id = x.Period.Id,
+                    StartDate = x.Period.StartDate
+                }
+            })
             .OrderByDescending(x => x.CreatedDate)
             .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
             .Take(validFilter.PageSize)
             .ToListAsync();
         var totalRecords = await _context.ServiceLogs.CountAsync();
 
-        var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLog>(list, validFilter, totalRecords, _uriService, route);
+        var pagedReponse = PaginationHelper.CreatePagedReponse<AllServicesLogDto>(list, validFilter, totalRecords, _uriService, route);
         return pagedReponse;
     }
 
@@ -119,13 +139,10 @@ public class ServiceLogService : IServiceLog
                     ContractorId = x.Contractor.Id,
                     CreatedDate = x.CreatedDate,
                     Pending = x.Pending,
-                    Period = new (){
-                        Active = x.Period.Active,
-                        DocumentDeliveryDate = x.Period.DocumentDeliveryDate,
+                    Period = new()
+                    {
                         EndDate = x.Period.EndDate,
                         Id = x.Period.Id,
-                        PaymentDate = x.Period.PaymentDate,
-                        PayPeriod = x.Period.PayPeriod,
                         StartDate = x.Period.StartDate
                     }
                 })
@@ -166,12 +183,8 @@ public class ServiceLogService : IServiceLog
                         Pending = x.Pending,
                         Period = new()
                         {
-                            Active = x.Period.Active,
-                            DocumentDeliveryDate = x.Period.DocumentDeliveryDate,
                             EndDate = x.Period.EndDate,
                             Id = x.Period.Id,
-                            PaymentDate = x.Period.PaymentDate,
-                            PayPeriod = x.Period.PayPeriod,
                             StartDate = x.Period.StartDate
                         }
                     })
@@ -321,12 +334,8 @@ public class ServiceLogService : IServiceLog
                     Pending = x.Pending,
                     Period = new()
                     {
-                        Active = x.Period.Active,
-                        DocumentDeliveryDate = x.Period.DocumentDeliveryDate,
                         EndDate = x.Period.EndDate,
                         Id = x.Period.Id,
-                        PaymentDate = x.Period.PaymentDate,
-                        PayPeriod = x.Period.PayPeriod,
                         StartDate = x.Period.StartDate
                     }
                 })
@@ -369,12 +378,8 @@ public class ServiceLogService : IServiceLog
                      Pending = x.Pending,
                      Period = new()
                      {
-                         Active = x.Period.Active,
-                         DocumentDeliveryDate = x.Period.DocumentDeliveryDate,
                          EndDate = x.Period.EndDate,
                          Id = x.Period.Id,
-                         PaymentDate = x.Period.PaymentDate,
-                         PayPeriod = x.Period.PayPeriod,
                          StartDate = x.Period.StartDate
                      }
                  })

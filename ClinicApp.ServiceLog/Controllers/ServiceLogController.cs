@@ -24,7 +24,7 @@ public class ServiceLogController : ControllerBase
     }
     // GET: api/<clientController>
     [HttpGet]
-    public async Task<ActionResult<PagedResponse<IEnumerable<ServiceLog>>>> Get([FromQuery] PaginationFilter filter)
+    public async Task<ActionResult<PagedResponse<IEnumerable<AllServicesLogDto>>>> Get([FromQuery] PaginationFilter filter)
     {
         try
         {

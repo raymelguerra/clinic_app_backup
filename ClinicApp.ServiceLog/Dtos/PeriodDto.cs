@@ -11,11 +11,4 @@ public partial class PeriodDto
 
     public DateTime EndDate { get; set; }
 
-    public bool Active { get; set; }
-
-    public string PayPeriod { get; set; } = null!;
-
-    public DateTime DocumentDeliveryDate { get; set; }
-
-    public DateTime PaymentDate { get; set; }
 }
