@@ -19,6 +19,6 @@ public interface IServiceLog
     public Task<object?> DeleteServiceLog(int id);
     public Task<PagedResponse<IEnumerable<ServiceLog?>>> GetPendingServiceLog(PaginationFilter filter, string route);
     public Task<ServiceLog?> UpdatePendingStatus(int id);
-    public Task<PagedResponse<IEnumerable<ServiceLog?>>> GetServiceLogsByName(PaginationFilter filter, string name, string type, string route);
+    public Task<PagedResponse<IEnumerable<ServiceLogByNameDto?>>> GetServiceLogsByName(PaginationFilter filter, string name, string type, string route);
     public bool ServiceLogExists(int id);
 }

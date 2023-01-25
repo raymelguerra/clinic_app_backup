@@ -1,5 +1,6 @@
 ﻿using ClinicApp.Core.Data;
 using ClinicApp.Core.Models;
+using ClinicApp.MSServiceLog.Dtos;
 using ClinicApp.MSServiceLog.Interfaces;
 using ClinicApp.MSServiceLog.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -154,8 +155,8 @@ public class ServiceLogController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("GetServiceLogsByName/{name}/{type}"), Authorize(Roles = "Administrator,Operator")]
-    public async Task<ActionResult<IEnumerable<Client>>> GetServiceLogsByName([FromQuery] PaginationFilter filter, string name, string type)
+    [HttpGet("GetServiceLogsByName/{name}/{type}")]//, Authorize(Roles = "Administrator,Operator")]
+    public async Task<ActionResult<PagedResponse<IEnumerable<ServiceLogByNameDto>>>> GetServiceLogsByName([FromQuery] PaginationFilter filter, string name, string type)
     {
         var route = Request.Path.Value!;
         var pagedResponse = await _serviceLog.GetServiceLogsByName(filter, name, type, route);

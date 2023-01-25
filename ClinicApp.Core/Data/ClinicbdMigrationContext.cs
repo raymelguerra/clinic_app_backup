@@ -10,6 +10,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     public ClinicbdMigrationContext(DbContextOptions<ClinicbdMigrationContext> options)
         : base(options)
     {
+        Database.SetCommandTimeout(60);
     }
 
     public virtual DbSet<ProfitHistory>? ProfitHistory { get; set; }
