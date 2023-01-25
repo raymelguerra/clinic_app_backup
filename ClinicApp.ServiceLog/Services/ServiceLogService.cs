@@ -61,6 +61,9 @@ public class ServiceLogService : IServiceLog
             .Select(x => new AllServicesLogDto
             {
                 CreatedDate = x.CreatedDate,
+                ContractorId = x.Contractor.Id,
+                ClientId = x.ClientId,
+                PeriodId = x.PeriodId,
                 Client = new()
                 {
                     Id = x.ClientId,
@@ -331,6 +334,7 @@ public class ServiceLogService : IServiceLog
                     ClientId = x.ClientId,
                     ContractorId = x.Contractor.Id,
                     CreatedDate = x.CreatedDate,
+                    PeriodId = x.PeriodId,
                     Pending = x.Pending,
                     Period = new()
                     {
@@ -372,9 +376,9 @@ public class ServiceLogService : IServiceLog
                          Name = x.Contractor.Name
                      },
                      Biller = x.Biller,
-                     ClientId = x.ClientId,
                      ContractorId = x.Contractor.Id,
                      CreatedDate = x.CreatedDate,
+                     PeriodId = x.PeriodId,
                      Pending = x.Pending,
                      Period = new()
                      {

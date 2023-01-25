@@ -4,12 +4,6 @@ namespace ClinicApp.MSServiceLog.Dtos
 {
     public class ServiceLogByNameDto : ServiceLogsDto
     {
-        public int PeriodId { get; set; }
-
-        public int ContractorId { get; set; }
-
-        public int ClientId { get; set; }
-
         public DateTime? BilledDate { get; set; }
 
         public string? Biller { get; set; }
