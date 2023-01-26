@@ -54,7 +54,8 @@ export class ErrorHandlerService implements HttpInterceptor {
   }
   private handleBadRequest = (error: HttpErrorResponse): string => {
     console.log(error);
-    this.notificationService.errorMessagesNotification("Validation", error.message);
+    let showError = this.cannotDeleteClient(error.error)
+    this.notificationService.errorMessagesNotification("Validation", showError);
     if(this._router.url === '/authentication/login'){
       let message = '';
       const values = Object.values(error.error.errors);
@@ -66,6 +67,11 @@ export class ErrorHandlerService implements HttpInterceptor {
     else{
       return error.error ? error.error : error.message;
     }
+  }
+
+  private cannotDeleteClient(error:any){
+    const message = 'An error occurred while saving the entity changes. See the inner exception for details.'
+    return error == message ? 'Could not delete. This client have asocciated agreements' : error
   }
   private handleInternalServerErrorRequest = (error: HttpErrorResponse): string => {
     console.log(error);
