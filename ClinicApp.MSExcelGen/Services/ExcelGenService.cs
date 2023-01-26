@@ -22,6 +22,7 @@ namespace ClinicApp.MSExcelGen.Services
         {
             var agreementQry = await (from ag in _context.Agreements
                                       where ag.Payroll.ContractorId == ContractorId && ag.CompanyId == CompanyId
+                                      //orderby ag.ClientId, ag.Payroll.ContractorTypeId
                                       select new AgreementDto
                                       {
                                           Id = ag.Id,
@@ -207,7 +208,7 @@ namespace ClinicApp.MSExcelGen.Services
         public async Task<List<ExtendedContractor>> GetExContractorsAsync(string companyCode)
         {
             var contractorsQry = await (from ag in _context.Agreements
-                                        where ag.Payroll.ContractorTypeId == 1 && (companyCode == "" | ag.Company.Acronym == companyCode)
+                                        where ag.Payroll.ContractorTypeId == 1 && (companyCode == "" || ag.Company.Acronym == companyCode)
                                         select new ExtendedContractor {
                                             contractorId = ag.Payroll.ContractorId,
                                             companyId = ag.CompanyId
