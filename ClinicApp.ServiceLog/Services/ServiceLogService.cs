@@ -60,20 +60,21 @@ public class ServiceLogService : IServiceLog
         var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
             .Select(x => new AllServicesLogDto
             {
-                CreatedDate = x.CreatedDate,
-                ContractorId = x.Contractor.Id,
-                ClientId = x.ClientId,
-                PeriodId = x.PeriodId,
-                Client = new()
+                Client = new ClientDto
                 {
-                    Id = x.ClientId,
+                    Id = x.Client.Id,
                     Name = x.Client.Name
                 },
-                Contractor = new()
+                Id = x.Id,
+                Contractor = new ContractorDto
                 {
-                    Id = x.ContractorId,
+                    Id = x.Contractor.Id,
                     Name = x.Contractor.Name
                 },
+                ClientId = x.ClientId,
+                ContractorId = x.Contractor.Id,
+                CreatedDate = x.CreatedDate,
+                PeriodId = x.PeriodId,
                 Period = new()
                 {
                     EndDate = x.Period.EndDate,
