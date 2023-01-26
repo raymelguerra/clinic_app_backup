@@ -3,6 +3,7 @@ using ClinicApp.Core.DTO;
 using ClinicApp.Core.Models;
 using ClinicApp.MSBilling.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ClinicApp.MSBilling.Dtos;
 
 namespace ClinicApp.MSBilling.Services;
 
@@ -48,26 +49,26 @@ public class BillingService : IBilling
         _context.ChangeTracker.LazyLoadingEnabled = false;
         //try
         //{
-            var sufixList = _config.GetValue<string>("ExtraProceduresList") + ";";
+        var sufixList = _config.GetValue<string>("ExtraProceduresList") + ";";
 
-            var qFullData = (from ag in _context.Agreements
-                          join co in _context.Companies on new { ag.CompanyId, CompanyCode } equals new { CompanyId = co.Id, CompanyCode = co.Acronym }
-                          join pr in _context.Payrolls on ag.PayrollId equals pr.Id
-                          join ctt in _context.ContractorTypes on pr.ContractorTypeId equals ctt.Id
-                          join ct in _context.Contractors on pr.ContractorId equals ct.Id
-                          join cl in _context.Clients on ag.ClientId equals cl.Id
-                          join pa in _context.PatientAccounts on ag.ClientId equals pa.ClientId
-                          join sl in _context.ServiceLogs on new { ag.ClientId, pr.ContractorId, PeriodId } equals new { sl.ClientId, sl.ContractorId, sl.PeriodId }
-                          join ud in _context.UnitDetails on sl.Id equals ud.ServiceLogId
-                          join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
-                          where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
-                          && (((sufixList.Contains(sp.Name.Substring(3) + ";") ? pa.Auxiliar : pa.LicenseNumber) ?? "DOES NOT APPLY") != "DOES NOT APPLY")
-                          select new TvFullData { clientId = cl.Id, clientName = cl.Name, contractorId = ct.Id, contractorName = ct.Name, contractorTypeName = ctt.Name, patientAccountAuxiliar = pa.Auxiliar, patientAccountLicenseNumber = pa.LicenseNumber, serviceLogId = sl.Id, serviceLogCreatedDate = sl.CreatedDate, serviceLogBilledDate = sl.BilledDate }) //, unitDetail = ud, subProcedure = sp })
-                                      .Distinct()
-                                      .OrderBy(it => it.clientName.Trim())
-                                      .ThenBy(it => it.clientId)
-                                      .ThenBy(it => it.patientAccountAuxiliar != null ? it.patientAccountAuxiliar : it.patientAccountLicenseNumber)
-                                      .ThenBy(it => it.contractorName);
+        var qFullData = (from ag in _context.Agreements
+                         join co in _context.Companies on new { ag.CompanyId, CompanyCode } equals new { CompanyId = co.Id, CompanyCode = co.Acronym }
+                         join pr in _context.Payrolls on ag.PayrollId equals pr.Id
+                         join ctt in _context.ContractorTypes on pr.ContractorTypeId equals ctt.Id
+                         join ct in _context.Contractors on pr.ContractorId equals ct.Id
+                         join cl in _context.Clients on ag.ClientId equals cl.Id
+                         join pa in _context.PatientAccounts on ag.ClientId equals pa.ClientId
+                         join sl in _context.ServiceLogs on new { ag.ClientId, pr.ContractorId, PeriodId } equals new { sl.ClientId, sl.ContractorId, sl.PeriodId }
+                         join ud in _context.UnitDetails on sl.Id equals ud.ServiceLogId
+                         join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
+                         where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
+                         && (((sufixList.Contains(sp.Name.Substring(3) + ";") ? pa.Auxiliar : pa.LicenseNumber) ?? "DOES NOT APPLY") != "DOES NOT APPLY")
+                         select new TvFullData { clientId = cl.Id, clientName = cl.Name, contractorId = ct.Id, contractorName = ct.Name, contractorTypeName = ctt.Name, patientAccountAuxiliar = pa.Auxiliar, patientAccountLicenseNumber = pa.LicenseNumber, serviceLogId = sl.Id, serviceLogCreatedDate = sl.CreatedDate, serviceLogBilledDate = sl.BilledDate }) //, unitDetail = ud, subProcedure = sp })
+                                  .Distinct()
+                                  .OrderBy(it => it.clientName.Trim())
+                                  .ThenBy(it => it.clientId)
+                                  .ThenBy(it => it.patientAccountAuxiliar != null ? it.patientAccountAuxiliar : it.patientAccountLicenseNumber)
+                                  .ThenBy(it => it.contractorName);
         return await qFullData.ToListAsync();
         //}
         //finally { _context.ChangeTracker.LazyLoadingEnabled = true; }
@@ -95,7 +96,7 @@ public class BillingService : IBilling
         finally { _context.ChangeTracker.LazyLoadingEnabled = true; }
     }
 
-    public async Task<List<ExtendedUnitDetail>> GetExUnitDetailsAsync(int periodID, int contractorID, int clientID, string pAccount, string sufixList)
+    public async Task<List<UnitDetailDto>> GetExUnitDetailsAsync(int periodID, int contractorID, int clientID, string pAccount, string sufixList)
     {
         _context.ChangeTracker.LazyLoadingEnabled = false;
         try
@@ -114,34 +115,87 @@ public class BillingService : IBilling
                                         && sl.PeriodId == periodID
                                         && sl.Id == ud.ServiceLogId
                                      select 1).Any()
-                              orderby new { ud.DateOfService, ud.SubProcedureId }
-                              select new ExtendedUnitDetail() { unitDetail = ud, serviceLog = slo, subProcedure = sp, placeOfService = ps, patientAccount = pa };
+                              orderby ud.DateOfService, ud.SubProcedureId
+                              select new UnitDetailDto()
+                              {
+                                  Id = ud.Id,
+                                  ServiceLogId = ud.ServiceLogId,
+                                  SubProcedureId = ud.SubProcedureId,
+                                  PlaceOfServiceId = ud.PlaceOfServiceId,
+                                  ServiceLog = new ServiceLogDto()
+                                  {
+                                      Id = slo.Id,
+                                      ClientId = slo.ClientId,
+                                      ContractorId = slo.ContractorId,
+                                      PeriodId = slo.PeriodId,
+                                      BilledDate = slo.CreatedDate,
+                                      CreatedDate = slo.CreatedDate,
+                                      Pending = slo.Pending
+                                  },
+                                  SubProcedure = new SubProcedureDto()
+                                  {
+                                      Id = sp.Id,
+                                      Name = sp.Name,
+                                      ProcedureId = sp.ProcedureId,
+                                      Rate = sp.Rate
+                                  },
+                                  PlaceOfService = new PlaceOfServiceDto()
+                                  {
+                                      Id = ps.Id,
+                                      Name = ps.Name,
+                                      Value = ps.Value
+                                  }
+                              };
 
             return await infoUnitDet.ToListAsync();
         }
         finally { _context.ChangeTracker.LazyLoadingEnabled = true; }
     }
 
-    public async Task<List<ExtendedUnitDetail>> GetExUnitDetailsAsync(int serviceLogId, string pAccount, string sufixList)
+    public async Task<List<UnitDetailDto>> GetExUnitDetailsAsync(int serviceLogId, string pAccount, string sufixList)
     {
-        _context.ChangeTracker.LazyLoadingEnabled = false;
-        try
-        {
-            var infoUnitDet = from ud in _context.UnitDetails
-                              join slo in _context.ServiceLogs on ud.ServiceLogId equals slo.Id
-                              join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
-                              join ps in _context.PlaceOfServices on ud.PlaceOfServiceId equals ps.Id
-                              join pa in _context.PatientAccounts on slo.ClientId equals pa.ClientId
-                              where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
-                                 && (pAccount == pa.Auxiliar ? sufixList.Contains(sp.Name.Substring(3) + ";") : false
-                                  || pAccount == pa.LicenseNumber ? !sufixList.Contains(sp.Name.Substring(3) + ";") : false)
-                                 && slo.Id == serviceLogId
-                              orderby ud.DateOfService
-                              select new ExtendedUnitDetail() { unitDetail = ud, serviceLog = slo, subProcedure = sp, placeOfService = ps, patientAccount = pa };
+        var infoUnitDet = from ud in _context.UnitDetails
+                          join slo in _context.ServiceLogs on new { Id1 = ud.ServiceLogId, Id2 = ud.ServiceLogId } equals new { Id1 = slo.Id, Id2 = serviceLogId }
+                          join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
+                          join ps in _context.PlaceOfServices on ud.PlaceOfServiceId equals ps.Id
+                          join pa in _context.PatientAccounts on slo.ClientId equals pa.ClientId
+                          where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
+                             && (pAccount == pa.Auxiliar ? sufixList.Contains(sp.Name.Substring(3) + ";") : false
+                              || pAccount == pa.LicenseNumber ? !sufixList.Contains(sp.Name.Substring(3) + ";") : false)
+                          //&& slo.Id == serviceLogId
+                          orderby ud.DateOfService
+                          select new UnitDetailDto()
+                          {
+                              Id = ud.Id,
+                              ServiceLogId = ud.ServiceLogId,
+                              SubProcedureId = ud.SubProcedureId,
+                              PlaceOfServiceId = ud.PlaceOfServiceId,
+                              ServiceLog = new ServiceLogDto()
+                              {
+                                  Id = slo.Id,
+                                  ClientId = slo.ClientId,
+                                  ContractorId = slo.ContractorId,
+                                  PeriodId = slo.PeriodId,
+                                  BilledDate = slo.CreatedDate,
+                                  CreatedDate = slo.CreatedDate,
+                                  Pending = slo.Pending
+                              },
+                              SubProcedure = new SubProcedureDto()
+                              {
+                                  Id = sp.Id,
+                                  Name = sp.Name,
+                                  ProcedureId = sp.ProcedureId,
+                                  Rate = sp.Rate
+                              },
+                              PlaceOfService = new PlaceOfServiceDto()
+                              {
+                                  Id = ps.Id,
+                                  Name = ps.Name,
+                                  Value = ps.Value
+                              }
+                          };
+        return await infoUnitDet.ToListAsync();
 
-            return await infoUnitDet.ToListAsync();
-        }
-        finally { _context.ChangeTracker.LazyLoadingEnabled = true; }
     }
 
     public async Task<ExtendedServiceLog> GetExServiceLogAsync(string companyCode, int serviceLogId)
