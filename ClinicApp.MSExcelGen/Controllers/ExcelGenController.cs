@@ -1,5 +1,6 @@
 ﻿using ClinicApp.Core.DTO;
 using ClinicApp.Core.Models;
+using ClinicApp.MSExcelGen.Dtos;
 using ClinicApp.MSExcelGen.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace ClinicApp.MSExcelGen.Controllers
         }
 
         [HttpGet("GetCompanies")]
-        public async Task<ActionResult<IEnumerable<Company>>> GetCompanies() {
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies() {
             try
             {
                 return await _excelGen.GetCompanies();
@@ -43,7 +44,7 @@ namespace ClinicApp.MSExcelGen.Controllers
         }
         
         [HttpGet("GetPeriodAsync/{periodId}")]
-        public async Task<ActionResult<Period>> GetPeriodAsync(int periodId = -1)
+        public async Task<ActionResult<ExtendedPeriod>> GetPeriodAsync(int periodId = -1)
         {
             try
             {
@@ -69,7 +70,7 @@ namespace ClinicApp.MSExcelGen.Controllers
         }
         
         [HttpGet("GetAgreementsAsync/{contractorId}/{companyId}")]
-        public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreementsAsync(int contractorId, int companyId)
+        public async Task<ActionResult<IEnumerable<AgreementDto>>> GetAgreementsAsync(int contractorId, int companyId)
         {
             try
             {
