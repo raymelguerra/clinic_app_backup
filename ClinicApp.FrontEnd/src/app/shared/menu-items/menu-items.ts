@@ -31,46 +31,46 @@ export interface Menu {
 }
 
 const MENUITEMS = [
-  {
-    label: 'Navigation',
-    main: [
-      {
-        state: 'dashboard',
-        short_label: 'D',
-        name: 'Dashboard',
-        type: 'link',
-        icon: 'ti-dashboard'
-      },
-      /*{
-        state: 'basic',
-        short_label: 'B',
-        name: 'Basic Components',
-        type: 'sub',
-        icon: 'ti-layout-grid2-alt',
-        children: [
-          {
-            state: 'button',
-            name: 'Button'
-          },
-          {
-            state: 'typography',
-            name: 'Typography'
-          },
-          {
-            state: 'accordion',
-            name: 'Accordion'
-          }
-        ]
-      },
-      {
-        state: 'notifications',
-        short_label: 'n',
-        name: 'Notifications',
-        type: 'link',
-        icon: 'ti-crown'
-      },*/
-    ],
-  },
+  // {
+  //   label: 'Navigation',
+  //   main: [
+  //     {
+  //       state: 'dashboard',
+  //       short_label: 'D',
+  //       name: 'Dashboard',
+  //       type: 'link',
+  //       icon: 'ti-dashboard'
+  //     },
+  //     /*{
+  //       state: 'basic',
+  //       short_label: 'B',
+  //       name: 'Basic Components',
+  //       type: 'sub',
+  //       icon: 'ti-layout-grid2-alt',
+  //       children: [
+  //         {
+  //           state: 'button',
+  //           name: 'Button'
+  //         },
+  //         {
+  //           state: 'typography',
+  //           name: 'Typography'
+  //         },
+  //         {
+  //           state: 'accordion',
+  //           name: 'Accordion'
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       state: 'notifications',
+  //       short_label: 'n',
+  //       name: 'Notifications',
+  //       type: 'link',
+  //       icon: 'ti-crown'
+  //     },*/
+  //   ],
+  // },
   {
     label: 'Generals',
     main: [
@@ -91,19 +91,19 @@ const MENUITEMS = [
           }
         ]
       },
-      {
-        state: 'building_resources',
-        short_label: 'B',
-        name: 'Building and Resources',
-        type: 'sub',
-        icon: 'ti-home',
-        children: [
-          {
-            state: 'company',
-            name: 'Company'
-          }
-        ]
-      },
+      // {
+      //   state: 'building_resources',
+      //   short_label: 'B',
+      //   name: 'Building and Resources',
+      //   type: 'sub',
+      //   icon: 'ti-home',
+      //   children: [
+      //     {
+      //       state: 'company',
+      //       name: 'Company'
+      //     }
+      //   ]
+      // },
       // {
       //   state: 'authentication',
       //   short_label: 'B',

@@ -13,7 +13,7 @@ declare const $: any;
 
 @Component({
   selector: 'app-dashboard-default',
-  templateUrl: './dashboard-default.component.html',
+  templateUrl: './dashboard-empty-default.component.html',
   styleUrls: [
     './dashboard-default.component.scss',
     '../../../../assets/icon/svg-animated/svg-weather.css'
