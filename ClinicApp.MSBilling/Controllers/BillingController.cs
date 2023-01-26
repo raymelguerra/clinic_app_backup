@@ -62,7 +62,7 @@ namespace ClinicApp.MSBilling.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetExUnitDetailsAux/{serviceLogId}/{paccount}/{sufixList}")]
+        [HttpGet("GetExUnitDetailsAux/{serviceLogId}/{pAccount}/{sufixList}")]
         public async Task<ActionResult<IEnumerable<ExtendedUnitDetail>>> GetExUnitDetailsAuxAsync(int serviceLogId, string pAccount, string sufixList)
         {
             {
