@@ -254,6 +254,8 @@ public class BillingService : IBilling
         if (servLog == null) return null;
 
         servLog.Pending = reason;
+        servLog.Biller = null;
+        servLog.BilledDate = null;
         _context.SaveChanges();
         return new object { };
     }

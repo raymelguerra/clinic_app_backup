@@ -100,7 +100,7 @@ namespace ClinicApp.MSBilling.Controllers
         [HttpPut("SetServiceLogPendingReason/{serviceLogId}")]
         public async Task<IActionResult> SetServiceLogPendingReason(int serviceLogId, [FromBody] Dictionary<string, string> reason)
         {
-            var result = await _billing.SetServiceLogBilled(serviceLogId, reason["reason"]);
+            var result = await _billing.SetServiceLogPendingReason(serviceLogId, reason["reason"]);
             if (result != null)
                 return NoContent();
             else
