@@ -235,13 +235,16 @@ public class BillingService : IBilling
 
     public async Task<object?> SetServiceLogBilled(int periodId, int contratorId, int clientId, string userId)
     {
-        var servLog = await _context.ServiceLogs.SingleOrDefaultAsync(x => (x.PeriodId == periodId && x.ContractorId == contratorId && x.ClientId == clientId));
+        var servLogs = await _context.ServiceLogs.Where(x => (x.PeriodId == periodId && x.ContractorId == contratorId && x.ClientId == clientId)).ToListAsync();
 
-        if (servLog == null) return null;
+        if (servLogs == null) return null;
 
-        servLog.BilledDate = DateTime.Now;
-        servLog.Biller = userId;
-        servLog.Pending = null;
+        foreach (var servLog in servLogs)
+        {
+            servLog.BilledDate = DateTime.Now;
+            servLog.Biller = userId;
+            servLog.Pending = null;
+        }
         _context.SaveChanges();
 
         return new object { };
