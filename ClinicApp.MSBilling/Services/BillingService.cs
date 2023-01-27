@@ -122,6 +122,9 @@ public class BillingService : IBilling
                                   ServiceLogId = ud.ServiceLogId,
                                   SubProcedureId = ud.SubProcedureId,
                                   PlaceOfServiceId = ud.PlaceOfServiceId,
+                                  Unit = ud.Unit,
+                                  DateOfService = ud.DateOfService,
+                                  Modifiers = ud.Modifiers,
                                   ServiceLog = new ServiceLogDto()
                                   {
                                       Id = slo.Id,
@@ -170,6 +173,9 @@ public class BillingService : IBilling
                               ServiceLogId = ud.ServiceLogId,
                               SubProcedureId = ud.SubProcedureId,
                               PlaceOfServiceId = ud.PlaceOfServiceId,
+                              Unit = ud.Unit,
+                              DateOfService = ud.DateOfService,
+                              Modifiers = ud.Modifiers,
                               ServiceLog = new ServiceLogDto()
                               {
                                   Id = slo.Id,
