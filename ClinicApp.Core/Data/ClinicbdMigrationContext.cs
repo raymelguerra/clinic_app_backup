@@ -49,7 +49,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
+        optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
     }
 
     // => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=clinicbd_migration;Username=postgres;Password=postgres");

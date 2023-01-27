@@ -37,7 +37,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.dashboard:
     image: dashboard:v1.2
     build:
@@ -49,7 +49,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.excelgen:
     image: excelgen:v1.2
     build:
@@ -61,7 +61,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.authorizationandusermanager:
     image: authorizationandusermanager:v1.2
     build:
@@ -73,7 +73,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.client:
     image: client:v1.2
     build:
@@ -85,7 +85,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.contractor:
     image: contractor:v1.2
     build:
@@ -97,7 +97,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.infrastructure:
     image: infrastructure:v1.2
     build:
@@ -109,7 +109,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.servicelog:
     image: servicelog:v1.2
     build:
@@ -121,4 +121,4 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
