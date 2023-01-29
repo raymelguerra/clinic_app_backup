@@ -7,8 +7,8 @@ namespace ClinicApp.Infrastructure.Services
 {
     public class CompaniesService : ICompanies
     {
-        private readonly clinicbdContext _context;
-        public CompaniesService(clinicbdContext context)
+        private readonly ClinicbdMigrationContext _context;
+        public CompaniesService(ClinicbdMigrationContext context)
         {
             _context = context;
         }

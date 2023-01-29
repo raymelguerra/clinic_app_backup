@@ -1,89 +1,124 @@
 version: '3.4'
-
 services:
+  frontend:
+    image: frontend:v1.2
+    build: 
+      context: ./ClinicApp.FrontEnd
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 86:80
+    depends_on:
+      - clinicapp.backend.proxy 
+  clinicapp.backend.proxy:
+    image: nginx:latest
+    ports:
+      - 88:80
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+    - clinicapp.authorizationandusermanager
+    - clinicapp.infrastructure
+    - clinicapp.client
+    - clinicapp.servicelog
+    - clinicapp.contractor
+    - clinicapp.billing
+    - clinicapp.dashboard
+    - clinicapp.excelgen
+  clinicapp.billing:
+    image: billing:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.MSBilling/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.dashboard:
+    image: dashboard:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.MSDashboard/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  clinicapp.excelgen:
+    image: excelgen:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.MSExcelGen/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.authorizationandusermanager:
     image: authorizationandusermanager:v1.2
     build:
       context: .
       dockerfile: ClinicApp.AuthorizationAndUserManager/Dockerfile
     restart: always
-    ports:
-       - 81:80
-       - 1443:443
+    expose:
+       - 80
+       - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__clinicbdContext="Data Source=192.168.42.181;Initial Catalog=clinicbdRef;Persist Security Info=True;User ID=sa;Password=Temporal00;Encrypt=false"
-    volumes:
-      - ./conf_summary/appsettings.json:/app/appsettings.json
-  clinicapp.biller:
-    image: biller:v1.2
-    build:
-      context: .
-      dockerfile: ClinicApp.Biller/Dockerfile
-    restart: always
-    ports:
-       - 82:80
-       - 1444:443
-    environment: 
-       - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__clinicbdContext=data source=192.168.42.181;initial catalog=clinicbdRef;persist security info=True;user id=sa;password=Temporal00;MultipleActiveResultSets=True;App=EntityFramework;
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.client:
     image: client:v1.2
     build:
       context: .
       dockerfile: ClinicApp.Client/Dockerfile
     restart: always
-    ports:
-       - 83:80
-       - 1445:443
+    expose:
+       - 80
+       - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__clinicbdContext=data source=192.168.42.181;initial catalog=clinicbdRef;persist security info=True;user id=sa;password=Temporal00;MultipleActiveResultSets=True;App=EntityFramework;
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.contractor:
     image: contractor:v1.2
     build:
       context: .
       dockerfile: ClinicApp.Contractor/Dockerfile
     restart: always
-    ports:
-       - 84:80
-       - 1446:443
+    expose:
+       - 80
+       - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       #- ConnectionStrings__clinicbdContext=data source=192.168.42.181;initial catalog=clinicbdRef;persist security info=True;user id=sa;password=Temporal00;MultipleActiveResultSets=True;App=EntityFramework;
-    volumes:
-      - ./conf_summary/appsettings.json:/app/appsettings.json
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.infrastructure:
     image: infrastructure:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSInfrastructure/Dockerfile
     restart: always
-    ports:
-       - 85:80
-       - 1447:443
+    expose:
+       - 80
+       - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__clinicbdContext=data source=192.168.42.181;initial catalog=clinicbdRef;persist security info=True;user id=sa;password=Temporal00;MultipleActiveResultSets=True;App=EntityFramework;
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   clinicapp.servicelog:
     image: servicelog:v1.2
     build:
       context: .
       dockerfile: ClinicApp.ServiceLog/Dockerfile
     restart: always
-    ports:
-       - 86:80
-       - 1448:443
+    expose:
+       - 80
+       - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__clinicbdContext=data source=192.168.42.181;initial catalog=clinicbdRef;persist security info=True;user id=sa;password=Temporal00;MultipleActiveResultSets=True;App=EntityFramework;
-  nginx_proxy:
-    image: nginx:latest
-    ports:
-      - 88:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-
-# networks:
-#     clinicapp.network:
-#         driver:
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"

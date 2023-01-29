@@ -7,8 +7,8 @@ namespace ClinicApp.Infrastructure.Services;
 
 public class PlaceOfServiceService : IPlaceOfService
 {
-    private readonly clinicbdContext _context;
-    public PlaceOfServiceService(clinicbdContext context)
+    private readonly ClinicbdMigrationContext _context;
+    public PlaceOfServiceService(ClinicbdMigrationContext context)
     {
         _context = context;
     }

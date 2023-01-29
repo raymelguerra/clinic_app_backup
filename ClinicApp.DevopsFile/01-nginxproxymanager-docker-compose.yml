@@ -1,0 +1,23 @@
+version: '3.4'
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginxproxymanager_conf/config.json:/app/config/production.json
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+  db:
+    image: 'jc21/mariadb-aria:10.4.15'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'aaf901e9a'
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'clinicapp'
+      MYSQL_PASSWORD: 'fe66d3a49600'
+    volumes:
+      - ./data/mysql:/var/lib/mysql

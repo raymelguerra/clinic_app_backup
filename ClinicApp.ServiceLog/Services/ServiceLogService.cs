@@ -5,14 +5,17 @@ using ClinicApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClinicApp.MSServiceLog.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using ClinicApp.MSServiceLog.Dtos;
 
 namespace ClinicApp.MSServiceLog.Services;
 
 public class ServiceLogService : IServiceLog
 {
-    private readonly clinicbdContext _context;
+    private readonly ClinicbdMigrationContext _context;
     private readonly IUriService _uriService;
-    public ServiceLogService(clinicbdContext context, IUriService uriService)
+    public ServiceLogService(ClinicbdMigrationContext context, IUriService uriService)
     {
         _context = context;
         _uriService = uriService;
@@ -26,26 +29,69 @@ public class ServiceLogService : IServiceLog
             return null;
         }
 
+        var unitDetails = await _context.UnitDetails.Where(x => x.ServiceLogId == serviceLog.Id).ToListAsync();
+        _context.UnitDetails.RemoveRange(unitDetails);
+        await _context.SaveChangesAsync();
+
         _context.ServiceLogs.Remove(serviceLog);
         await _context.SaveChangesAsync();
 
         return new ServiceLog { };
     }
 
-    public async Task<PagedResponse<IEnumerable<ServiceLog>>> GetServiceLog([FromQuery] PaginationFilter filter, string route)
+    public async Task<PagedResponse<IEnumerable<ServiceLog?>>> GetPendingServiceLog(PaginationFilter filter, string route)
     {
         var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
         var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
-            .AsNoTracking()
-            .OrderBy(x => x.Period.StartDate)
+            .Where(pen => pen.Pending != null)
+            .OrderByDescending(x => x.Period.PayPeriod)
+            .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+            .Take(validFilter.PageSize)
+            .ToListAsync();
+        var totalRecords = await _context.ServiceLogs.Where(pen => pen.Pending != null).CountAsync();
+
+        var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLog>(list, validFilter, totalRecords, _uriService, route);
+        return pagedReponse!;
+    }
+
+    public async Task<PagedResponse<IEnumerable<AllServicesLogDto>>> GetServiceLog(PaginationFilter filter, string route)
+    {
+        var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+        var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
+            .Select(x => new AllServicesLogDto
+            {
+                Client = new ClientDto
+                {
+                    Id = x.Client.Id,
+                    Name = x.Client.Name
+                },
+                Id = x.Id,
+                Contractor = new ContractorDto
+                {
+                    Id = x.Contractor.Id,
+                    Name = x.Contractor.Name
+                },
+                ClientId = x.ClientId,
+                ContractorId = x.Contractor.Id,
+                CreatedDate = x.CreatedDate,
+                PeriodId = x.PeriodId,
+                Period = new()
+                {
+                    EndDate = x.Period.EndDate,
+                    Id = x.Period.Id,
+                    StartDate = x.Period.StartDate
+                }
+            })
+            .OrderByDescending(x => x.CreatedDate)
             .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
             .Take(validFilter.PageSize)
             .ToListAsync();
         var totalRecords = await _context.ServiceLogs.CountAsync();
 
-        var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLog>(list, validFilter, totalRecords, _uriService, route);
+        var pagedReponse = PaginationHelper.CreatePagedReponse<AllServicesLogDto>(list, validFilter, totalRecords, _uriService, route);
         return pagedReponse;
     }
+
 
     public async Task<ServiceLog?> GetServiceLog(int id)
     {
@@ -61,15 +107,15 @@ public class ServiceLogService : IServiceLog
             Id = x.Id,
             Period = x.Period,
             PeriodId = x.PeriodId,
-            UnitDetails = _context.UnitDetails.Include("SubProcedure").Include("PlaceOfService").Where(ud => ud.ServiceLogId == x.Id).ToList(),
             Contractor = x.Contractor,
             ContractorId = x.ContractorId,
             Client = x.Client,
-            ClientId = x.ClientId
+            ClientId = x.ClientId,
+            UnitDetails = _context.UnitDetails.Include("SubProcedure").Include("PlaceOfService").Where(ud => ud.ServiceLogId == x.Id).ToList(),
         }).Where(x => x.Id == serviceLog.Id).FirstOrDefaultAsync();
     }
 
-    public async Task<PagedResponse<IEnumerable<ServiceLog>>> GetServiceLogByName([FromQuery] PaginationFilter filter, string name, string route, string type)
+    public async Task<PagedResponse<IEnumerable<ServiceLogByNameDto>>> GetServiceLogByName(PaginationFilter filter, string name, string route, string type)
     {
         var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
         if (type.Equals("Client"))
@@ -78,45 +124,99 @@ public class ServiceLogService : IServiceLog
                 .Include("Client")
                 .Include("Contractor")
                 .Include("Period")
+                .Select(x => new ServiceLogByNameDto
+                {
+                    BilledDate = x.BilledDate,
+                    Client = new ClientDto
+                    {
+                        Id = x.Client.Id,
+                        Name = x.Client.Name
+                    },
+                    Id = x.Id,
+                    Contractor = new ContractorDto
+                    {
+                        Id = x.Contractor.Id,
+                        Name = x.Contractor.Name
+                    },
+                    Biller = x.Biller,
+                    ClientId = x.ClientId,
+                    ContractorId = x.Contractor.Id,
+                    CreatedDate = x.CreatedDate,
+                    Pending = x.Pending,
+                    Period = new()
+                    {
+                        EndDate = x.Period.EndDate,
+                        Id = x.Period.Id,
+                        StartDate = x.Period.StartDate
+                    }
+                })
                 .Where(x => (x.Client.Name!.ToUpper().Contains(name.ToUpper())))
-                .OrderBy(x => x.Period.StartDate)
+                .OrderByDescending(x => x.CreatedDate)
                 .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                 .Take(validFilter.PageSize)
                 .ToListAsync();
 
-            var totalRecords = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
+            var totalRecords = await _context.ServiceLogs.Include("Client")
                 .Where(x => (x.Client.Name!.ToUpper().Contains(name.ToUpper()))).CountAsync();
 
-            var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLog>(list, validFilter, totalRecords, _uriService, route);
+            var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLogByNameDto>(list, validFilter, totalRecords, _uriService, route);
             return pagedReponse;
         }
         else
         {
             var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
                     .Where(x => (x.Contractor.Name!.ToUpper().Contains(name.ToUpper())))
-                    .OrderBy(x => x.Period.StartDate)
+                    .Select(x => new ServiceLogByNameDto
+                    {
+                        BilledDate = x.BilledDate,
+                        Client = new ClientDto
+                        {
+                            Id = x.Client.Id,
+                            Name = x.Client.Name
+                        },
+                        Id = x.Id,
+                        Contractor = new ContractorDto
+                        {
+                            Id = x.Contractor.Id,
+                            Name = x.Contractor.Name
+                        },
+                        Biller = x.Biller,
+                        ClientId = x.ClientId,
+                        ContractorId = x.Contractor.Id,
+                        CreatedDate = x.CreatedDate,
+                        Pending = x.Pending,
+                        Period = new()
+                        {
+                            EndDate = x.Period.EndDate,
+                            Id = x.Period.Id,
+                            StartDate = x.Period.StartDate
+                        }
+                    })
+                    .OrderByDescending(x => x.CreatedDate)
                     .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                     .Take(validFilter.PageSize)
-                    .ToListAsync();
+                    .ToListAsync<ServiceLogByNameDto>();
 
-            var totalRecords = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
+            var totalRecords = await _context.ServiceLogs.Include("Contractor")
                 .Where(x => x.Contractor.Name!.ToUpper().Contains(name.ToUpper())).CountAsync();
 
-            var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLog>(list, validFilter, totalRecords, _uriService, route);
+            var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLogByNameDto>(list, validFilter, totalRecords, _uriService, route);
             return pagedReponse;
         }
     }
 
     public async Task<IEnumerable<ServiceLogWithoutDetailsDto>> GetServiceLogWithoutDetails()
     {
-        var list = await(from sl in _context.ServiceLogs
-                         select new ServiceLogWithoutDetailsDto
-                         {
-                             ClientName = sl.Client.Name,
-                             ContractorName = sl.Contractor.Name,
-                             StartDate = sl.Period.StartDate,
-                             EndDate = sl.Period.EndDate
-                         }).ToListAsync();
+        var list = await (from sl in _context.ServiceLogs
+                          select new ServiceLogWithoutDetailsDto
+                          {
+                              ClientName = sl.Client.Name,
+                              ContractorName = sl.Contractor.Name,
+                              StartDate = sl.Period.StartDate,
+                              EndDate = sl.Period.EndDate,
+                              OrderBY = sl.CreatedDate
+                          }
+                               ).OrderByDescending(x => x.OrderBY).ToListAsync();
         return list;
     }
 
@@ -126,7 +226,7 @@ public class ServiceLogService : IServiceLog
 
         await _context.SaveChangesAsync();
 
-        return await _context.ServiceLogs.Include("Contractors").Include("Clients").Include("Periods").Where(x => x.Id == serviceLog.Id).FirstOrDefaultAsync();
+        return await _context.ServiceLogs.Include("Contractor").Include("Client").Include("Period").Where(x => x.Id == serviceLog.Id).FirstOrDefaultAsync();
     }
 
     public async Task<object?> PutServiceLog(int id, ServiceLog serviceLog, bool partial = true)
@@ -134,11 +234,11 @@ public class ServiceLogService : IServiceLog
 
         var oldServiceLog = await _context.ServiceLogs.Include("UnitDetails").Where(x => x.Id == id).FirstOrDefaultAsync();
         // Add olds
-        foreach (var olds in oldServiceLog!.UnitDetails)
+        foreach (var olds in oldServiceLog!.UnitDetails.ToList())
         {
             var found = false;
 
-            foreach (var news in serviceLog.UnitDetails)
+            foreach (var news in serviceLog.UnitDetails.ToList())
             {
                 if (olds.Id == news.Id)
                 {
@@ -187,11 +287,118 @@ public class ServiceLogService : IServiceLog
             }
         }
 
-        return new ServiceLog {};
+        return new ServiceLog { };
     }
 
     public bool ServiceLogExists(int id)
     {
         return _context.ServiceLogs.Any(e => e.Id == id);
+    }
+
+    public async Task<ServiceLog?> UpdatePendingStatus(int id)
+    {
+        var sl = await _context.ServiceLogs.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+        if (sl == null)
+            return null;
+
+        sl.Pending = null;
+
+        await _context.SaveChangesAsync();
+
+        return new ServiceLog { };
+    }
+    public async Task<PagedResponse<IEnumerable<ServiceLogByNameDto?>>> GetServiceLogsByName(PaginationFilter filter, string name, string type, string route)
+    {
+        var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+        if (type.Equals("Client"))
+        {
+            var list = await _context.ServiceLogs
+                .Include("Client")
+                .Include("Contractor")
+                .Include("Period")
+                .Select(x => new ServiceLogByNameDto
+                {
+                    BilledDate = x.BilledDate,
+                    Client = new ClientDto
+                    {
+                        Id = x.Client.Id,
+                        Name = x.Client.Name
+                    },
+                    Id = x.Id,
+                    Contractor = new ContractorDto
+                    {
+                        Id = x.Contractor.Id,
+                        Name = x.Contractor.Name
+                    },
+                    Biller = x.Biller,
+                    ClientId = x.ClientId,
+                    ContractorId = x.Contractor.Id,
+                    CreatedDate = x.CreatedDate,
+                    PeriodId = x.PeriodId,
+                    Pending = x.Pending,
+                    Period = new()
+                    {
+                        EndDate = x.Period.EndDate,
+                        Id = x.Period.Id,
+                        StartDate = x.Period.StartDate
+                    }
+                })
+                .Where(x => (x.Client.Name!.ToUpper().Contains(name.ToUpper())))
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
+
+            var totalRecords = await _context.ServiceLogs.Include("Client")
+                .Where(x => (x.Client.Name!.ToUpper().Contains(name.ToUpper()))).CountAsync();
+
+            var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLogByNameDto>(list, validFilter, totalRecords, _uriService, route);
+            return pagedReponse!;
+        }
+        else
+        {
+            var list = await _context.ServiceLogs
+                 .Include("Client")
+                 .Include("Contractor")
+                 .Include("Period")
+                 .Select(x => new ServiceLogByNameDto
+                 {
+                     BilledDate = x.BilledDate,
+                     Client = new()
+                     {
+                         Id = x.Client.Id,
+                         Name = x.Client.Name
+                     },
+                     Id = x.Id,
+                     Contractor = new()
+                     {
+                         Id = x.Contractor.Id,
+                         Name = x.Contractor.Name
+                     },
+                     Biller = x.Biller,
+                     ContractorId = x.Contractor.Id,
+                     CreatedDate = x.CreatedDate,
+                     PeriodId = x.PeriodId,
+                     Pending = x.Pending,
+                     Period = new()
+                     {
+                         EndDate = x.Period.EndDate,
+                         Id = x.Period.Id,
+                         StartDate = x.Period.StartDate
+                     }
+                 })
+                 .Where(x => (x.Contractor.Name!.ToUpper().Contains(name.ToUpper())))
+                 .OrderByDescending(x => x.CreatedDate)
+                 .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                 .Take(validFilter.PageSize)
+                 .ToListAsync();
+
+            var totalRecords = await _context.ServiceLogs.Include("Contractor")
+                .Where(x => x.Contractor.Name!.ToUpper().Contains(name.ToUpper())).CountAsync();
+
+            var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLogByNameDto>(list, validFilter, totalRecords, _uriService, route);
+            return pagedReponse!;
+        }
     }
 }

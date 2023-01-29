@@ -9,9 +9,9 @@ namespace ClinicApp.MSContractor.Services;
 
 public class ContractorService : IContractor
 {
-    private readonly clinicbdContext _context;
+    private readonly ClinicbdMigrationContext _context;
     private readonly IUriService _uriService;
-    public ContractorService(clinicbdContext context, IUriService uriService)
+    public ContractorService(ClinicbdMigrationContext context, IUriService uriService)
     {
         _context = context;
         _uriService = uriService;
@@ -74,8 +74,13 @@ public class ContractorService : IContractor
             Id = x.Id,
             Name = x.Name,
             Extra = x.Extra,
-            Payrolls = x.Payrolls.Select(y => new Payroll { ContractorType = y.ContractorType, Procedure =  y.Procedure, Company =  y.Company }).ToList(),
             RenderingProvider = x.RenderingProvider,
+            Payrolls = x.Payrolls.Select(y => new Payroll
+            {
+                ContractorType = y.ContractorType,
+                Procedure = y.Procedure,
+                Company = y.Company
+            }).ToList()
         }).FirstOrDefaultAsync();
 
         if (contractor == null)
@@ -97,8 +102,14 @@ public class ContractorService : IContractor
             Id = x.Id,
             Name = x.Name,
             Extra = x.Extra,
-            Payrolls = x.Payrolls.Select(y => new Payroll { ContractorType = y.ContractorType, Procedure = y.Procedure, Company = y.Company }).ToList(),
-            RenderingProvider = x.RenderingProvider
+            RenderingProvider = x.RenderingProvider,
+            Payrolls = x.Payrolls.Select(y => new Payroll
+            {
+                ContractorType = y.ContractorType,
+                Procedure = y.Procedure,
+                Company = y.Company
+            })
+            .ToList(),
         }).FirstOrDefaultAsync();
 
         return list;
@@ -120,10 +131,14 @@ public class ContractorService : IContractor
                 return null;
             }
 
-            contractorOld!.Payrolls.Clear();
-
-            foreach (var item in contractor.Payrolls)
+            foreach (var item in contractorOld!.Payrolls.ToList())
             {
+                contractorOld!.Payrolls.Remove(item);
+            }
+
+            foreach (var item in contractor.Payrolls.ToList())
+            {
+                item.ContractorId = contractor.Id;
                 contractorOld.Payrolls.Add(item);
             }
         }
@@ -148,12 +163,15 @@ public class ContractorService : IContractor
             }
         }
 
-        return new Contractor();
+        return new Contractor { };
     }
 
     public async Task<IEnumerable<Contractor>> GetContractorWithoutDetails()
     {
-        var list = await _context.Contractors.Select(c => new Contractor() { Id = c.Id, Name = c.Name }).OrderBy(o => o.Id).ToListAsync();
+        var list = await _context.Contractors
+            .Select(c => new Contractor() { Id = c.Id, Name = c.Name })
+            .OrderBy(o => o.Id)
+            .ToListAsync();
         return list;
     }
 
@@ -190,18 +208,18 @@ public class ContractorService : IContractor
 
     public async Task<IEnumerable<Contractor>> GetAnalystByCompany(int id)
     {
-        var contractor = await(from pr in _context.Payrolls
-                               where pr.CompanyId == id && pr.ContractorType.Name == "Analyst"
-                               select pr.Contractor).ToListAsync();
+        var contractor = await (from pr in _context.Payrolls
+                                where pr.CompanyId == id && pr.ContractorType.Name == "Analyst"
+                                select pr.Contractor).ToListAsync();
 
         return contractor;
     }
 
     public async Task<IEnumerable<Contractor>> GetContractorByCompany(int id)
     {
-        var contractor = await(from pr in _context.Payrolls
-                               where pr.CompanyId == id
-                               select pr.Contractor).ToListAsync();
+        var contractor = await (from pr in _context.Payrolls
+                                where pr.CompanyId == id
+                                select pr.Contractor).ToListAsync();
 
         return contractor;
     }

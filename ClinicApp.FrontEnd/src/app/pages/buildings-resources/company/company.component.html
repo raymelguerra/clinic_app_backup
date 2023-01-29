@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card [title]="'Company data'">
+            <form>
+                <div class="row">
+                    <div class="col-md-6 px-1">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" class="form-control" placeholder="Company name">
+                        </div>
+                    </div>
+                    <div class="col-md-6 px-1">
+                        <div class="form-group">
+                            <label>Acronym</label>
+                            <input type="text" class="form-control" placeholder="Company acronym">
+                        </div>
+                    </div>
+                    <div class="col-md-6 px-1">
+                    </div>
+                </div>
+            </form>
+            <div class="button-container">
+                <button class="btn btn-neutral btn-info btn-small text-right">Save</button>&nbsp;
+                <button class="btn btn-neutral btn-danger btn-small text-right">Cancel</button>
+            </div>
+        </app-card>
+    </div>
+</div>
+<!-- Hover table card start -->
+<div class="row">
+    <div class="col-md-12">
+        <app-card [title]="'List of companies'" [classHeader]="true" [blockClass]="'table-border-style'">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead class="thead-dark">
+                                <tr class="d-flex">
+                                    <th class="col-sm-1">#</th>
+                                    <th class="col-sm-7">Name</th>
+                                    <th class="col-sm-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="d-flex">
+                                    <th class="col-sm-1" scope="row">1</th>
+                                    <td class="col-sm-7">Mark</td>
+                                    <td class="col-sm-4">
+                                        <div>
+                                            <button class="btn btn-info btn-outline-info" data-toggle="tooltip" title="Edit"><i
+                                                    class="icofont icofont-exchange"></i></button>&nbsp;
+                                            <button class="btn btn-danger btn-outline-danger" data-toggle="tooltip" title="Delete"><i class="icofont icofont-not-allowed"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="d-flex">
+                                    <th class="col-sm-1" scope="row">2</th>
+                                    <td class="col-sm-7">Mark</td>
+                                    <td class="col-sm-4">
+                                        <div>
+                                            <button class="btn btn-info btn-outline-info" data-toggle="tooltip" title="Edit"><i
+                                                    class="icofont icofont-exchange"></i></button>&nbsp;
+                                            <button class="btn btn-danger btn-outline-danger" data-toggle="tooltip" title="Delete"><i class="icofont icofont-not-allowed"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </app-card>
+    </div>
+</div>
+<!-- Hover table card end -->

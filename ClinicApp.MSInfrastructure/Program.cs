@@ -3,18 +3,23 @@ using ClinicApp.Core.Interfaces;
 using ClinicApp.Core.Services;
 using ClinicApp.Infrastructure.Interfaces;
 using ClinicApp.Infrastructure.Services;
+using ClinicApp.MSInfrastructure.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); ;
 
 /** Custom configurations **/
 builder.Services.AddScoped<ICompanies, CompaniesService>();
@@ -24,6 +29,8 @@ builder.Services.AddScoped<IPlaceOfService, PlaceOfServiceService>();
 builder.Services.AddScoped<IProcedure, ProcedureService>();
 builder.Services.AddScoped<IReleaseInformation, ReleaseInformationService>();
 builder.Services.AddScoped<ISubProcedure, SubProcedureService>();
+builder.Services.AddScoped<IContractorType, ContractorTypeService>();
+builder.Services.AddScoped<IDbInitialize, DbInitializer>();
 
 builder.Services.AddScoped<JwtHandler>();
 //Add cors support
@@ -35,7 +42,9 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 }));
 
 // Database configuration
-builder.Services.AddDbContext<clinicbdContext>();
+Console.WriteLine("Connection String: " + builder.Configuration.GetConnectionString("ClinicbdMigrationContext"));
+builder.Services.AddDbContext<ClinicbdMigrationContext>(
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("ClinicbdMigrationContext")));
 
 // Authentication support
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -43,7 +52,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequiredLength = 5;
-}).AddEntityFrameworkStores<clinicbdContext>()
+}).AddEntityFrameworkStores<ClinicbdMigrationContext>()
 .AddDefaultTokenProviders();
 
 // Pagination
@@ -51,25 +60,27 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUriService>(o =>
 {
     var accessor = o.GetRequiredService<IHttpContextAccessor>();
-    var request = accessor.HttpContext.Request;
-    var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+    var request = accessor.HttpContext?.Request;
+    var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
     return new UriService(uri);
 });
 
+// Add Authentication
 builder.Services.AddAuthentication(auth =>
 {
     auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = builder.Configuration.GetSection("AuthSettings:Audience").ToString(),
-        ValidIssuer = builder.Configuration.GetSection("AuthSettings:Issuer").ToString(),
+        ValidAudience = configuration["AuthSettings:Audience"],
+        ValidIssuer = configuration["AuthSettings:Issuer"],
         RequireExpirationTime = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AuthSettings:Key").ToString())),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"])),
         ValidateIssuerSigningKey = true
     };
 });
@@ -109,14 +120,25 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialize>();
+    // use dbInitializer
+    dbInitializer.Initialize();
+}
+
+
+
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 app.UseHealthChecks("/health");
 app.UseCors("MyPolicy");

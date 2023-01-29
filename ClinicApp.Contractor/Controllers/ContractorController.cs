@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Contracts;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -86,7 +85,7 @@ public class ContractorController : ControllerBase
     }
 
     // GET: api/Contractors/GetAnalystByCompany
-    [HttpGet("GetAnalystByCompany")]
+    [HttpGet("GetAnalystByCompany/{id}")]
     public async Task<ActionResult<IEnumerable<Contractor>>> GetAnalystByCompany(int id) 
     {
         try
@@ -102,7 +101,7 @@ public class ContractorController : ControllerBase
     }
 
     // GET: api/Contractors/GetContractorByCompany
-    [HttpGet("GetContractorByCompany")]
+    [HttpGet("GetContractorByCompany/{id}")]
     public async Task<ActionResult<IEnumerable<Contractor>>> GetContractorByCompany(int id)
     {
         try
@@ -134,8 +133,8 @@ public class ContractorController : ControllerBase
     }
 
     // PUT api/<ContractorController>/5
-    [HttpPut("{id}"), Authorize(Roles = "Administrator, Biller")]
-    public async Task<IActionResult> Put(int id, Contractor contractor)
+    [HttpPut("{id}/{partial}"), Authorize(Roles = "Administrator, Operator")]
+    public async Task<IActionResult> Put(int id, Contractor contractor, bool partial = true)
     {
         if (id != contractor.Id)
         {
@@ -143,9 +142,11 @@ public class ContractorController : ControllerBase
         }
         try
         {
-            var created = await _contractor.PutContractor(id, contractor);
-            if (created == null)
-                return NotFound();
+            var created = await _contractor.PutContractor(id, contractor, partial);
+            if (created == null) {
+                return BadRequest("This contractor has been assigned to one or many clients.");
+            }
+            
             
             return NoContent();
         }
@@ -160,11 +161,20 @@ public class ContractorController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var contractor = await _contractor.DeleteContractor(id);
-        if(contractor == null)
-           return NotFound();
-        return NoContent();
-
+        try {
+            var contractor = await _contractor.DeleteContractor(id);
+            if (contractor == null)
+                return NotFound();
+            return NoContent();
+        }
+        catch (DbUpdateException)
+        {
+            return BadRequest("Delete the payrolls associated with this contract and check that it's not associated with any client");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
     }
 
     // GET: api/Payrolls

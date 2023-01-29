@@ -1,0 +1,200 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card [title]="'Contractor data'">
+            <form [formGroup]="contractorForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-md-4 px-1">
+                        <div class="form-group">
+                            <label for="name">Full name</label>
+                            <input formControlName="name" name="name" type="text" class="form-control"
+                                placeholder="Full name" [ngClass]="{'is-invalid': displayMessage.name }">
+                            <span class="invalid-feedback">
+                                {{displayMessage.name}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 px-1">
+                        <div class="form-group">
+                            <label for="renderingProvider">Rendering provider</label>
+                            <input name="renderingProvider" formControlName="renderingProvider" type="text" class="form-control"
+                                placeholder="Rendering provider"  [ngClass]="{'is-invalid': displayMessage.renderingProvider }">
+                            <span class="invalid-feedback">
+                                {{displayMessage.renderingProvider}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 px-1">
+                        <div class="form-group">
+                            <label for="extra">Associated</label>
+                            <input name="extra" formControlName="extra" type="text" class="form-control" placeholder="Associated" [ngClass]="{'is-invalid': displayMessage.extra }">
+                            <span class="invalid-feedback">
+                                {{displayMessage.extra}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1">
+                        <h5><strong>Payroll</strong></h5>
+                    </div>
+                    <div class="col-8">
+                        <hr>
+                    </div>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-success btn-small " (click)="addPayroll()"
+                            [disabled]="!contractorForm.get('payrolls').valid">Add</button>
+                    </div>
+                </div>
+                <div formArrayName="payrolls"
+                    *ngFor="let item of contractorForm.get('payrolls')['controls']; let i = index;">
+                    <div class="row" [formGroupName]="i">
+                        <div class="col-md-4 px-1">
+                            <div class="form-group">
+                                <label for="company">Company</label>
+                                <ng-multiselect-dropdown name="company" [placeholder]="'Company'" formControlName="company"
+                                    [settings]="companyDropdownSettings" [data]="companyList" [ngClass]="{'is-invalid': !item.get('company')?.valid }">
+                                </ng-multiselect-dropdown>
+                                <span class="invalid-feedback"> <!---item.get('company')?.touched-->
+                                    <span *ngIf="item.get('company')?.errors?.required">
+                                        The company is required.
+                                    </span>
+                                  </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 px-1 ">
+                            <div class="form-group ">
+                                <label>Contractor type</label>
+                                <ng-multiselect-dropdown [placeholder]=" 'Contractor type' "
+                                    formControlName="contractorType" [settings]="contractorTypeDropdownSettings "
+                                    [data]="contractorTypeList " (onSelect)="onContractorTypeSelected($event, i)" [ngClass]="{'is-invalid': !item.get('contractorType')?.valid }">
+                                </ng-multiselect-dropdown>
+                                <span class="invalid-feedback"> <!---item.get('company')?.touched-->
+                                    <span *ngIf="item.get('contractorType')?.errors?.required">
+                                        The contractor type is required.
+                                    </span>
+                                  </span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 px-1 ">
+                            <div class="form-group ">
+                                <label>Procedure</label>
+                                <ng-multiselect-dropdown [placeholder]=" 'Procedure' " formControlName="procedure"
+                                    [settings]="procedureDropdownSettings " [data]="procedureList"
+                                    (onselect)="onProcedureSelected($event, i)" [ngClass]="{'is-invalid': !item.get('procedure')?.valid }">
+                                </ng-multiselect-dropdown>
+                                <span class="invalid-feedback"> <!---item.get('company')?.touched-->
+                                    <span *ngIf="item.get('procedure')?.errors?.required">
+                                        The procedure is required.
+                                    </span>
+                                  </span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 px-1">
+                            <div class="form-group">
+                                <br>
+                                <button type="button" class="btn btn-danger btn-small "
+                                    (click)="removePayroll(i)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 px-1">
+                        <div class="button-container">
+                            <button type="submit" [disabled]="!contractorForm.valid"
+                                class="btn btn-neutral btn-info btn-small text-right">Save</button>&nbsp;
+                            <button type="button" (click)="clearData()"
+                                class="btn btn-neutral btn-danger btn-small text-right">Cancel</button> &nbsp;
+                            <input *ngIf="edit_mode" title="Only modify editable fields" name="partial_modify" type="checkbox" [(ngModel)]="partial_modify" [ngModelOptions]="{standalone: true}" /> `
+                            <label *ngIf="edit_mode" for="partial_modify"><i class="icofont icofont-warning"></i><strong> Only modify editable fields</strong></label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </app-card>
+    </div>
+</div>
+<!-- Hover table card start -->
+<div class="row ">
+    <div class="col-md-12 ">
+        <app-card [title]=" 'List of contractor' " [classHeader]="true " [blockClass]=" 'table-border-style' ">
+            <div class="row">
+                <div class="col-1">
+                    &nbsp;
+                </div>
+                <div class="col-4">
+                    <div class="pcoded-search">
+                        <span class="searchbar-toggle"> </span>
+                        <div class="pcoded-search-box ">
+                            <input type="text" placeholder="Enter the name" [(ngModel)]="filterName">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                        <button value="search" title="Search by name" (click)="searchByName()" class="btn btn-sm btn-info btn-outline-info" [disabled]="filterName==''"><i class="ti-search"></i></button>&nbsp;
+                        <button value="clean" title="Clean filter" (click)="cleanFilter()" class="btn btn-sm btn-danger btn-outline-danger"><i class="icofont icofont-not-allowed"></i></button>
+                </div>
+            </div>
+            <br>
+            <div class="row ">
+                <div class="col-sm-12 ">
+                    <div class="table-responsive ">
+                        <table class="table table-hover table-bordered ">
+                            <thead class="thead-dark ">
+                                <tr class="d-flex ">
+                                    <th class="col-1 ">#</th>
+                                    <th class="col-2 ">Full name</th>
+                                    <th class="col-2 ">Rendering provider</th>
+                                    <th class="col-3 ">Procedure</th>
+                                    <th class="col-2 ">Contractor type</th>
+                                    <th class="col-2 ">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="d-flex " *ngFor="let item of contractors_list | paginate: config; let i= index">
+                                    <th class="col-1 " scope="row ">{{i+1}}</th>
+                                    <td class="col-2 ">{{item.name}}</td>
+                                    <td class="col-2 ">{{item.renderingProvider}}</td>
+                                    <td class="col-3 ">{{getListProcedures(item.payrolls)}}</td>
+                                    <td class="col-2 ">{{getListContractorType(item.payrolls)}}</td>
+                                    <td class="col-2 ">
+                                        <div>
+                                            <button class="btn btn-sm btn-info btn-outline-info " data-toggle="tooltip "
+                                                type="button" title="Edit " (click)="loadDataInFields(item.id)"><i
+                                                    class="icofont icofont-eye"></i></button>&nbsp;
+                                            <button class="btn btn-sm btn-danger btn-outline-danger " type="button"
+                                                (click)="triggerModal(modalData, i)" data-toggle="tooltip "
+                                                title="Delete "><i class="icofont icofont-not-allowed "></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pagination-controls (pageChange)="pageChanged($event)" ></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </app-card>
+    </div>
+</div>
+<!--Modal of Delete Confirmation-->
+<ng-template #modalData let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Warning</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Are you sure you want to delete <span class="text-primary">{{contractor_del}}</span> profile?</strong></p>
+
+      <p>All data related to the contractor will be permanently deleted. If this contractor has an associated customer, it cannot be removed from the system
+      </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.close('Cancel')">Cancel</button>
+        <button type="button" class="btn btn-info" (click)="modal.close('Ok')">Confirm</button>
+    </div>
+  </ng-template>
+<!-- Hover table card end -->
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-spin" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>

@@ -10,9 +10,9 @@ namespace ClinicApp.Biller.Services
 {
     public class BillingService : IBilling
     {
-        private readonly clinicbdContext _context;
+        private readonly AbaTestContext _context;
         private readonly IUriService _uriService;
-        public BillingService(clinicbdContext context, IUriService uriService)
+        public BillingService(AbaTestContext context, IUriService uriService)
         {
             _context = context;
             _uriService = uriService;

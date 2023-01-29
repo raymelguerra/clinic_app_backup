@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClinicApp.Infrastructure.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/infrastructure/[controller]")]
 [ApiController]
 public class ReleaseInformationController : ControllerBase
 {

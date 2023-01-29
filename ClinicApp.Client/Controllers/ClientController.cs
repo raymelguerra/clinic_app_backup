@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
+using ClinicApp.MSClient.Dtos;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,7 +31,7 @@ public class ClientController : ControllerBase
             var client = await _client.GetClient(filter, route);
             return Ok(client);
         }
-        catch (Exception e) 
+        catch (Exception e)
         {
             return BadRequest(e.Message);
         }
@@ -39,7 +41,7 @@ public class ClientController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Client>> Get(int id)
     {
-        try 
+        try
         {
             var client = await _client.GetClient(id);
             return Ok(client);
@@ -52,7 +54,7 @@ public class ClientController : ControllerBase
 
     // GET: api/Clients
     [HttpGet("GetClientByName/{name}")]
-    public async Task<ActionResult<IEnumerable<Client>>> GetClientByName([FromQuery] PaginationFilter filter, string name) 
+    public async Task<ActionResult<IEnumerable<Client>>> GetClientByName([FromQuery] PaginationFilter filter, string name)
     {
         try
         {
@@ -68,7 +70,7 @@ public class ClientController : ControllerBase
     }
 
     [HttpGet("GetClientsByContractor/{id}")]
-    public async Task<ActionResult<IEnumerable<Client>>> GetClientsByContractor(int id) 
+    public async Task<ActionResult<IEnumerable<Client>>> GetClientsByContractor(int id)
     {
         try
         {
@@ -84,7 +86,7 @@ public class ClientController : ControllerBase
 
     // GET: api/Clients/GetClientWithoutDetails
     [HttpGet("GetClientWithoutDetails")]
-    public async Task<ActionResult<IEnumerable<Client>>> GetClientWithoutDetails() 
+    public async Task<ActionResult<IEnumerable<Client>>> GetClientWithoutDetails()
     {
         try
         {
@@ -127,7 +129,7 @@ public class ClientController : ControllerBase
             var created = await _client.PutClient(id, client);
             if (created == null)
                 return NotFound();
-            
+
             return NoContent();
         }
         catch (Exception e)
@@ -141,10 +143,182 @@ public class ClientController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var client = await _client.DeleteClient(id);
-        if(client == null)
-           return NotFound();
-        return NoContent();
+        try
+        {
+            var client = await _client.DeleteClient(id);
+            if (client == null)
+                return NotFound();
+            return NoContent();
+        }
+        catch (Exception e)
+        {
 
+            return BadRequest(e.Message);
+        }
+    }
+
+    // GET: api/Agreements
+    [HttpGet("Agreement")]
+    public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreement()
+    {
+        var ag = await _client.GetAgreement();
+        return Ok(ag);
+    }
+
+    // GET: api/Agreements/5
+    [HttpGet("Agreement/GetAgreementByContractor{id}")]
+    public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreementByContractor(int id)
+    {
+        var agreements = await _client.GetAgreementByContractor(id);
+
+        if (agreements == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(agreements);
+    }
+
+    // GET: api/Agreements/5
+    [HttpGet("Agreement/{id}")]
+    public async Task<ActionResult<Agreement>> GetAgreement(int id)
+    {
+        var agreement = await _client.GetAgreement(id);
+
+        if (agreement == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(agreement);
+    }
+
+    // PUT: api/Agreements/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("Agreement/{id}")]
+    public async Task<IActionResult> PutAgreement(int id, Agreement agreement)
+    {
+        if (id != agreement.Id)
+        {
+            return BadRequest();
+        }
+        try
+        {
+            var created = await _client.PutAgreement(id, agreement);
+            if (created == null)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    // POST: api/Agreements
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost("Agreement")]
+    public async Task<ActionResult<Agreement>> PostAgreement(Agreement agreement)
+    {
+        try
+        {
+            var created = await _client.PostAgreement(agreement);
+            return Ok(created);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    // DELETE: api/Agreements/5
+    [HttpDelete("Agreement/{id}")]
+    public async Task<IActionResult> DeleteAgreement(int id)
+    {
+        var agreement = await _client.DeleteAgreement(id);
+        if (agreement == null)
+            return NotFound();
+        return NoContent();
+    }
+
+    // GET: api/PatientAccount
+    [HttpGet("PatientAccount")]
+    public async Task<ActionResult<IEnumerable<PatientAccount>>> GetBilling()
+    {
+        return Ok(await _client.GetBilling());
+    }
+
+    // GET: api/PatientAccount/5
+    [HttpGet("PatientAccount/{id}")]
+    public async Task<ActionResult<PatientAccount>> GetPatientAccount(int id)
+    {
+        var patient = await _client.GetPatientAccount(id);
+
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        return patient;
+    }
+
+    // GET: api/PatientAccount/idClient
+    [HttpGet("PatientAccount/byclient/{idclient}")]
+    public async Task<ActionResult<IEnumerable<PatientAccount>>> GetBilling(int idclient)
+    {
+        return Ok(await _client.GetBilling(idclient));
+    }
+
+    // PUT: api/PatientAccount/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("PatientAccount/{id}"), Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> PutPatientAccount(int id, PatientAccount patient)
+    {
+        if (id != patient.Id)
+        {
+            return BadRequest();
+        }
+
+        patient.LicenseNumber = patient.LicenseNumber ?? "DOES NOT APPLY";
+        try
+        {
+            var created = await _client.PutPatientAccount(id, patient);
+            if (created == null)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+
+    }
+
+    // POST: api/PatientAccount
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost("PatientAccount"), Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<PatientAccount>> PostPatientAccount(PatientAccount patient)
+    {
+        try
+        {
+            var created = await _client.PostPatientAccount(patient);
+            return Ok(created);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    // DELETE: api/PatientAccount/5
+    [HttpDelete("PatientAccount/{id}"), Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> DeleteCompany(int id)
+    {
+        var patient_account = await _client.DeletePatientAccount(id);
+        if (patient_account == null)
+            return NotFound();
+        return NoContent();
     }
 }

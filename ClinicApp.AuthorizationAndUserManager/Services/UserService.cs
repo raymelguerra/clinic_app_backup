@@ -107,7 +107,7 @@ public class UserService : IUserService
             claims.Add(new Claim(ClaimTypes.Role, rol));
         }
         claims.Add(new Claim("Username", model.Username));
-        claims.Add(new Claim("Email", user.Email));
+        claims.Add(new Claim("Email", user.Email ?? ""));
         claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
@@ -263,7 +263,7 @@ public class UserService : IUserService
 
         var list = await GetIdentityUsersAsync();
 
-        foreach(var item in list)
+        foreach (var item in list)
         {
             var role = await _userManager.GetRolesAsync(item);
             result.Add(new UserViewModel

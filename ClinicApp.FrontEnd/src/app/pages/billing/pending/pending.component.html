@@ -1,0 +1,58 @@
+<div class="row ">
+    <div class="col-12 ">
+        <app-card [title]=" 'List of Pendings' " [classHeader]="true" [blockClass]=" ' table-border-style ' ">
+            <div class="row ">
+                <div class="col-sm-12 ">
+                    <div class="table-responsive ">
+                        <table class="table table-hover table-bordered " style="height: 480px !important;">
+                            <thead class="thead-dark ">
+                                <tr class="d-flex">
+                                    <th class="col-2 ">Period</th>
+                                    <th class="col-2 ">Client</th>
+                                    <th class="col-2 ">Contractor</th>
+                                    <th class="col-1 ">Service Log Date</th>
+                                    <th class="col-4 ">Pending By</th>
+                                    <th class="col-1 "></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="d-flex" *ngFor="let item of pendings; let i = index;">
+                                    <td class="col-2 " scope="row ">{{item.period.payPeriod}}</td>
+                                    <td class="col-2 "><button class="btn btn-link" (click)="navigateToClient(item.client.id)">{{item.client.name}}</button></td>
+                                    <td class="col-2 "><button class="btn btn-link" (click)="navigateToContractor(item.contractor.id)">{{item.contractor.name}}</button></td>
+                                    <td class="col-1 "><button class="btn btn-link" (click)="navigateToServiceLog(item.id)">{{item.createdDate | date}}</button></td>
+                                    <td class="col-4 ">{{item.pending}}</td>
+                                    <td class="col-1 ">
+                                        <button type="button" class="btn btn-danger btn-outline-danger"
+                                                data-toggle="tooltip" title="Delete"><i
+                                                    class="icofont icofont-not-allowed"
+                                                    (click)="triggerModal(modalData, item.id)"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </app-card>
+    </div>
+</div>
+<!--Modal of Delete Confirmation-->
+<ng-template #modalData let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Warning</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Are you sure you want to remove the pending status and reason to <span class="text-primary"> this service log</span>?</strong></p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.close('Cancel')">Cancel</button>
+        <button type="button" class="btn btn-info" (click)="modal.close('Ok')">Confirm</button>
+    </div>
+  </ng-template>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-spin" [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>

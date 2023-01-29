@@ -1,0 +1,144 @@
+<div class="row ">
+    <div class="col-sm-12 ">
+        <app-card [title]=" 'Billing process' " [classHeader]="true">
+            <form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Selected period <strong>{{billing_period != null ? billing_period.payPeriod : "Select a period"}}</strong></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 px-1">
+                        <div class="form-group">
+                            <label>Client</label>
+                            <ng-multiselect-dropdown [placeholder]="'Client'" [settings]="clientDropdownSettings"
+                                [data]="clientList" (onSelect)="onSelectClient($event)">
+                            </ng-multiselect-dropdown>
+
+                        </div>
+                    </div>
+                    <div class="col-4 px-1">
+
+                    </div>
+                    <div class="col-4 px-1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul ngbNav #nav="ngbNav" class="nav-tabs" [(activeId)]="active">
+                            <li [ngbNavItem]="1" *ngIf="active_period != null; else noDataBlock">
+                                <a ngbNavLink>{{active_period.name}}</a>
+                                <ng-template ngbNavContent>
+                                    <div class="row ">
+                                        <div class="col-sm-4 "
+                                            *ngFor="let sl of active_period.serviceLog; let j = index">
+                                            <div class="table-responsive ">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead class="thead-ligth ">
+                                                        <tr>
+                                                            <th class="text-center " colspan="5">{{sl.contractor.name}}
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <thead class="thead-dark ">
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Duration (Quarter)</th>
+                                                            <th>Hours</th>
+                                                            <th>Place of services</th>
+                                                            <th>Sub Procedure</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let ud of sl.unitDetails; let z = index">
+                                                            <td>{{ud.dateOfService | date}}</td>
+                                                            <td>{{ud.unit}}</td>
+                                                            <td> {{ud.unit/4}}</td>
+                                                            <td>{{ud.placeOfService.value }} - {{ud.placeOfService.name
+                                                                }}
+                                                            </td>
+                                                            <td> {{ud.subProcedure.name}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </li>
+                        </ul>
+
+                        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+                    </div>
+                </div>
+            </form>
+
+            <!--<pre>Active: {{ active }}</pre>  Esto va en el head [(activeId)]="active"-->
+        </app-card>
+        <ng-template #noDataBlock>
+                <p class="text-center">No data yet</p>
+        </ng-template>
+    </div>
+</div>
+<!-- Hover table card start -->
+<div class="row ">
+    <div class="col-12 ">
+        <app-card [title]=" 'List of Periods' " [classHeader]="true " [blockClass]=" ' table-border-style ' "
+            (buttonAddEvent)="AddNewPeriod($event) ">
+            <div class="row ">
+                <div class="col-sm-12 ">
+                    <div class="table-responsive ">
+                        <table class="table table-hover table-bordered " style="height: 480px !important;">
+                            <thead class="thead-dark ">
+                                <tr class="d-flex">
+                                    <th class="col-2 ">Pay period</th>
+                                    <th class="col-3 ">Period</th>
+                                    <th class="col-2 ">Document Delivery</th>
+                                    <th class="col-2 ">Payment</th>
+                                    <th class="col-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="d-flex" *ngFor="let item of periods; let i = index;">
+                                    <th class="col-2 " scope="row ">{{item.payPeriod}}</th>
+                                    <td class="col-3 ">{{item.startDate | date}} to {{item.endDate | date}}</td>
+                                    <td class="col-2 ">{{item.documentDeliveryDate | date}}</td>
+                                    <td class="col-2 ">{{item.paymentDate | date}}</td>
+                                    <td class="col-3 ">
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-info btn-outline-info "
+                                                data-toggle="tooltip " title="View " (click)="OnSelectPeriod(i)"><i
+                                                    class="icofont icofont-eye "></i></button>&nbsp;
+                                            <div *ngIf="show_spinner" class="spinner-border" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <div *ngIf="show_dropDownButtons" ngbDropdown class="dropdown-default dropdown open">
+                                                <button ngbDropdownToggle type="button" class="btn btn-success dropdown-toggle waves-effect waves-light btn-outline-success" id="dropdown1" data-toggle="tooltip " title="Generate Excel " ><i class="icofont icofont-file-excel "></i></button> &nbsp;
+                                                <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdown1" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                                                    <button class="dropdown-item waves-light waves-effect" (click)="GenerateZip(i, 'all')">All</button>
+                                                    <button class="dropdown-item waves-light waves-effect" (click)="GenerateZip(i, 'VL')">Villa Lyan</button>
+                                                    <button class="dropdown-item waves-light waves-effect" (click)="GenerateZip(i, 'EP')">Expanding Possibilities</button>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="show_dropDownButtons" ngbDropdown class="dropdown-default dropdown open">
+                                                <button ngbDropdownToggle type="button" class="btn btn-danger dropdown-toggle waves-effect waves-light btn-outline-danger "  id="dropdown2" data-toggle="tooltip " title="Download "><i class="icofont icofont-download "></i></button>
+                                                <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdown2" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                                                    <button class="dropdown-item waves-light waves-effect" (click)="DownloadExcel(i, 'all')">All</button>
+                                                    <button class="dropdown-item waves-light waves-effect" (click)="DownloadExcel(i, 'VL')">Villa Lyan</button>
+                                                    <button class="dropdown-item waves-light waves-effect" (click)="DownloadExcel(i, 'EP')">Expanding Possibilities</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </app-card>
+    </div>
+</div>
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-spin" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+<!-- <ngx-spinner size="medium" type="ball-scale-multiple">Loading...</ngx-spinner> -->
+<!-- Hover table card end -->
