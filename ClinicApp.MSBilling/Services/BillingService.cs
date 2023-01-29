@@ -158,15 +158,15 @@ public class BillingService : IBilling
     public async Task<List<UnitDetailDto>> GetExUnitDetailsAsync(int serviceLogId, string pAccount, string sufixList)
     {
         var infoUnitDet = from ud in _context.UnitDetails
-                          join slo in _context.ServiceLogs on new { Id1 = ud.ServiceLogId, Id2 = ud.ServiceLogId } equals new { Id1 = slo.Id, Id2 = serviceLogId }
+                          join slo in _context.ServiceLogs on ud.ServiceLogId equals slo.Id //new { Id1 = ud.ServiceLogId, Id2 = ud.ServiceLogId } equals new { Id1 = slo.Id, Id2 = serviceLogId }
                           join sp in _context.SubProcedures on ud.SubProcedureId equals sp.Id
                           join ps in _context.PlaceOfServices on ud.PlaceOfServiceId equals ps.Id
                           join pa in _context.PatientAccounts on slo.ClientId equals pa.ClientId
                           where pa.CreateDate <= ud.DateOfService && pa.ExpireDate >= ud.DateOfService
                              && (pAccount == pa.Auxiliar ? sufixList.Contains(sp.Name.Substring(3) + ";") : false
                               || pAccount == pa.LicenseNumber ? !sufixList.Contains(sp.Name.Substring(3) + ";") : false)
-                          //&& slo.Id == serviceLogId
-                          orderby ud.DateOfService
+                           && slo.Id == serviceLogId
+                          orderby ud.SubProcedureId, ud.DateOfService
                           select new UnitDetailDto()
                           {
                               Id = ud.Id,
