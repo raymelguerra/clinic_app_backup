@@ -9,7 +9,7 @@ services:
     ports:
       - 9086:80
     depends_on:
-      - clinicapp.backend.proxy 
+      - expvl.clinicapp.backend.proxy 
   expvl.clinicapp.backend.proxy:
     image: nginx:latest
     ports:
