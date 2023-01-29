@@ -7,13 +7,13 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 86:80
+      - 8086:80
     depends_on:
       - brain.clinicapp.backend.proxy 
   brain.clinicapp.backend.proxy:
     image: nginx:latest
     ports:
-      - 88:80
+      - 8088:80
     restart: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
