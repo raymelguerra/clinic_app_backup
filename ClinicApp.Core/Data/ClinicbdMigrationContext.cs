@@ -52,8 +52,6 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
         optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
     }
 
-    // => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=clinicbd_migration;Username=postgres;Password=postgres");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
