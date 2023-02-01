@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   test.clinicapp.frontend:
-    image: expvl.clinicapp.frontend:v1.2
+    image: test.clinicapp.frontend:v1.2
     build: 
       context: ./ClinicApp.FrontEnd
       dockerfile: Dockerfile
