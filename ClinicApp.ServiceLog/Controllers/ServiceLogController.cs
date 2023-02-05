@@ -42,9 +42,25 @@ public class ServiceLogController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ServiceLog>> Get(int id)
     {
-        try 
+        try
         {
             var contractor = await _serviceLog.GetServiceLog(id);
+            return Ok(contractor);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+
+        }
+    }
+
+    // GET api/<ServiceLogController>/5
+    [HttpGet("GetServiceLogByContractor/{contractorId}")]
+    public async Task<ActionResult<ServiceLogByContractorDto>> GetServiceLogByContractor(int contractorId)
+    {
+        try 
+        {
+            var contractor = await _serviceLog.GetServicesLogByContractor(contractorId);
             return Ok(contractor);
         }
         catch (Exception e)

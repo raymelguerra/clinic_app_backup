@@ -8,6 +8,7 @@ using ClinicApp.MSServiceLog.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using ClinicApp.MSServiceLog.Dtos;
+using System.Xml.Linq;
 
 namespace ClinicApp.MSServiceLog.Services;
 
@@ -400,5 +401,42 @@ public class ServiceLogService : IServiceLog
             var pagedReponse = PaginationHelper.CreatePagedReponse<ServiceLogByNameDto>(list, validFilter, totalRecords, _uriService, route);
             return pagedReponse!;
         }
+    }
+
+    public async Task<IEnumerable<ServiceLogByContractorDto?>> GetServicesLogByContractor(int contractorId)
+    {
+        var list = await _context.ServiceLogs
+                 .Include("Client")
+                 .Include("Contractor")
+                 .Include("Period")
+                 .Select(x => new ServiceLogByContractorDto
+                 {
+                     Client = new()
+                     {
+                         Id = x.Client.Id,
+                         Name = x.Client.Name
+                     },
+                     Id = x.Id,
+                     Contractor = new()
+                     {
+                         Id = x.Contractor.Id,
+                         Name = x.Contractor.Name
+                     },
+                     ContractorId = x.Contractor.Id,
+                     CreatedDate = x.CreatedDate,
+                     PeriodId = x.PeriodId,
+                     Period = new()
+                     {
+                         EndDate = x.Period.EndDate,
+                         Id = x.Period.Id,
+                         StartDate = x.Period.StartDate
+                     }
+                 })
+                 .Where(x => x.ContractorId == contractorId)
+                 .OrderByDescending(x =>x.Id)
+                 .Take(25)
+                 .ToListAsync();
+
+        return list;
     }
 }
