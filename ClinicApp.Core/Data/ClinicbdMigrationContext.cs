@@ -45,11 +45,13 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     public virtual DbSet<SubProcedure> SubProcedures { get; set; }
 
     public virtual DbSet<UnitDetail> UnitDetails { get; set; }
+    public virtual DbSet<ContractorServiceLog> ContractorServiceLog { get; set; }
+    public virtual DbSet<PatientUnitDetail> PatientUnitDetail { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
+        optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=sl_test_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -81,7 +83,6 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PayrollAgreement");
         });
-
 
         modelBuilder.Entity<Client>(entity =>
         {
@@ -242,6 +243,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
             entity.Property(e => e.Biller).HasMaxLength(450);
             entity.Property(e => e.CreatedDate).HasColumnType("timestamp with time zone");
             entity.Property(e => e.Pending).HasMaxLength(500);
+            entity.Property(e => e.Status).HasDefaultValue(0);
 
             entity.HasOne(d => d.Client).WithMany(p => p.ServiceLogs)
                 .HasForeignKey(d => d.ClientId)
@@ -257,6 +259,9 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
                 .HasForeignKey(d => d.PeriodId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PeriodServiceLog");
+
+            entity.HasOne(d => d.ContractorServiceLog).WithOne(p => p.ServiceLog)
+               .HasForeignKey<ContractorServiceLog>(d => d.ServiceLogId);
         });
 
         modelBuilder.Entity<SubProcedure>(entity =>
@@ -299,6 +304,36 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
                 .HasForeignKey(d => d.SubProcedureId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SubProcedureUnitDetail");
+
+            entity.HasOne(d => d.PatientUnitDetail).WithOne(p => p.UnitDetail)
+               .HasForeignKey<PatientUnitDetail>(d => d.UnitDetailId);
+        });
+        
+        modelBuilder.Entity<ContractorServiceLog>(entity =>
+        {
+            entity.ToTable("ContractorServiceLog");
+
+            entity.HasIndex(e => e.ServiceLogId, "IX_FK_ServiceLogContractorServiceLog");
+
+            entity.Property(e => e.Signature).HasMaxLength(int.MaxValue);
+            entity.Property(e => e.SignatureDate).HasColumnType("timestamp without time zone");
+
+
+        });
+
+        modelBuilder.Entity<PatientUnitDetail>(entity =>
+        {
+            entity.ToTable("PatientUnitDetail");
+
+            entity.HasIndex(e => e.UnitDetailId, "IX_FK_UnitDetailPatientUnitDetail");
+
+            entity.Property(e => e.Signature).HasMaxLength(int.MaxValue);
+            entity.Property(e => e.SignatureDate).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.EntryTime).HasMaxLength(20);
+            entity.Property(e => e.DepartureTime).HasMaxLength(20);
+
+
+
         });
 
         OnModelCreatingPartial(modelBuilder);
