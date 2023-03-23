@@ -8,8 +8,8 @@ namespace ClinicApp.MSServiceLogByContractor.Interfaces
     {
         public Task<GetContractorServiceLogDto> GetByIdAsync(int ServiceLogId);
         public Task<PagedResponse<IEnumerable<AllServiceLogDto>>> GetAllAsync(PaginationFilter filter, string route);
-        public Task<AllServiceLogDto> CreateAsync(ServiceLog sl);
-        public Task<object?> UpdateAsync(int ServiceLogId, ServiceLog sl);
+        public Task<GetContractorServiceLogDto> CreateAsync(CreateServiceLogDto sl);
+        public Task<object?> UpdateAsync(int ServiceLogId, CreateServiceLogDto sl);
         public Task<object?> DeleteAsync(int ServiceLogId);
 
     }

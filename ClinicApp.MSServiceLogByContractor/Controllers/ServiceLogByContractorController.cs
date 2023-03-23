@@ -40,7 +40,7 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
 
         // GET api/<ServiceLogByContractorController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AllServiceLogDto>> Get(int id)
+        public async Task<ActionResult<GetContractorServiceLogDto>> Get(int id)
         {
             try
             {
@@ -57,8 +57,19 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
 
         // POST api/<ServiceLogByContractorController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<GetContractorServiceLogDto>> Post([FromBody] CreateServiceLogDto value)
         {
+            try
+            {
+                var sl = await _service.CreateAsync(value);
+                _logger.LogInformation($"Event: {LogEvent.CREATED}    Datetime {DateTime.Now.ToLocalTime()}");
+                return Ok(sl);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Event: {LogEvent.CREATED}    Datetime {DateTime.Now.ToLocalTime()}");
+                return BadRequest(e.Message);
+            }
         }
 
         // PUT api/<ServiceLogByContractorController>/5

@@ -16,9 +16,60 @@ namespace ClinicApp.MSServiceLogByContractor.Services
             _db = db;
             _uriService = uriService;
         }
-        public async Task<AllServiceLogDto> CreateAsync(ServiceLog sl)
+        public async Task<GetContractorServiceLogDto> CreateAsync(CreateServiceLogDto sl)
         {
-            throw new NotImplementedException();
+            // Create service logs and dependencies
+            var serv = new ServiceLog
+            {
+                PeriodId = sl.PeriodId,
+                ContractorId = sl.ContractorId,
+                ClientId = sl.ClientId,
+                CreatedDate = DateTime.Now,// sl.CreatedDate,
+                Pending = sl.Pending,
+                Status = sl.Status
+            };
+
+            await _db.SaveChangesAsync();
+            _db.ServiceLogs.Add(serv);
+
+            var ctrServ = new ContractorServiceLog
+            {
+                ServiceLogId = serv.Id,
+                Signature = sl.Signature,
+                SignatureDate = sl.SignatureDate
+            };
+            _db.ContractorServiceLog.Add(ctrServ);
+            await _db.SaveChangesAsync();
+
+            // create Unit Details and dependencies
+            foreach (var item in sl.UnitDetails)
+            {
+                var ud = new UnitDetail
+                {
+                    DateOfService = item.DateOfService,
+                    Modifiers = item.Modifiers,
+                    PlaceOfServiceId = item.PlaceOfServiceId,
+                    ServiceLogId = item.ServiceLogId,
+                    SubProcedureId = item.SubProcedureId,
+                    Unit = item.Unit
+                };
+
+                _db.UnitDetails.Add(ud);
+                await _db.SaveChangesAsync();
+                
+                var ptUnit = new PatientUnitDetail
+                {
+                    DepartureTime = item.DepartureTime,
+                    EntryTime = item.EntryTime,
+                    UnitDetailId = item.UnitDetailId,
+                    Signature = item.PatientSignature,
+                    SignatureDate = item.PatientSignatureDate
+                };
+                _db.PatientUnitDetail.Add(ptUnit);
+                await _db.SaveChangesAsync();
+            }
+
+            return await GetByIdAsync(serv.Id);
         }
 
         public async Task<object?> DeleteAsync(int ServiceLogId)
@@ -73,7 +124,7 @@ namespace ClinicApp.MSServiceLogByContractor.Services
                 .FirstAsync();
         }
 
-        public async Task<object?> UpdateAsync(int ServiceLogId, ServiceLog sl)
+        public async Task<object?> UpdateAsync(int ServiceLogId, CreateServiceLogDto sl)
         {
             throw new NotImplementedException();
         }
