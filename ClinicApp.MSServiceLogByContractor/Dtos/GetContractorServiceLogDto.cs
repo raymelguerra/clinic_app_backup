@@ -3,6 +3,7 @@
     public class GetContractorServiceLogDto
     {
         public int Id { get; set; }
+        public int ServiceLogId { get; set; }
         public string? Signature { get; set; }
         public IEnumerable<GetPatientUnitDetail>? PatientUnitDetails { get; set; }
     }

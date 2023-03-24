@@ -10,6 +10,8 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     public ClinicbdMigrationContext(DbContextOptions<ClinicbdMigrationContext> options)
         : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
         Database.SetCommandTimeout(60);
     }
 
@@ -51,7 +53,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=sl_test_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
+        optionsBuilder.UseNpgsql("Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -243,7 +245,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
             entity.Property(e => e.Biller).HasMaxLength(450);
             entity.Property(e => e.CreatedDate).HasColumnType("timestamp with time zone");
             entity.Property(e => e.Pending).HasMaxLength(500);
-            entity.Property(e => e.Status).HasDefaultValue(0);
+            entity.Property(e => e.Status);//.HasDefaultValue(0);
 
             entity.HasOne(d => d.Client).WithMany(p => p.ServiceLogs)
                 .HasForeignKey(d => d.ClientId)

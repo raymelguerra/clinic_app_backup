@@ -48,7 +48,11 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
                 _logger.LogInformation($"Event: {LogEvent.GET_BY_ID}    Datetime {DateTime.Now.ToLocalTime()}");
                 return Ok(sl);
             }
-            catch (Exception e)
+            catch (InvalidOperationException e)
+            {
+                _logger.LogError(e, $"Event: {LogEvent.GET_BY_ID}  Datetime {DateTime.Now.ToLocalTime()}  Message {e.Message}");
+                return NotFound(e.Message);
+            }catch (Exception e)
             {
                 _logger.LogError(e, $"Event: {LogEvent.GET_BY_ID}  Datetime {DateTime.Now.ToLocalTime()}  Message {e.Message}");
                 return BadRequest(e.Message);

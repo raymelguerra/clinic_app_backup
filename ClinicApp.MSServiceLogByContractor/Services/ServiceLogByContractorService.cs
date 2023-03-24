@@ -24,13 +24,13 @@ namespace ClinicApp.MSServiceLogByContractor.Services
                 PeriodId = sl.PeriodId,
                 ContractorId = sl.ContractorId,
                 ClientId = sl.ClientId,
-                CreatedDate = DateTime.Now,// sl.CreatedDate,
+                CreatedDate = sl.CreatedDate,
                 Pending = sl.Pending,
                 Status = sl.Status
             };
 
-            await _db.SaveChangesAsync();
             _db.ServiceLogs.Add(serv);
+            await _db.SaveChangesAsync();
 
             var ctrServ = new ContractorServiceLog
             {
@@ -49,7 +49,7 @@ namespace ClinicApp.MSServiceLogByContractor.Services
                     DateOfService = item.DateOfService,
                     Modifiers = item.Modifiers,
                     PlaceOfServiceId = item.PlaceOfServiceId,
-                    ServiceLogId = item.ServiceLogId,
+                    ServiceLogId = serv.Id,
                     SubProcedureId = item.SubProcedureId,
                     Unit = item.Unit
                 };
@@ -61,7 +61,7 @@ namespace ClinicApp.MSServiceLogByContractor.Services
                 {
                     DepartureTime = item.DepartureTime,
                     EntryTime = item.EntryTime,
-                    UnitDetailId = item.UnitDetailId,
+                    UnitDetailId = ud.Id,
                     Signature = item.PatientSignature,
                     SignatureDate = item.PatientSignatureDate
                 };
@@ -85,11 +85,11 @@ namespace ClinicApp.MSServiceLogByContractor.Services
                 {
                     ServiceLogId = x.Id,
                     ClientName = x.Client.Name!,
-                    CreatedDate = x.CreatedDate,
+                    CreatedDate = (DateTime)x.CreatedDate!,
                     PeriodRange = $"{x.Period.StartDate} - {x.Period.EndDate}",
                     ServiceLogStatus = (ServiceLogStatus)x.Status
                 })
-                .OrderByDescending(x => x.CreatedDate)
+                // .OrderByDescending(x => x.CreatedDate)
                 .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
             .Take(validFilter.PageSize)
                 .ToListAsync();
@@ -106,6 +106,7 @@ namespace ClinicApp.MSServiceLogByContractor.Services
                 {
                     Id = sl.Id,
                     Signature = sl.Signature,
+                    ServiceLogId = sl.ServiceLogId,
                     PatientUnitDetails = _db.PatientUnitDetail
                     .Include("UnitDetail")
                     .Where(ud => ud.UnitDetail.ServiceLogId == ServiceLogId)
