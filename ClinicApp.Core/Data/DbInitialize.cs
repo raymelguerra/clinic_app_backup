@@ -168,6 +168,7 @@ namespace ClinicApp.Core.Data
             var rol1 = roleManager.CreateAsync(new IdentityRole {Name="Administrator", NormalizedName="ADMINISTRATOR" }).Result;
             var rol2 = roleManager.CreateAsync(new IdentityRole {Name="Operator", NormalizedName="OPERATOR" }).Result;
             var rol3 = roleManager.CreateAsync(new IdentityRole { Name = "Biller", NormalizedName = "BILLER" }).Result;
+            var rol4 = roleManager.CreateAsync(new IdentityRole { Name = "Contractor", NormalizedName = "CONTRACTOR" }).Result;
 
 
 

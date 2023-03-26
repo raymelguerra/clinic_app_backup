@@ -3,6 +3,7 @@ using ClinicApp.AuthorizationAndUserManager.Models;
 using ClinicApp.Core.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,12 +16,14 @@ public class UserService : IUserService
     private UserManager<IdentityUser> _userManager;
     private IConfiguration _configuration;
     private JwtHandler _jwtHandler;
+    private readonly ClinicbdMigrationContext _context;
 
-    public UserService(UserManager<IdentityUser> userManager, IConfiguration configuration, JwtHandler jwtHandler)
+    public UserService(UserManager<IdentityUser> userManager, IConfiguration configuration, JwtHandler jwtHandler, ClinicbdMigrationContext context)
     {
         _userManager = userManager;
         _configuration = configuration;
         _jwtHandler = jwtHandler;
+        _context = context;
     }
 
     public async Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
@@ -110,6 +113,10 @@ public class UserService : IUserService
         claims.Add(new Claim("Email", user.Email ?? ""));
         claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
 
+        var contractor = await _context.ContractorUser.FirstOrDefaultAsync(x=> x.UserId == user.Id);
+
+        claims.Add(new Claim("ContractorId", contractor!.ContractorId.ToString()));
+        
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
 
         var token = new JwtSecurityToken(

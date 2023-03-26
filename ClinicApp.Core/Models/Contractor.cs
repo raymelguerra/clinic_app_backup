@@ -18,4 +18,5 @@ public partial class Contractor
     public virtual ICollection<Payroll> Payrolls { get; set; } = new List<Payroll>();
 
     public virtual ICollection<ServiceLog> ServiceLogs { get; set; } = new List<ServiceLog>();
+    public virtual ContractorUser? ContractorUser { get; set; }
 }

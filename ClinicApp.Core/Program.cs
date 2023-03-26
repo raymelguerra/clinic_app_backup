@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using static System.Formats.Asn1.AsnWriter;
 
 using IHost host = Host.CreateDefaultBuilder(args).Build();
 
