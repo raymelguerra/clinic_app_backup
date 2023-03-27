@@ -365,5 +365,4 @@ FodyWeavers.xsd
 node_modules
 obj/
 .vscode/
-docker-compose*
-nginx*
+docker-compose_*
