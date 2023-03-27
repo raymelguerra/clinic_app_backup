@@ -44,5 +44,3 @@ testem.log
 Thumbs.db
 .vscode/launch.json
 node_modules
-docker-compose*
-nginx*
