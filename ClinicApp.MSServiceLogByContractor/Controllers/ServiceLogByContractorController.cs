@@ -21,13 +21,13 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
             this._service = service;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<PagedResponse<IEnumerable<AllServiceLogDto>>>> Get([FromQuery] PaginationFilter filter)
+        [HttpGet("all/{ContractorId}")]
+        public async Task<ActionResult<PagedResponse<IEnumerable<AllServiceLogDto>>>> Get([FromQuery] PaginationFilter filter, int ContractorId)
         {
             try
             {
                 var route = Request.Path.Value ?? String.Empty;
-                var sl = await _service.GetAllAsync(filter, route);
+                var sl = await _service.GetAllAsync(filter, route, ContractorId);
                 _logger.LogInformation($"Event: {LogEvent.GET_ALL}    Datetime {DateTime.Now.ToLocalTime()}");
                 return Ok(sl);
             }

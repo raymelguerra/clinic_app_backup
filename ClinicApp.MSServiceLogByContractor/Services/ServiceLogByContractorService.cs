@@ -77,10 +77,11 @@ namespace ClinicApp.MSServiceLogByContractor.Services
             throw new NotImplementedException();
         }
 
-        public async Task<PagedResponse<IEnumerable<AllServiceLogDto>>> GetAllAsync(PaginationFilter filter, string route)
+        public async Task<PagedResponse<IEnumerable<AllServiceLogDto>>> GetAllAsync(PaginationFilter filter, string route, int ContractorId)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
             var list = await _db.ServiceLogs.Include("Client").Include("Period")
+                .Where( ctr => ctr.ContractorId == ContractorId)
                 .Select(x => new AllServiceLogDto
                 {
                     ServiceLogId = x.Id,
