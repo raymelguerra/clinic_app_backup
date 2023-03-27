@@ -49,6 +49,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
     public virtual DbSet<UnitDetail> UnitDetails { get; set; }
     public virtual DbSet<ContractorServiceLog> ContractorServiceLog { get; set; }
     public virtual DbSet<PatientUnitDetail> PatientUnitDetail { get; set; }
+    public virtual DbSet<ContractorUser> ContractorUser { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -131,6 +132,9 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
             entity.Property(e => e.Extra).HasMaxLength(256);
             entity.Property(e => e.Name).HasMaxLength(256);
             entity.Property(e => e.RenderingProvider).HasMaxLength(20);
+
+            entity.HasOne(d => d.ContractorUser).WithOne(p => p.Contractor)
+                .HasForeignKey<ContractorUser>(d => d.ContractorId);
         });
 
         modelBuilder.Entity<ContractorType>(entity =>
@@ -335,6 +339,16 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
             entity.Property(e => e.DepartureTime).HasMaxLength(20);
 
 
+
+        });
+        
+        modelBuilder.Entity<ContractorUser>(entity =>
+        {
+            entity.ToTable("ContractorUser");
+
+            entity.HasIndex(e => e.UserId, "IX_FK_UserContractorUser");
+
+            entity.HasIndex(e => e.ContractorId, "IX_FK_ContractorContracotUser");
 
         });
 
