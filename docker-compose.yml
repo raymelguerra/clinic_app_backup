@@ -38,6 +38,18 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  test.clinicapp.contractorbyservicelogs:
+    image: test.clinicapp.contractorbyservicelogs:v1.2
+    build:
+      context: .
+      dockerfile: ClinicApp.MSServiceLogByContractor/Dockerfile
+    restart: always
+    expose:
+       - 80
+       - 443
+    environment: 
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.dashboard:
     image: test.clinicapp.dashboard:v1.2
     build:
