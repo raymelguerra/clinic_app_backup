@@ -84,8 +84,20 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
 
         // DELETE api/<ServiceLogByContractorController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult<int>> Delete(int id)
         {
+            try
+            {
+                await _service.DeleteAsync(id);
+                _logger.LogInformation($"Event: {LogEvent.DELETED}    Datetime {DateTime.Now.ToLocalTime()}");
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Event: {LogEvent.DELETED}    Datetime {DateTime.Now.ToLocalTime()}");
+                return BadRequest(e.Message);
+            }
+
         }
     }
 }

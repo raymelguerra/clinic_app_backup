@@ -71,10 +71,47 @@ namespace ClinicApp.MSServiceLogByContractor.Services
 
             return await GetByIdAsync(serv.Id);
         }
-
-        public async Task<object?> DeleteAsync(int ServiceLogId)
+        public async Task<int> DeleteAsync(int ServiceLogId)
         {
-            throw new NotImplementedException();
+
+            //// Si no se encuentra el registro de servicio, se devuelve 0
+            var serviceLog = await _db.ServiceLogs.FindAsync(ServiceLogId);
+
+            if (serviceLog == null)
+            {
+
+                return 0;
+            }
+
+            //get Unitdetail and delete PatientUnitDetail
+            var unitDetails = await _db.UnitDetails
+                .Where(ud => ud.ServiceLogId == ServiceLogId)
+                .ToListAsync();
+
+
+            foreach (var unitDetail in unitDetails)
+            {
+                var patientUnitDetails = await _db.PatientUnitDetail
+                    .Where(ptud => ptud.UnitDetailId == unitDetail.Id)
+                    .ToListAsync();
+
+                _db.PatientUnitDetail.RemoveRange(patientUnitDetails);
+                _db.UnitDetails.Remove(unitDetail);
+            }
+
+            // Delete ContractorServicelog
+            var contractorServiceLog = await _db.ContractorServiceLog
+                .FirstOrDefaultAsync(csl => csl.ServiceLogId == ServiceLogId);
+
+            if (contractorServiceLog != null)
+            {
+                _db.ContractorServiceLog.Remove(contractorServiceLog);
+            }
+
+            _db.ServiceLogs.Remove(serviceLog);
+
+
+            return await _db.SaveChangesAsync();
         }
 
         public async Task<PagedResponse<IEnumerable<AllServiceLogDto>>> GetAllAsync(PaginationFilter filter, string route)
