@@ -24,4 +24,5 @@ public partial class UnitDetail
     public virtual ServiceLog ServiceLog { get; set; } = null!;
 
     public virtual SubProcedure SubProcedure { get; set; } = null!;
+    public virtual PatientUnitDetail PatientUnitDetail { get; set; } = null!;
 }

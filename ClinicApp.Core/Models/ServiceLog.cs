@@ -20,6 +20,8 @@ public partial class ServiceLog
     public string? Biller { get; set; }
 
     public string? Pending { get; set; }
+    
+    public int Status { get; set; }
 
     public virtual Client Client { get; set; } = null!;
 
@@ -28,4 +30,5 @@ public partial class ServiceLog
     public virtual Period Period { get; set; } = null!;
 
     public virtual ICollection<UnitDetail> UnitDetails { get; set; } = new List<UnitDetail>();
+    public virtual ContractorServiceLog ContractorServiceLog { get; set; } = null!;
 }
