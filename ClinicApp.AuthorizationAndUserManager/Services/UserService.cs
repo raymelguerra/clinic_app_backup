@@ -114,8 +114,8 @@ public class UserService : IUserService
         claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
 
         var contractor = await _context.ContractorUser.FirstOrDefaultAsync(x=> x.UserId == user.Id);
-
-        claims.Add(new Claim("ContractorId", contractor!.ContractorId.ToString()));
+        if(contractor != null)
+            claims.Add(new Claim("ContractorId", contractor!.ContractorId.ToString()));
         
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
 
