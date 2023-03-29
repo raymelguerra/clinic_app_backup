@@ -102,10 +102,12 @@ namespace ClinicApp.MSServiceLogByContractor.Services
 
         public async Task<GetContractorServiceLogDto> GetByIdAsync(int ServiceLogId)
         {
-            return await _db.ContractorServiceLog.Where(x => x.ServiceLogId == ServiceLogId)
+            return await _db.ContractorServiceLog.Include("ServiceLog").Where(x => x.ServiceLogId == ServiceLogId)
                 .Select(sl => new GetContractorServiceLogDto
                 {
                     Id = sl.Id,
+                    ClientId = sl.ServiceLog.ClientId,
+                    PeriodId = sl.ServiceLog.PeriodId,
                     Signature = sl.Signature,
                     ServiceLogId = sl.ServiceLogId,
                     PatientUnitDetails = _db.PatientUnitDetail
