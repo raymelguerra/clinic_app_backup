@@ -56,7 +56,7 @@ namespace ClinicApp.MSServiceLogByContractor.Services
 
                 _db.UnitDetails.Add(ud);
                 await _db.SaveChangesAsync();
-                
+
                 var ptUnit = new PatientUnitDetail
                 {
                     DepartureTime = item.DepartureTime,
@@ -162,9 +162,70 @@ namespace ClinicApp.MSServiceLogByContractor.Services
                 .FirstAsync();
         }
 
-        public async Task<object?> UpdateAsync(int ServiceLogId, CreateServiceLogDto sl)
+        public async Task<GetContractorServiceLogDto> UpdateAsync(int ServiceLogId, UpdateServiceLogDto sl)
         {
-            throw new NotImplementedException();
+            var serviceLog = await _db.ServiceLogs.FindAsync(ServiceLogId);
+
+            if (serviceLog == null)
+            {
+                throw new ArgumentException("Service log no existe, no se puede realizar la operación.");
+            }
+
+            serviceLog.PeriodId = sl.PeriodId;
+            serviceLog.ContractorId = sl.ContractorId;
+            serviceLog.ClientId = sl.ClientId;
+            serviceLog.CreatedDate = sl.CreatedDate;
+            serviceLog.Pending = sl.Pending;
+            serviceLog.Status = sl.Status;
+
+            var contractorServiceLog = await _db.ContractorServiceLog.FirstOrDefaultAsync(c => c.ServiceLogId == serviceLog.Id);
+
+            if (contractorServiceLog == null)
+            {
+                throw new ArgumentException("ContractorServicelog es nulo y no se puede realizar la operación.");
+            }
+
+            contractorServiceLog.Signature = sl.Signature;
+            contractorServiceLog.SignatureDate = sl.SignatureDate;
+            // Eliminar todas las entidades PatientUnitDetail y UnitDetail asociadas al ServiceLog
+            var existingPatientUnitDetails = await _db.PatientUnitDetail.Include(p => p.UnitDetail)
+                .Where(p => p.UnitDetail.ServiceLogId == serviceLog.Id).ToListAsync();
+            _db.PatientUnitDetail.RemoveRange(existingPatientUnitDetails);
+            await _db.SaveChangesAsync();
+
+            var existingUnitDetails = await _db.UnitDetails.Where(u => u.ServiceLogId == serviceLog.Id).ToListAsync();
+            _db.UnitDetails.RemoveRange(existingUnitDetails);
+
+            // Agregar las nuevas entidades PatientUnitDetail y UnitDetail al ServiceLog
+            foreach (var item in sl.UnitDetails)
+            {
+                var ud = new UnitDetail
+                {
+                    DateOfService = item.DateOfService,
+                    Modifiers = item.Modifiers,
+                    PlaceOfServiceId = item.PlaceOfServiceId,
+                    ServiceLogId = serviceLog.Id,
+                    SubProcedureId = item.SubProcedureId,
+                    Unit = item.Unit
+                };
+
+                _db.UnitDetails.Add(ud);
+                await _db.SaveChangesAsync();
+                var ptUnit = new PatientUnitDetail
+                { 
+                    DepartureTime = item.PatientUnitDetail.DepartureTime,
+                    EntryTime = item.PatientUnitDetail.EntryTime,
+                    UnitDetailId = ud.Id,
+                    Signature = item.PatientUnitDetail.PatientSignature,
+                    SignatureDate = item.PatientUnitDetail.PatientSignatureDate
+                };
+
+                _db.PatientUnitDetail.Add(ptUnit);
+            }
+
+            await _db.SaveChangesAsync();
+
+            return await GetByIdAsync(serviceLog.Id);
         }
     }
 }

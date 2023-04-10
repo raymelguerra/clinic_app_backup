@@ -78,8 +78,19 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
 
         // PUT api/<ServiceLogByContractorController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult<GetContractorServiceLogDto>> Put(int id, [FromBody] UpdateServiceLogDto sl)
         {
+            try
+            {
+                var updatedSl = await _service.UpdateAsync(id, sl);
+                _logger.LogInformation($"Event: {LogEvent.UPDATED}    Datetime {DateTime.Now.ToLocalTime()}");
+                return Ok(updatedSl);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Event: {LogEvent.UPDATED}    Datetime {DateTime.Now.ToLocalTime()}");
+                return BadRequest(e.Message);
+            }
         }
 
         // DELETE api/<ServiceLogByContractorController>/5
