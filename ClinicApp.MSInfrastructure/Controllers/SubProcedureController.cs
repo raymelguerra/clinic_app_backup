@@ -41,6 +41,9 @@ public class SubProcedureController : ControllerBase
     [HttpGet("GetSubProceduresByAgreement/{clientId}/{contractorId}")]
     public async Task<ActionResult<IEnumerable<SubProcedure>>> GetSubProceduresByAgreement(int clientId, int contractorId)
     {
-        return Ok(await _subprocedure.GetSubProceduresByAgreement(clientId, contractorId));
+        var data = await _subprocedure.GetSubProceduresByAgreement(clientId, contractorId);
+        if (data != null)
+            return Ok(data);
+        return BadRequest("Error in input data");
     }
 }
