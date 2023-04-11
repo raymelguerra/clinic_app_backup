@@ -225,7 +225,7 @@ namespace ClinicApp.MSServiceLogByContractor.Services
 
             await _db.SaveChangesAsync();
 
-            return await GetByIdAsync(serviceLog.Id);
+            return await GetByIdAsync(contractorServiceLog.ServiceLogId);
         }
     }
 }
