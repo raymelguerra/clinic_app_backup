@@ -114,7 +114,7 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
         }
 
         // POST api/<ServiceLogByContractorController>
-        [HttpPost]
+        [HttpPost("createuser")]
         public async Task<ActionResult> CreateUserContractorPost([FromBody] CreateUserContractor value)
         {
             try
