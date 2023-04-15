@@ -235,18 +235,10 @@ public class ServiceLogByContractorService : IServiceLogByContractor
     public async Task<int> CreateUserContractorAsync(CreateUserContractor user)
     {
         bool _ctr = false, _user = false;
-        Parallel.Invoke(
-            async () =>
-            {
-                if (await _db.Contractors.AnyAsync(x => x.Id == user.ContractorId))
-                    _ctr = true;
-            },
-            async () =>
-            {
-                if (await _db.Users.AnyAsync(x => x.Id == user.UserId))
-                    _user = true;
-            }
-            );
+        if (await _db.Contractors.AnyAsync(x => x.Id == user.ContractorId))
+            _ctr = true;
+        if (await _db.Users.AnyAsync(x => x.Id == user.UserId))
+            _user = true;
         if (_ctr && _user)
         {
             _db.ContractorUser.Add(new ContractorUser
