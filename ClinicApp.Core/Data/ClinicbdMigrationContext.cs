@@ -130,6 +130,7 @@ public partial class ClinicbdMigrationContext : IdentityDbContext
             entity.ToTable("Contractor");
 
             entity.Property(e => e.Extra).HasMaxLength(256);
+            entity.Property(e => e.Email).HasMaxLength(256);
             entity.Property(e => e.Name).HasMaxLength(256);
             entity.Property(e => e.RenderingProvider).HasMaxLength(20);
 
