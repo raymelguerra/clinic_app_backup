@@ -93,6 +93,10 @@ export class ContractorComponent implements OnInit, AfterViewInit {
       name: {
         required: "The name is required.",
       },
+      email: {
+        required: "The email is required.",
+        email: "The email format is wrong.",
+      },
       renderingProvider: {
         required: "The rendering provider is required",
       },
@@ -220,6 +224,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
     };
     this.contractorForm = this.fb.group({
       name: ["", [Validators.required]],
+      email: ["", [Validators.required, Validators.email]],
       renderingProvider: ["", [Validators.required]],
       extra: ["", [Validators.required]],
       payrolls: this.fb.array([]),
@@ -426,6 +431,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   // List adapters
   adapterContractor = (value) => ({
     name: value.name,
+    email: value.email ? value.email : '',
     renderingProvider: value.renderingProvider,
     extra: value.extra,
     payrolls: value.payrolls.map((x, index) => {
@@ -464,6 +470,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   adapterContractorUpgrade = (value) => ({
     id: this.contractorCopy == null ? 0 : this.contractorCopy.id,
     name: value.name,
+    email: value.email ? value.email : '',
     renderingProvider: value.renderingProvider,
     extra: value.extra,
     payrolls:

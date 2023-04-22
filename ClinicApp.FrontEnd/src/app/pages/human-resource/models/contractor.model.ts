@@ -6,6 +6,7 @@ import { Procedure } from "./procedure.model";
 export class Contractor {
     id: number;
     name: string;
+    email: string;
     renderingProvider: string;
     companyId: Company;
     enabled: boolean;

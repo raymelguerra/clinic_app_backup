@@ -34,6 +34,20 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-4 px-1">
+                        <div class="form-group">
+                            <label for="name">Email</label>
+                            <input formControlName="email" name="email" type="email" class="form-control"
+                                placeholder="Email" [ngClass]="{'is-invalid': displayMessage.email }">
+                            <span class="invalid-feedback">
+                                {{displayMessage.email}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 px-1"></div>
+                    <div class="col-md-4 px-1"></div>
+                </div>
+                <div class="row">
                     <div class="col-1">
                         <h5><strong>Payroll</strong></h5>
                     </div>

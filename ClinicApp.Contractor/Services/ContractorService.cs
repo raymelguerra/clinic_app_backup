@@ -43,6 +43,7 @@ public class ContractorService : IContractor
         var list = await _context.Contractors.Select(x => new Contractor
         {
             Id = x.Id,
+            Email = x.Email,
             Name = x.Name,
             Extra = x.Extra,
             Payrolls = x.Payrolls.Select(y => new Payroll
@@ -73,6 +74,7 @@ public class ContractorService : IContractor
         {
             Id = x.Id,
             Name = x.Name,
+            Email = x.Email,
             Extra = x.Extra,
             RenderingProvider = x.RenderingProvider,
             Payrolls = x.Payrolls.Select(y => new Payroll
@@ -101,6 +103,7 @@ public class ContractorService : IContractor
         {
             Id = x.Id,
             Name = x.Name,
+            Email = x.Email,
             Extra = x.Extra,
             RenderingProvider = x.RenderingProvider,
             Payrolls = x.Payrolls.Select(y => new Payroll
@@ -142,7 +145,7 @@ public class ContractorService : IContractor
                 contractorOld.Payrolls.Add(item);
             }
         }
-
+        contractorOld!.Email = contractor.Email;
         contractorOld!.Name = contractor.Name;
         contractorOld.RenderingProvider = contractor.RenderingProvider;
         contractorOld.Extra = contractor.Extra;
@@ -183,6 +186,7 @@ public class ContractorService : IContractor
         {
             Id = x.Id,
             Name = x.Name,
+            Email = x.Email,
             Extra = x.Extra,
             Payrolls = x.Payrolls.Select(y => new Payroll
             {
