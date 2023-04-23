@@ -18,13 +18,14 @@ public class ServiceLogByContractorService : IServiceLogByContractor
     }
     public async Task<GetContractorServiceLogDto> CreateAsync(CreateServiceLogDto sl)
     {
+        DateTime now = sl.CreatedDate ?? DateTime.Now;
         // Create service logs and dependencies
         var serv = new ServiceLog
         {
             PeriodId = sl.PeriodId,
             ContractorId = sl.ContractorId,
             ClientId = sl.ClientId,
-            CreatedDate = sl.CreatedDate,
+            CreatedDate = now,
             Pending = sl.Pending,
             Status = sl.Status
         };
@@ -174,11 +175,12 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         {
             throw new ArgumentException("Service log no existe, no se puede realizar la operación.");
         }
-
+        
+        DateTime now = sl.CreatedDate ?? DateTime.Now;
         serviceLog.PeriodId = sl.PeriodId;
         serviceLog.ContractorId = sl.ContractorId;
         serviceLog.ClientId = sl.ClientId;
-        serviceLog.CreatedDate = sl.CreatedDate;
+        serviceLog.CreatedDate = now;
         serviceLog.Pending = sl.Pending;
         serviceLog.Status = sl.Status;
 
