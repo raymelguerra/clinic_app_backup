@@ -4,6 +4,7 @@ using ClinicApp.Core.Models;
 using ClinicApp.MSServiceLogByContractor.Dtos;
 using ClinicApp.MSServiceLogByContractor.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace ClinicApp.MSServiceLogByContractor.Services;
 
@@ -45,9 +46,10 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         // create Unit Details and dependencies
         foreach (var item in sl.UnitDetails)
         {
+            DateTime dos = DateTime.Parse(item.DateOfService.ToString(), CultureInfo.InvariantCulture);
             var ud = new UnitDetail
             {
-                DateOfService = item.DateOfService,
+                DateOfService = dos,
                 Modifiers = item.Modifiers,
                 PlaceOfServiceId = item.PlaceOfServiceId,
                 ServiceLogId = serv.Id,
@@ -175,7 +177,7 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         {
             throw new ArgumentException("Service log no existe, no se puede realizar la operación.");
         }
-        
+
         DateTime now = sl.CreatedDate ?? DateTime.Now;
         serviceLog.PeriodId = sl.PeriodId;
         serviceLog.ContractorId = sl.ContractorId;
