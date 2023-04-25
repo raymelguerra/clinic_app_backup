@@ -26,7 +26,7 @@ import { ToastrService } from "ngx-toastr";
 import { NotificationService } from "../../../shared/notifications/notification.service";
 import { GenericValidator } from "../../generic.validator";
 import { fromEvent, merge, Observable } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import { debounceTime, tap } from "rxjs/operators";
 import { ModalDismissReasons, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { GlobalConstants } from "../../../shared/common.variables";
 import { Payroll } from "../models/payroll.model";
@@ -262,12 +262,15 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   onProcedureSelected(item: Procedure, index: Number) {
     this.contractorForm.get("payrolls")["controls"][index].value.procedure !=
     null
-      ? (this.contractorForm.get("payrolls")["controls"][index].value.procedure =
+      ? (this.contractorForm.get("payrolls")["controls"][
+          index
+        ].value.procedure =
           this.contractorForm.get("payrolls")["controls"][
             index
           ].value.procedure[0])
-      : (this.contractorForm.get("payrolls")["controls"][index].value.procedure =
-          null);
+      : (this.contractorForm.get("payrolls")["controls"][
+          index
+        ].value.procedure = null);
     //console.log(this.contractorForm.get('payroll')['controls'][index].value.procedure);
   }
   createPayroll(): FormGroup {
@@ -311,18 +314,18 @@ export class ContractorComponent implements OnInit, AfterViewInit {
 
   getListProcedures(payrolls: Payroll[]) {
     if (payrolls) {
-      return payrolls.map((item) => item.procedure.name);       
+      return payrolls.map((item) => item.procedure.name);
     }
     // return item.map(function (elem) { return elem.procedure.name }).join(', ')
   }
   getListContractorType(payrolls: Payroll[]) {
     if (payrolls) {
-      return payrolls.map((item) => item.contractorType.name);       
+      return payrolls.map((item) => item.contractorType.name);
     }
   }
   getListCompanies(payrolls: Payroll[]) {
     if (payrolls) {
-      return payrolls.map((item) => item.company.name);       
+      return payrolls.map((item) => item.company.name);
     }
   }
   //Actions forms
@@ -342,6 +345,8 @@ export class ContractorComponent implements OnInit, AfterViewInit {
               );
               this.contractors_list.push(x);
               this.clearData();
+              // send email
+              this.contractorService.sendConfirmationEmail(x.id).subscribe();
               this.spinnerService.hide();
             },
             (error) => {
@@ -358,6 +363,10 @@ export class ContractorComponent implements OnInit, AfterViewInit {
               this.edit_mode = false;
               this.getContractors();
               this.clearData();
+              // send email
+              this.contractorService
+                .sendConfirmationEmail(contractor.id)
+                .subscribe();
               this.spinnerService.hide();
               this.notificationService.successMessagesNotification(
                 "Updated Contractor"
@@ -431,7 +440,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   // List adapters
   adapterContractor = (value) => ({
     name: value.name,
-    email: value.email ? value.email : '',
+    email: value.email ? value.email : "",
     renderingProvider: value.renderingProvider,
     extra: value.extra,
     payrolls: value.payrolls.map((x, index) => {
@@ -470,7 +479,7 @@ export class ContractorComponent implements OnInit, AfterViewInit {
   adapterContractorUpgrade = (value) => ({
     id: this.contractorCopy == null ? 0 : this.contractorCopy.id,
     name: value.name,
-    email: value.email ? value.email : '',
+    email: value.email ? value.email : "",
     renderingProvider: value.renderingProvider,
     extra: value.extra,
     payrolls:
