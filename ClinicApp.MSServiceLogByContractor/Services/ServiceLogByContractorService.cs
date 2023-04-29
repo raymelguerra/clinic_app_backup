@@ -46,10 +46,9 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         // create Unit Details and dependencies
         foreach (var item in sl.UnitDetails)
         {
-            DateTime dos = DateTime.Parse(item.DateOfService.ToString(), CultureInfo.InvariantCulture);
             var ud = new UnitDetail
             {
-                DateOfService = dos,
+                DateOfService = item.DateOfService,
                 Modifiers = item.Modifiers,
                 PlaceOfServiceId = item.PlaceOfServiceId,
                 ServiceLogId = serv.Id,
@@ -118,9 +117,8 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         return await _db.SaveChangesAsync();
     }
 
-    public async Task<PagedResponse<IEnumerable<AllServiceLogDto>>> GetAllAsync(PaginationFilter filter, string route, int ContractorId)
+    public async Task<IEnumerable<AllServiceLogDto>> GetAllAsync(int ContractorId)
     {
-        var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
         var list = await _db.ServiceLogs.Include("Client").Include("Period")
             .Where(ctr => ctr.ContractorId == ContractorId)
             .Select(x => new AllServiceLogDto
@@ -130,15 +128,11 @@ public class ServiceLogByContractorService : IServiceLogByContractor
                 CreatedDate = (DateTime)x.CreatedDate!,
                 PeriodRange = $"{x.Period.StartDate} - {x.Period.EndDate}",
                 ServiceLogStatus = (ServiceLogStatus)x.Status
-            })
-            // .OrderByDescending(x => x.CreatedDate)
-            .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-        .Take(validFilter.PageSize)
-            .ToListAsync();
+            }).ToListAsync();
         var totalRecords = await _db.ServiceLogs.CountAsync();
 
-        var pagedReponse = PaginationHelper.CreatePagedReponse<AllServiceLogDto>(list, validFilter, totalRecords, _uriService, route);
-        return pagedReponse;
+        // var pagedReponse = PaginationHelper.CreatePagedReponse<AllServiceLogDto>(list, validFilter, totalRecords, _uriService, route);
+        return list;
     }
 
     public async Task<GetContractorServiceLogDto> GetByIdAsync(int ServiceLogId)
@@ -190,7 +184,7 @@ public class ServiceLogByContractorService : IServiceLogByContractor
 
         if (contractorServiceLog == null)
         {
-            throw new ArgumentException("ContractorServicelog es nulo y no se puede realizar la operación.");
+            throw new ArgumentException("ContractorServicelog is null and the operation cannot be performed.");
         }
 
         contractorServiceLog.Signature = sl.Signature;
