@@ -172,13 +172,13 @@ public class ServiceLogByContractorService : IServiceLogByContractor
             throw new ArgumentException("Service log no existe, no se puede realizar la operación.");
         }
 
-        DateTime now = sl.CreatedDate ?? DateTime.Now;
+       // DateTime now = sl.CreatedDate ?? DateTime.Now;
         serviceLog.PeriodId = sl.PeriodId;
         serviceLog.ContractorId = sl.ContractorId;
         serviceLog.ClientId = sl.ClientId;
-        serviceLog.CreatedDate = now;
-        serviceLog.Pending = sl.Pending;
-        serviceLog.Status = sl.Status;
+       // serviceLog.CreatedDate = now;
+      //  serviceLog.Pending = sl.Pending;
+       // serviceLog.Status = sl.Status;
 
         var contractorServiceLog = await _db.ContractorServiceLog.FirstOrDefaultAsync(c => c.ServiceLogId == serviceLog.Id);
 
@@ -198,28 +198,27 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         var existingUnitDetails = await _db.UnitDetails.Where(u => u.ServiceLogId == serviceLog.Id).ToListAsync();
         _db.UnitDetails.RemoveRange(existingUnitDetails);
 
-        // Agregar las nuevas entidades PatientUnitDetail y UnitDetail al ServiceLog
+       
+
         foreach (var item in sl.UnitDetails)
         {
             var ud = new UnitDetail
             {
                 DateOfService = item.DateOfService,
-                Modifiers = item.Modifiers,
-                PlaceOfServiceId = item.PlaceOfServiceId,
+                PlaceOfServiceId = Convert.ToInt32(item.PlaceOfServiceId),
                 ServiceLogId = serviceLog.Id,
-                SubProcedureId = item.SubProcedureId,
-                Unit = item.Unit
+                SubProcedureId = Convert.ToInt32(item.SubProcedureId),
             };
 
             _db.UnitDetails.Add(ud);
             await _db.SaveChangesAsync();
             var ptUnit = new PatientUnitDetail
             {
-                DepartureTime = item.PatientUnitDetail.DepartureTime,
-                EntryTime = item.PatientUnitDetail.EntryTime,
+                DepartureTime = item.DepartureTime,
+                EntryTime = item.EntryTime,
                 UnitDetailId = ud.Id,
-                Signature = item.PatientUnitDetail.PatientSignature,
-                SignatureDate = item.PatientUnitDetail.PatientSignatureDate
+                Signature = item.Signature,
+                SignatureDate = item.SignatureDate,
             };
 
             _db.PatientUnitDetail.Add(ptUnit);

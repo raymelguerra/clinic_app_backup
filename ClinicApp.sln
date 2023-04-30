@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.MSBilling", "Clin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.MSExcelGen", "ClinicApp.MSExcelGen\ClinicApp.MSExcelGen.csproj", "{C3A07CF6-6997-42DB-A9AB-FD48E174B7F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicApp.MSServiceLogByContractor", "ClinicApp.MSServiceLogByContractor\ClinicApp.MSServiceLogByContractor.csproj", "{0985A73B-67FE-4B1B-866E-35D4C4F50C52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.MSServiceLogByContractor", "ClinicApp.MSServiceLogByContractor\ClinicApp.MSServiceLogByContractor.csproj", "{0985A73B-67FE-4B1B-866E-35D4C4F50C52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
