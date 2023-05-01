@@ -1,4 +1,6 @@
-﻿namespace ClinicApp.MSServiceLogByContractor.Dtos
+﻿using System.Text.Json.Serialization;
+
+namespace ClinicApp.MSServiceLogByContractor.Dtos
 {
     /* public class UpdateUnitDetail
      {
@@ -30,6 +32,7 @@
         public string? EntryTime { get; set; }
         public string? DepartureTime { get; set; }
         public string? Signature { get; set; }
+        [JsonIgnore]
         public DateTime SignatureDate { get; set; }
     }
 }
