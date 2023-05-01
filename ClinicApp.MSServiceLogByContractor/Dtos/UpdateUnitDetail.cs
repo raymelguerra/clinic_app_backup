@@ -27,9 +27,9 @@
         public DateTime DateOfService { get; set; }
         public int PlaceOfServiceId { get; set; }
         public int SubProcedureId { get; set; }
-        public string EntryTime { get; set; }
-        public string DepartureTime { get; set; }
-        public string Signature { get; set; }
+        public string? EntryTime { get; set; }
+        public string? DepartureTime { get; set; }
+        public string? Signature { get; set; }
         public DateTime SignatureDate { get; set; }
     }
 }

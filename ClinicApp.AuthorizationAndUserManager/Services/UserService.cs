@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -28,112 +29,137 @@ public class UserService : IUserService
 
     public async Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
     {
-        if (model == null)
-            throw new NullReferenceException("Register Model is null");
+        try
+        {
+            if (model == null)
+                throw new NullReferenceException("Register Model is null");
 
-        if (model.Password != model.ConfirmPassword)
-            return new UserManagerResponse
+            if (model.Password != model.ConfirmPassword)
+                return new UserManagerResponse
+                {
+                    Message = "Confirm password doesn't match the password",
+                    IsSuccess = false,
+                };
+
+            var identityUser = new IdentityUser
             {
-                Message = "Confirm password doesn't match the password",
-                IsSuccess = false,
+                Email = model.Email,
+                UserName = model.Username,
             };
 
-        var identityUser = new IdentityUser
-        {
-            Email = model.Email,
-            UserName = model.Username,
-        };
 
+            var result = await _userManager.CreateAsync(identityUser, model.Password);
+            if (!result.Succeeded)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "User did not create",
+                    IsSuccess = false,
+                    Errors = result.Errors.Select(e => e.Description)
+                };
+            }
 
-        var result = await _userManager.CreateAsync(identityUser, model.Password);
-        if (!result.Succeeded)
-        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            foreach (var rol in model.Rol)
+            {
+                await _userManager.AddToRoleAsync(user, rol);
+            }
+
+            if (result.Succeeded)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "User created successfully!",
+                    IsSuccess = true,
+                };
+            }
+
             return new UserManagerResponse
             {
                 Message = "User did not create",
                 IsSuccess = false,
                 Errors = result.Errors.Select(e => e.Description)
             };
-        }
 
-        var user = await _userManager.FindByNameAsync(model.Username);
-        foreach (var rol in model.Rol)
-        {
-            await _userManager.AddToRoleAsync(user, rol);
         }
-
-        if (result.Succeeded)
+        catch (Exception e)
         {
             return new UserManagerResponse
             {
-                Message = "User created successfully!",
-                IsSuccess = true,
+                Message = "User did not create",
+                IsSuccess = false,
+                Errors = new List<string>().Append(e.Message ?? "Some unhandled exception")
             };
         }
-
-        return new UserManagerResponse
-        {
-            Message = "User did not create",
-            IsSuccess = false,
-            Errors = result.Errors.Select(e => e.Description)
-        };
 
     }
 
     public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
     {
-        var user = await _userManager.FindByNameAsync(model.Username);
+        try
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
 
-        if (user == null)
+            if (user == null)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "There is no user with that Username",
+                    IsSuccess = false,
+                };
+            }
+
+            var result = await _userManager.CheckPasswordAsync(user, model.Password);
+
+            if (!result)
+                return new UserManagerResponse
+                {
+                    Message = "Invalid password",
+                    IsSuccess = false,
+                };
+
+            var roles_list = await _userManager.GetRolesAsync(user);
+
+            List<Claim> claims = new List<Claim>();
+            foreach (var rol in roles_list)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, rol));
+            }
+            claims.Add(new Claim("Username", model.Username));
+            claims.Add(new Claim("Email", user.Email ?? ""));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+
+            var contractor = await _context.ContractorUser.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            if (contractor != null)
+                claims.Add(new Claim("ContractorId", contractor!.ContractorId.ToString()));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["AuthSettings:Issuer"],
+                audience: _configuration["AuthSettings:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+
+            string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new UserManagerResponse
+            {
+                Message = tokenAsString,
+                IsSuccess = true,
+                ExpireDate = token.ValidTo
+            };
+        }
+        catch (Exception e)
         {
             return new UserManagerResponse
             {
-                Message = "There is no user with that Username",
+                Message = "User did not create",
                 IsSuccess = false,
+                Errors = new List<string>().Append(e.Message ?? "Some unhandled exception")
             };
         }
-
-        var result = await _userManager.CheckPasswordAsync(user, model.Password);
-
-        if (!result)
-            return new UserManagerResponse
-            {
-                Message = "Invalid password",
-                IsSuccess = false,
-            };
-
-        var roles_list = await _userManager.GetRolesAsync(user);
-
-        List<Claim> claims = new List<Claim>();
-        foreach (var rol in roles_list)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, rol));
-        }
-        claims.Add(new Claim("Username", model.Username));
-        claims.Add(new Claim("Email", user.Email ?? ""));
-        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-
-        var contractor = await _context.ContractorUser.FirstOrDefaultAsync(x=> x.UserId == user.Id);
-        if(contractor != null)
-            claims.Add(new Claim("ContractorId", contractor!.ContractorId.ToString()));
-        
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
-
-        var token = new JwtSecurityToken(
-            issuer: _configuration["AuthSettings:Issuer"],
-            audience: _configuration["AuthSettings:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddDays(1),
-            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-
-        string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
-
-        return new UserManagerResponse
-        {
-            Message = tokenAsString,
-            IsSuccess = true,
-            ExpireDate = token.ValidTo
-        };
     }
 
     public async Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token)

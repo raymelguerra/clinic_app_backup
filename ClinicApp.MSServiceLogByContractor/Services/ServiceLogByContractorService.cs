@@ -64,8 +64,8 @@ public class ServiceLogByContractorService : IServiceLogByContractor
                 DepartureTime = item.DepartureTime,
                 EntryTime = item.EntryTime,
                 UnitDetailId = ud.Id,
-                Signature = item.PatientSignature,
-                SignatureDate = item.PatientSignatureDate
+                Signature = item.Signature,
+                SignatureDate = item.SignatureDate
             };
             _db.PatientUnitDetail.Add(ptUnit);
             await _db.SaveChangesAsync();

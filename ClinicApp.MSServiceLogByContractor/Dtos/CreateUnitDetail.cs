@@ -12,9 +12,9 @@
 
         // Patient Unit details
         public virtual int UnitDetailId { get; set; }
-        public string? PatientSignature { get; set; }
+        public string? Signature { get; set; }
         public string? EntryTime { get; set; }
         public string? DepartureTime { get; set; }
-        public DateTime? PatientSignatureDate { get; set; }
+        public DateTime? SignatureDate { get; set; }
     }
 }
