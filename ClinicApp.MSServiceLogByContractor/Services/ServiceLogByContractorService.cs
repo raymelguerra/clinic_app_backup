@@ -126,7 +126,7 @@ public class ServiceLogByContractorService : IServiceLogByContractor
                 ServiceLogId = x.Id,
                 ClientName = x.Client.Name!,
                 CreatedDate = (DateTime)x.CreatedDate!,
-                PeriodRange = $"{x.Period.StartDate} - {x.Period.EndDate}",
+                PeriodRange = $"{x.Period.StartDate.Date} - {x.Period.EndDate.Date}",
                 ServiceLogStatus = (ServiceLogStatus)x.Status
             }).ToListAsync();
         var totalRecords = await _db.ServiceLogs.CountAsync();
