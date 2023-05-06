@@ -67,7 +67,7 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("ResetPassword"), Authorize(Roles = "Administrator,Operator,Biller")]
+    [HttpPost("ResetPassword")]
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
         if (ModelState.IsValid)
