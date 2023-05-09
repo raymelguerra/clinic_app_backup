@@ -70,8 +70,8 @@ public class ServiceLogByContractorService : IServiceLogByContractor
                 DepartureTime = item.DepartureTime,
                 EntryTime = item.EntryTime,
                 UnitDetailId = ud.Id,
-                Signature = item.PatientSignature,
-                SignatureDate = item.PatientSignatureDate
+                Signature = item.Signature,
+                SignatureDate = item.SignatureDate
             };
             _db.PatientUnitDetail.Add(ptUnit);
             await _db.SaveChangesAsync();
@@ -162,7 +162,7 @@ public class ServiceLogByContractorService : IServiceLogByContractor
                 ServiceLogId = x.Id,
                 ClientName = x.Client.Name!,
                 CreatedDate = (DateTime)x.CreatedDate!,
-                PeriodRange = $"{x.Period.StartDate} - {x.Period.EndDate}",
+                PeriodRange = $"{x.Period.StartDate.ToString("MM/dd/yyyy")} - {x.Period.EndDate.ToString("MM/dd/yyyy")}",
                 ServiceLogStatus = (ServiceLogStatus)x.Status
             }).ToListAsync();
         var totalRecords = await _db.ServiceLogs.CountAsync();
