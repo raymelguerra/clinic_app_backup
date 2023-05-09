@@ -46,6 +46,12 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         // create Unit Details and dependencies
         foreach (var item in sl.UnitDetails)
         {
+            bool validUnit =IsValidUnit(sl.ClientId, sl.ContractorId,item.Unit);
+            if (!validUnit)
+            {
+                throw new ArgumentException("El valor del campo Unit no cumple con las condiciones de validación");
+            }
+
             var ud = new UnitDetail
             {
                 DateOfService = item.DateOfService,
@@ -73,6 +79,36 @@ public class ServiceLogByContractorService : IServiceLogByContractor
 
         return await GetByIdAsync(serv.Id);
     }
+
+
+    public bool IsValidUnit(int clientId, int contractorId, int unit)
+    {
+        int weeklyApprovedValue = 0;
+        int contractorTypeId = _db.Payrolls
+            .Where(p => p.ContractorId == contractorId)
+            .Select(p => p.ContractorTypeId)
+            .FirstOrDefault();
+
+        if (contractorTypeId == 1)
+        {
+            weeklyApprovedValue = _db.Clients
+                .Where(c => c.Id == clientId)
+                .Select(c => c.WeeklyApprovedAnalyst)
+                .FirstOrDefault();
+        }
+        else
+        {
+            weeklyApprovedValue = _db.Clients
+                .Where(c => c.Id == clientId)
+                .Select(c => c.WeeklyApprovedRbt)
+                .FirstOrDefault();
+        }
+        int unitInMinutes = unit * 15;
+        bool isUnitLessThanWeeklyApproved = unitInMinutes < weeklyApprovedValue;
+        return isUnitLessThanWeeklyApproved;
+    }
+
+
 
     public async Task<int> DeleteAsync(int ServiceLogId)
     {
