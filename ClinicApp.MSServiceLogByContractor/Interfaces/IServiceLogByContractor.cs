@@ -12,6 +12,7 @@ namespace ClinicApp.MSServiceLogByContractor.Interfaces
         public Task<GetContractorServiceLogDto> UpdateAsync(int ServiceLogId, UpdateServiceLogDto sl);
         public Task<int> CreateUserContractorAsync(CreateUserContractor user);
         public Task<int> DeleteAsync(int ServiceLogId);
+        public Task<CreateValidationDto> PreCreateValidateAsync(CreateServiceLogDto user);
 
     }
 }

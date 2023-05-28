@@ -119,7 +119,8 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
             try
             {
                 var sl = await _service.CreateUserContractorAsync(value);
-                if (sl != 1) {
+                if (sl != 1)
+                {
                     _logger.LogInformation($"Event: {LogEvent.NOT_FOUND}    Datetime {DateTime.Now.ToLocalTime()}");
                     return NotFound();
                 }
@@ -129,6 +130,23 @@ namespace ClinicApp.MSServiceLogByContractor.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Event: {LogEvent.CREATED}    Datetime {DateTime.Now.ToLocalTime()}");
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("PreCreate")]
+        public async Task<ActionResult> PreCreateServiceLog([FromBody] CreateServiceLogDto value)
+        {
+            try
+            {
+                var result = await this._service.PreCreateValidateAsync(value);
+                if (result.Message!.Count() == 0)
+                    return NoContent();
+                else
+                    return BadRequest(result);
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }

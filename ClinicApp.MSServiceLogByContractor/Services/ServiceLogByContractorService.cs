@@ -4,7 +4,10 @@ using ClinicApp.Core.Models;
 using ClinicApp.MSServiceLogByContractor.Dtos;
 using ClinicApp.MSServiceLogByContractor.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
+using Serilog;
+using System.Runtime.ConstrainedExecution;
+using System;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace ClinicApp.MSServiceLogByContractor.Services;
 
@@ -46,11 +49,11 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         // create Unit Details and dependencies
         foreach (var item in sl.UnitDetails)
         {
-            bool validUnit =IsValidUnit(sl.ClientId, sl.ContractorId,item.Unit);
-            if (!validUnit)
-            {
-                throw new ArgumentException("El valor del campo Unit no cumple con las condiciones de validación");
-            }
+            //bool validUnit = IsValidUnit(sl.ClientId, sl.ContractorId, item.Unit);
+            //if (!validUnit)
+            //{
+            //    throw new ArgumentException("El valor del campo Unit no cumple con las condiciones de validación");
+            //}
 
             var ud = new UnitDetail
             {
@@ -208,13 +211,13 @@ public class ServiceLogByContractorService : IServiceLogByContractor
             throw new ArgumentException("Service log no existe, no se puede realizar la operación.");
         }
 
-       // DateTime now = sl.CreatedDate ?? DateTime.Now;
+        // DateTime now = sl.CreatedDate ?? DateTime.Now;
         serviceLog.PeriodId = sl.PeriodId;
         serviceLog.ContractorId = sl.ContractorId;
         serviceLog.ClientId = sl.ClientId;
-       // serviceLog.CreatedDate = now;
-      //  serviceLog.Pending = sl.Pending;
-       // serviceLog.Status = sl.Status;
+        // serviceLog.CreatedDate = now;
+        //  serviceLog.Pending = sl.Pending;
+        // serviceLog.Status = sl.Status;
 
         var contractorServiceLog = await _db.ContractorServiceLog.FirstOrDefaultAsync(c => c.ServiceLogId == serviceLog.Id);
 
@@ -234,7 +237,7 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         var existingUnitDetails = await _db.UnitDetails.Where(u => u.ServiceLogId == serviceLog.Id).ToListAsync();
         _db.UnitDetails.RemoveRange(existingUnitDetails);
 
-       
+
 
         foreach (var item in sl.UnitDetails)
         {
@@ -284,5 +287,155 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         }
         return 0;
 
+    }
+
+    public async Task<CreateValidationDto> PreCreateValidateAsync(CreateServiceLogDto sl)
+    {
+        /*
+         Requirement 
+          Validaciones por cliente
+            1. Todos los contractors 53 55HN 55 56 con un mismo cliente. La suma de todas las horas de estos codigos el mismo  dia no puede ser mayor a 8 (32 unidades). (Las horas de los XP no suman)
+            2. El total de horas en una semana para un cliente no puede exceder las 40 horas (160 unidades) (excepto para los XP).
+
+          Validaciones de los contractors
+            1. El total de horas trabajadas en el dia (con todos los clientes) no puede exceder las 10 horas (40 unidades).
+            2. Para el caso de los 53XP cuando vayan a insertar una linea de servicio solo se puede insertar dentro de un rango horario realizado por los codigos 55 y 55HN.
+         */
+
+        CreateValidationDto resp = new();
+        var message = new List<string>();
+        var first = await this.CountHoursDailybyClientAsync(sl.CreatedDate!.Value, sl.ClientId, sl.UnitDetails);
+        if (first != String.Empty)
+            message.Add(first);
+        var second = await this.CountHoursWeeklybyClientAsync(sl.CreatedDate!.Value, sl.ClientId, sl.UnitDetails);
+        if (second != String.Empty)
+            message.Add(second);
+
+        var third = await this.CountHoursDailybyContractorAsync(sl.CreatedDate!.Value, sl.ContractorId, sl.UnitDetails);
+        if (third != String.Empty)
+            message.Add(third);
+
+        var fourth = await this.VerifyXPContractorAsync(sl.CreatedDate!.Value, sl.ClientId, sl.UnitDetails);
+        if (fourth != String.Empty)
+            message.Add(fourth);
+
+        resp.Message = message;
+
+        return resp;
+    }
+    private async Task<string> CountHoursDailybyClientAsync(DateTime createDate, int clientId, IEnumerable<CreateUnitDetail> units = null!)
+    {
+        if (units != null)
+        {
+            var servLogs = await _db.ServiceLogs.Include(x => x.UnitDetails).Where(x => x.ClientId == clientId && DateTime.Compare(x.CreatedDate!.Value.Date, createDate.Date) == 0).ToListAsync<ServiceLog>();
+
+            var subproc = await _db.SubProcedures.Where(x => x.Name.Contains("XP")).Select(x => x.Id).ToListAsync();
+            int sumatory = 0;
+            foreach (var item in servLogs)
+            {
+                sumatory += item.UnitDetails.Where(x => !subproc.Contains(x.SubProcedureId)).Select(x => x.Unit).Sum();
+            }
+
+            int sum = units.Where(x => !subproc.Contains(x.SubProcedureId)).Select(x => x.Unit).Sum();
+
+            return (sum + sumatory > 32) ? "The number of daily hours with a client cannot exceed 32 units" : String.Empty;
+        }
+        return String.Empty;
+    }
+
+    private async Task<string> CountHoursWeeklybyClientAsync(DateTime createDate, int clientId, IEnumerable<CreateUnitDetail> units = null!)
+    {
+        if (units != null)
+        {
+            var servLogs = await _db.ServiceLogs.Include(x => x.UnitDetails).Where(x => x.ClientId == clientId && x.CreatedDate!.Value.DayOfWeek == createDate.DayOfWeek).ToListAsync<ServiceLog>();
+
+            var subproc = await _db.SubProcedures.Where(x => x.Name.Contains("XP")).Select(x => x.Id).ToListAsync();
+            int sumatory = 0;
+            foreach (var item in servLogs)
+            {
+                sumatory += item.UnitDetails.Where(x => !subproc.Contains(x.SubProcedureId)).Select(x => x.Unit).Sum();
+            }
+
+            int sum = units.Where(x => !subproc.Contains(x.SubProcedureId)).Select(x => x.Unit).Sum();
+
+            return (sum + sumatory > 160) ? "The number of weekly hours with a client cannot exceed 160 units" : String.Empty;
+        }
+        return String.Empty;
+    }
+
+    private async Task<string> CountHoursDailybyContractorAsync(DateTime createDate, int contractorId, IEnumerable<CreateUnitDetail> units = null!)
+    {
+        if (units != null)
+        {
+            var servLogs = await _db.ServiceLogs.Include(x => x.UnitDetails)
+                .Where(x => x.ContractorId == contractorId && DateTime.Compare(x.CreatedDate!.Value.Date, createDate.Date) == 0)
+                .ToListAsync<ServiceLog>();
+
+            var subproc = await _db.SubProcedures
+                .Where(x => x.Name.Contains("XP"))
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            int sumatory = 0;
+            foreach (var item in servLogs)
+            {
+                sumatory += item.UnitDetails
+                    .Where(x => !subproc.Contains(x.SubProcedureId))
+                    .Select(x => x.Unit)
+                    .Sum();
+            }
+
+            int sum = units
+                .Where(x => !subproc.Contains(x.SubProcedureId))
+                .Select(x => x.Unit)
+                .Sum();
+
+            return (sum + sumatory > 40) ? "The number of daily hours for a contractor cannot exceed 40 units" : String.Empty;
+        }
+        return String.Empty;
+    }
+
+    private async Task<string> VerifyXPContractorAsync(DateTime createDate, int clientId, IEnumerable<CreateUnitDetail> units = null!)
+    {
+        if (units != null)
+        {
+            var servLogs = await _db.ServiceLogs.Include(x => x.UnitDetails).Where(x => x.ClientId == clientId && DateTime.Compare(x.CreatedDate!.Value.Date, createDate.Date) == 0).ToListAsync<ServiceLog>();
+
+            if (servLogs.Count() == 0) return "No analysts found at the specified XP code(s) time";
+
+            var subProcedures = await _db.SubProcedures.ToListAsync();
+            var subProcXp = subProcedures.Where(x => x.Name.Contains("53XP")).Select(x => x.Id).ToList();
+            var subProcAnalyst = subProcedures.Where(x => x.Name.Contains("55") || x.Name.Contains("55HN")).Select(x => x.Id).ToList();
+
+            bool checker = false;
+            foreach (var item in units.Where(x => subProcXp.Contains(x.SubProcedureId)))
+            {
+                foreach (var serv in servLogs)
+                {
+                    var unitsCtr = serv.UnitDetails.Where(x => !subProcAnalyst.Contains(x.SubProcedureId)).Select(x => x.Id).ToList();
+                    if (unitsCtr.Count() > 0)
+                    {                        
+                        checker = await _db.PatientUnitDetail
+                            .Where(
+                                x => unitsCtr.Contains(x.UnitDetailId)
+                                 &&
+                                this.IsInRange(
+                                    item.EntryTime!,
+                                    item.DepartureTime!,
+                                    x.EntryTime,
+                                    x.DepartureTime)
+                                )
+                            .CountAsync() > 0;
+
+                    }
+                }
+            }
+            return !checker ? "No analysts found at the specified XP code(s) time" : string.Empty;
+        }
+        return String.Empty;
+    }
+    private bool IsInRange(string startNew, string endNew, string startCreated="", string endCreated = "")
+    {
+        return (TimeSpan.Parse(startNew) >= TimeSpan.Parse(startCreated)) && (TimeSpan.Parse(endNew) <= TimeSpan.Parse(endCreated));
     }
 }
