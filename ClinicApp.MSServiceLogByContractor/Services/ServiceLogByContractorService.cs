@@ -301,21 +301,21 @@ public class ServiceLogByContractorService : IServiceLogByContractor
             1. El total de horas trabajadas en el dia (con todos los clientes) no puede exceder las 10 horas (40 unidades).
             2. Para el caso de los 53XP cuando vayan a insertar una linea de servicio solo se puede insertar dentro de un rango horario realizado por los codigos 55 y 55HN.
          */
-
+        DateTime now = sl.CreatedDate ?? DateTime.Now;
         CreateValidationDto resp = new();
         var message = new List<string>();
-        var first = await this.CountHoursDailybyClientAsync(sl.CreatedDate!.Value, sl.ClientId, sl.UnitDetails);
+        var first = await this.CountHoursDailybyClientAsync(now, sl.ClientId, sl.UnitDetails);
         if (first != String.Empty)
             message.Add(first);
-        var second = await this.CountHoursWeeklybyClientAsync(sl.CreatedDate!.Value, sl.ClientId, sl.UnitDetails);
+        var second = await this.CountHoursWeeklybyClientAsync(now, sl.ClientId, sl.UnitDetails);
         if (second != String.Empty)
             message.Add(second);
 
-        var third = await this.CountHoursDailybyContractorAsync(sl.CreatedDate!.Value, sl.ContractorId, sl.UnitDetails);
+        var third = await this.CountHoursDailybyContractorAsync(now, sl.ContractorId, sl.UnitDetails);
         if (third != String.Empty)
             message.Add(third);
 
-        var fourth = await this.VerifyXPContractorAsync(sl.CreatedDate!.Value, sl.ClientId, sl.UnitDetails);
+        var fourth = await this.VerifyXPContractorAsync(now, sl.ClientId, sl.UnitDetails);
         if (fourth != String.Empty)
             message.Add(fourth);
 
