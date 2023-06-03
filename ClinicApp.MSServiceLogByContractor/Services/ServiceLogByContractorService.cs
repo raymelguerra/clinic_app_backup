@@ -417,7 +417,8 @@ public class ServiceLogByContractorService : IServiceLogByContractor
                     {                        
                         checker = await _db.PatientUnitDetail
                             .Where(
-                                x => unitsCtr.Contains(x.UnitDetailId)
+                                x => 
+                                unitsCtr.Contains(x.UnitDetailId)
                                  &&
                                 this.IsInRange(
                                     item.EntryTime!,
@@ -436,6 +437,8 @@ public class ServiceLogByContractorService : IServiceLogByContractor
     }
     private bool IsInRange(string startNew, string endNew, string startCreated="", string endCreated = "")
     {
+        if(startCreated == String.Empty && endCreated == String.Empty)
+            return false;
         return (TimeSpan.Parse(startNew) >= TimeSpan.Parse(startCreated)) && (TimeSpan.Parse(endNew) <= TimeSpan.Parse(endCreated));
     }
 }

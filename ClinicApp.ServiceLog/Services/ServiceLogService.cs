@@ -76,6 +76,7 @@ public class ServiceLogService : IServiceLog
                 ContractorId = x.Contractor.Id,
                 CreatedDate = x.CreatedDate,
                 PeriodId = x.PeriodId,
+                Status = x.Status,
                 Period = new()
                 {
                     EndDate = x.Period.EndDate,
