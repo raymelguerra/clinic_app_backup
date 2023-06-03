@@ -21,5 +21,6 @@ public interface IServiceLog
     public Task<ServiceLog?> UpdatePendingStatus(int id);
     public Task<PagedResponse<IEnumerable<ServiceLogByNameDto?>>> GetServiceLogsByName(PaginationFilter filter, string name, string type, string route);
     public Task<IEnumerable<ServiceLogByContractorDto?>> GetServicesLogByContractor(int contractorId);
+    public Task<ServiceLog?> PatchChangeStatus(int serviceLog, int status);
     public bool ServiceLogExists(int id);
 }

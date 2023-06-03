@@ -434,10 +434,25 @@ public class ServiceLogService : IServiceLog
                      }
                  })
                  .Where(x => x.ContractorId == contractorId)
-                 .OrderByDescending(x =>x.Id)
+                 .OrderByDescending(x => x.Id)
                  .Take(25)
                  .ToListAsync();
 
         return list;
+    }
+
+    public async Task<ServiceLog?> PatchChangeStatus(int serviceLog, int status)
+    {
+        var sl = await _context.ServiceLogs.Where(x => x.Id == serviceLog).FirstOrDefaultAsync();
+
+        if (sl == null)
+            return null;
+
+        sl.Status = status;
+
+        await _context.SaveChangesAsync();
+
+        return new ServiceLog { };
+
     }
 }

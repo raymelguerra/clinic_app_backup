@@ -5,10 +5,7 @@ using ClinicApp.MSServiceLog.Interfaces;
 using ClinicApp.MSServiceLog.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Xml.Linq;
-
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ClinicApp.MSServiceLog.Controllers;
@@ -32,7 +29,7 @@ public class ServiceLogController : ControllerBase
             var contractor = await _serviceLog.GetServiceLog(filter, route);
             return Ok(contractor);
         }
-        catch (Exception e) 
+        catch (Exception e)
         {
             return BadRequest(e.Message);
         }
@@ -58,7 +55,7 @@ public class ServiceLogController : ControllerBase
     [HttpGet("GetServiceLogByContractor/{contractorId}")]
     public async Task<ActionResult<ServiceLogByContractorDto>> GetServiceLogByContractor(int contractorId)
     {
-        try 
+        try
         {
             var contractor = await _serviceLog.GetServicesLogByContractor(contractorId);
             return Ok(contractor);
@@ -71,7 +68,7 @@ public class ServiceLogController : ControllerBase
 
     // GET: api/ServiceLogs
     [HttpGet("GetServiceLogByName/{name}/{type}")]
-    public async Task<ActionResult<IEnumerable<ServiceLog>>> GetServiceLogByName([FromQuery] PaginationFilter filter, string name, string type) 
+    public async Task<ActionResult<IEnumerable<ServiceLog>>> GetServiceLogByName([FromQuery] PaginationFilter filter, string name, string type)
     {
         try
         {
@@ -88,7 +85,7 @@ public class ServiceLogController : ControllerBase
 
     // GET: api/ServiceLogs/GetServiceLogWithoutDetails
     [HttpGet("GetServiceLogWithoutDetails")]
-    public async Task<ActionResult<IEnumerable<ServiceLogWithoutDetailsDto>>> GetServiceLogWithoutDetails() 
+    public async Task<ActionResult<IEnumerable<ServiceLogWithoutDetailsDto>>> GetServiceLogWithoutDetails()
     {
         try
         {
@@ -131,7 +128,7 @@ public class ServiceLogController : ControllerBase
             var created = await _serviceLog.PutServiceLog(id, contractor);
             if (created == null)
                 return NotFound();
-            
+
             return NoContent();
         }
         catch (Exception e)
@@ -146,8 +143,8 @@ public class ServiceLogController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var contractor = await _serviceLog.DeleteServiceLog(id);
-        if(contractor == null)
-           return NotFound();
+        if (contractor == null)
+            return NotFound();
         return NoContent();
 
     }
@@ -176,6 +173,16 @@ public class ServiceLogController : ControllerBase
     {
         var route = Request.Path.Value!;
         var pagedResponse = await _serviceLog.GetServiceLogsByName(filter, name, type, route);
-            return Ok(pagedResponse);
+        return Ok(pagedResponse);
+    }
+
+    [HttpPatch("ChangeStatusServiceLog/{serviceLogId}/{status}"), Authorize(Roles = "Administrator,Operator")]
+    public async Task<ActionResult> ChangeStatusServiceLog(int serviceLogId, int status)
+    {
+        var st = await _serviceLog.PatchChangeStatus(serviceLogId, status);
+        if (st != null)
+            return NoContent();
+        else
+            return BadRequest();
     }
 }
