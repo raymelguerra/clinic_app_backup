@@ -55,40 +55,80 @@ public class ServiceLogService : IServiceLog
         return pagedReponse!;
     }
 
-    public async Task<PagedResponse<IEnumerable<AllServicesLogDto>>> GetServiceLog(PaginationFilter filter, string route)
+    public async Task<PagedResponse<IEnumerable<AllServicesLogDto>>> GetServiceLog(PaginationFilter filter, string route, int status = -1)
     {
         var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
-        var list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
-            .Select(x => new AllServicesLogDto
-            {
-                Client = new ClientDto
+        int totalRecords = 0;
+        var list = new List<AllServicesLogDto>();
+        if (status == -1)
+        {
+            list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
+                .Select(x => new AllServicesLogDto
                 {
-                    Id = x.Client.Id,
-                    Name = x.Client.Name
-                },
-                Id = x.Id,
-                Contractor = new ContractorDto
+                    Client = new ClientDto
+                    {
+                        Id = x.Client.Id,
+                        Name = x.Client.Name
+                    },
+                    Id = x.Id,
+                    Contractor = new ContractorDto
+                    {
+                        Id = x.Contractor.Id,
+                        Name = x.Contractor.Name
+                    },
+                    ClientId = x.ClientId,
+                    ContractorId = x.Contractor.Id,
+                    CreatedDate = x.CreatedDate,
+                    PeriodId = x.PeriodId,
+                    Status = x.Status,
+                    Period = new()
+                    {
+                        EndDate = x.Period.EndDate,
+                        Id = x.Period.Id,
+                        StartDate = x.Period.StartDate
+                    }
+                })
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
+            totalRecords = await _context.ServiceLogs.CountAsync();
+        }
+        else
+        {
+            list = await _context.ServiceLogs.Include("Client").Include("Contractor").Include("Period")
+                .Select(x => new AllServicesLogDto
                 {
-                    Id = x.Contractor.Id,
-                    Name = x.Contractor.Name
-                },
-                ClientId = x.ClientId,
-                ContractorId = x.Contractor.Id,
-                CreatedDate = x.CreatedDate,
-                PeriodId = x.PeriodId,
-                Status = x.Status,
-                Period = new()
-                {
-                    EndDate = x.Period.EndDate,
-                    Id = x.Period.Id,
-                    StartDate = x.Period.StartDate
-                }
-            })
-            .OrderByDescending(x => x.CreatedDate)
-            .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-            .Take(validFilter.PageSize)
-            .ToListAsync();
-        var totalRecords = await _context.ServiceLogs.CountAsync();
+                    Client = new ClientDto
+                    {
+                        Id = x.Client.Id,
+                        Name = x.Client.Name
+                    },
+                    Id = x.Id,
+                    Contractor = new ContractorDto
+                    {
+                        Id = x.Contractor.Id,
+                        Name = x.Contractor.Name
+                    },
+                    ClientId = x.ClientId,
+                    ContractorId = x.Contractor.Id,
+                    CreatedDate = x.CreatedDate,
+                    PeriodId = x.PeriodId,
+                    Status = x.Status,
+                    Period = new()
+                    {
+                        EndDate = x.Period.EndDate,
+                        Id = x.Period.Id,
+                        StartDate = x.Period.StartDate
+                    }
+                })
+                .Where(x => x.Status == status)
+                .OrderByDescending(x => x.CreatedDate)
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
+            totalRecords = await _context.ServiceLogs.Where(x => x.Status == status).CountAsync();
+        }
 
         var pagedReponse = PaginationHelper.CreatePagedReponse<AllServicesLogDto>(list, validFilter, totalRecords, _uriService, route);
         return pagedReponse;

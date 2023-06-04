@@ -21,13 +21,15 @@ public class ServiceLogController : ControllerBase
     }
     // GET: api/<clientController>
     [HttpGet]
-    public async Task<ActionResult<PagedResponse<IEnumerable<AllServicesLogDto>>>> Get([FromQuery] PaginationFilter filter)
+    public async Task<ActionResult<PagedResponse<IEnumerable<AllServicesLogDto>>>> Get([FromQuery] PaginationFilter filter, [FromQuery] string status)
     {
         try
         {
             var route = Request.Path.Value ?? String.Empty;
-            var contractor = await _serviceLog.GetServiceLog(filter, route);
+            int statusSl = status != null ? int.Parse(status) : -1;
+            var contractor = await _serviceLog.GetServiceLog(filter, route, statusSl);
             return Ok(contractor);
+
         }
         catch (Exception e)
         {

@@ -10,7 +10,7 @@ using System.Data;
 namespace ClinicApp.MSServiceLog.Interfaces;
 public interface IServiceLog
 {
-    public Task<PagedResponse<IEnumerable<AllServicesLogDto>>> GetServiceLog(PaginationFilter filter, string route);
+    public Task<PagedResponse<IEnumerable<AllServicesLogDto>>> GetServiceLog(PaginationFilter filter, string route, int status = -1);
     public Task<ServiceLog?> GetServiceLog(int id);
     public Task<IEnumerable<ServiceLogWithoutDetailsDto>> GetServiceLogWithoutDetails();
     public Task<PagedResponse<IEnumerable<ServiceLogByNameDto>>> GetServiceLogByName(PaginationFilter filter, string name, string route, string type);
