@@ -1,3 +1,11 @@
 .custom-font-size .multiselect-dropdown .dropdown-btn {
-    width: 200pt !important; 
+  width: 200pt !important;
 }
+label {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 5px;
+  }

@@ -1,6 +1,6 @@
 export class Company 
 {
-    id: Number;
+    id: number;
     name: string;
     acronym: string;
 }

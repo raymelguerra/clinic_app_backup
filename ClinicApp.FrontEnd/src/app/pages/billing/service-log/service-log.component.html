@@ -8,39 +8,42 @@
                             <label>Contractor</label>
                             <ng-multiselect-dropdown [placeholder]="'Contractor'"
                                 [settings]="contractorDropdownSettings" [data]="contractorList"
-                                formControlName="contractor" (onSelect)="onSelectContractor($event)" [ngClass]="{'is-invalid': !serviceLogForm.get('contractor')?.valid }">
+                                formControlName="contractor" (onSelect)="onSelectContractor($event)"
+                                [ngClass]="{'is-invalid': !serviceLogForm.get('contractor')?.valid }">
                             </ng-multiselect-dropdown>
                             <span class="invalid-feedback">
                                 <span *ngIf="serviceLogForm.get('contractor')?.errors?.required">
                                     The contractor is required.
                                 </span>
-                              </span>
+                            </span>
                         </div>
                     </div>
                     <div class="col-md-4 px-1">
                         <div class="form-group">
                             <label>Client</label>
-                            <ng-multiselect-dropdown [placeholder]="'Client'" (onSelect)="onSelectClient($event)" [settings]="clientDropdownSettings"
-                                [data]="clientList" formControlName="client" [ngClass]="{'is-invalid': !serviceLogForm.get('client')?.valid }">
+                            <ng-multiselect-dropdown [placeholder]="'Client'" (onSelect)="onSelectClient($event)"
+                                [settings]="clientDropdownSettings" [data]="clientList" formControlName="client"
+                                [ngClass]="{'is-invalid': !serviceLogForm.get('client')?.valid }">
                             </ng-multiselect-dropdown>
                             <span class="invalid-feedback">
                                 <span *ngIf="serviceLogForm.get('client')?.errors?.required">
                                     The client is required.
                                 </span>
-                              </span>
+                            </span>
                         </div>
                     </div>
                     <div class="col-md-4 px-1">
                         <label>Period</label>
-                        <ng-multiselect-dropdown id="period" [placeholder]="'Period'" (onSelect)="onSelectPeriod($event)"
-                            [settings]="periodDropdownSettings" [data]="list_periodDTO"
-                            formControlName="period" [ngClass]="{'is-invalid': !serviceLogForm.get('period')?.valid }">
+                        <ng-multiselect-dropdown id="period" [placeholder]="'Period'"
+                            (onSelect)="onSelectPeriod($event)" [settings]="periodDropdownSettings"
+                            [data]="list_periodDTO" formControlName="period"
+                            [ngClass]="{'is-invalid': !serviceLogForm.get('period')?.valid }">
                         </ng-multiselect-dropdown>
                         <span class="invalid-feedback">
                             <span *ngIf="serviceLogForm.get('period')?.errors?.required">
                                 The period is required.
                             </span>
-                          </span>
+                        </span>
 
                     </div>
                 </div>
@@ -80,10 +83,10 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label for="dateOfService">Date of service</label>
-                                        <input class="form-control" type="date" name="dateOfService" formControlName="dateOfService"
-                                            placeholder="mm/dd/yyyy" value=""
+                                        <input class="form-control" type="date" name="dateOfService"
+                                            formControlName="dateOfService" placeholder="mm/dd/yyyy" value=""
                                             min="{{ begin_day |  date: 'yyyy-MM-dd' }}"
-                                            max="{{ end_day | date: 'yyyy-MM-dd' }}" >
+                                            max="{{ end_day | date: 'yyyy-MM-dd' }}">
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -106,9 +109,8 @@
                                     <div class="form-group">
                                         <label for="subProcedure">Sub procedure</label>
                                         <ng-multiselect-dropdown id="subProcedure" class="custom-font-size"
-                                            [placeholder]="'Sub Procedure'"
-                                            [settings]="subProcedureDropdownSettings" [data]="subProcedureList"
-                                            (onSelect)="onSelectSubProcedure($event)"
+                                            [placeholder]="'Sub Procedure'" [settings]="subProcedureDropdownSettings"
+                                            [data]="subProcedureList" (onSelect)="onSelectSubProcedure($event)"
                                             formControlName="subProcedure">
                                         </ng-multiselect-dropdown>
                                     </div>
@@ -135,7 +137,8 @@
                 </div>
                 <br>
                 <div class="button-container">
-                    <button type="submit" [disabled]="!serviceLogForm.valid" class="btn btn-neutral btn-info btn-small text-right">Save</button>&nbsp;
+                    <button type="submit" [disabled]="!serviceLogForm.valid"
+                        class="btn btn-neutral btn-info btn-small text-right">Save</button>&nbsp;
                     <button type="button" (click)="clearData()"
                         class="btn btn-neutral btn-danger btn-small text-right">Cancel</button>
                 </div>
@@ -157,8 +160,7 @@
                             <div class="col-sm-8 col-md-6">
                                 <div class="form-group">
                                     <ng-multiselect-dropdown id="typeSearch" class="custom-font-size"
-                                        [placeholder]="'Search By'"
-                                        [(ngModel)]="typeSearchSelected"
+                                        [placeholder]="'Search By'" [(ngModel)]="typeSearchSelected"
                                         [settings]="typeSearchDropdownSettings" [data]="typeSearchList"
                                         (onSelect)="onSelectTypeSearch($event)">
                                     </ng-multiselect-dropdown>
@@ -166,16 +168,26 @@
                             </div>
                             <div class="col-sm-4 col-md-6">
                                 <span class="searchbar-toggle"> </span>
-                        <div class="pcoded-search-box ">
-                            <input type="text" placeholder="Enter the name" [(ngModel)]="filterName">
-                        </div>
+                                <div class="pcoded-search-box ">
+                                    <input type="text" placeholder="Enter the name" [(ngModel)]="filterName">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-4">
-                        <button value="search" title="Search by name" (click)="searchByName()" class="btn btn-sm btn-info btn-outline-info" [disabled]="filterName=='' || typeSearchSelected.length == 0"><i class="ti-search"></i></button>&nbsp;
-                        <button value="clean" title="Clean filter" (click)="cleanFilter()" class="btn btn-sm btn-danger btn-outline-danger"><i class="icofont icofont-not-allowed"></i></button>
+                    <button value="search" title="Search by name" (click)="searchByName()"
+                        class="btn btn-sm btn-info btn-outline-info"
+                        [disabled]="filterName=='' || typeSearchSelected.length == 0"><i
+                            class="ti-search"></i></button>&nbsp;
+                    <button value="clean" title="Clean filter" (click)="cleanFilter()"
+                        class="btn btn-sm btn-danger btn-outline-danger"><i
+                            class="icofont icofont-not-allowed"></i></button>
+                </div>
+                <div class="col-3">
+                    <label for="statusCheck">
+                        <input type="checkbox" id="statusCheck" [(ngModel)]="isChecked"  (change)="onCheckedChange($event)"> Only [Created] service logs
+                    </label>
                 </div>
             </div>
             <br>
@@ -186,6 +198,7 @@
                             <thead class="thead-dark">
                                 <tr class="d-flex">
                                     <th class="col-1">#</th>
+                                    <th class="col-2 text-center">Status</th>
                                     <th class="col-2">Period</th>
                                     <th class="col-3">Contractor</th>
                                     <th class="col-3">Client</th>
@@ -193,26 +206,36 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="d-flex" *ngFor="let item of list_service_log | paginate: config; let i = index">
+                                <tr class="d-flex"
+                                    *ngFor="let item of list_service_log | paginate: config; let i = index">
                                     <th class="col-1" scope="row">{{i + 1}}</th>
+                                    <td class="col-2 text-center">{{getStatus(item.status)}}</td>
                                     <td class="col-2">{{item.period.startDate | date}} - {{item.period.endDate |
                                         date}}</td>
                                     <td class="col-3">{{item.contractor.name}}</td>
                                     <td class="col-3">{{item.client.name}}</td>
                                     <td class="col-3">
                                         <div>
-                                            <button class="btn btn-info btn-outline-info" data-toggle="tooltip" (click)="showServiceLog(item.id)"
-                                                title="Edit"><i class="icofont icofont-eye"></i></button>&nbsp;
-                                            <button type="button" class="btn btn-danger btn-outline-danger"
+                                            <button type="button" class="btn btn-sm btn-info btn-outline-info"
+                                                data-toggle="tooltip" (click)="showServiceLog(item.id)" title="Edit"><i
+                                                    class="icofont icofont-eye"></i></button>&nbsp;
+                                            <button type="button" class="btn btn-sm btn-danger btn-outline-danger"
                                                 data-toggle="tooltip" title="Delete"><i
                                                     class="icofont icofont-not-allowed"
-                                                    (click)="triggerModal(modalData, i)"></i></button>
+                                                    (click)="triggerModal(modalData, i)"></i></button>&nbsp;
+                                            <button class="btn btn-sm btn-success btn-outline-success"
+                                                data-toggle="tooltip" (click)="checkerModal(modalChecker, i)"
+                                                title="Edit"><i class="icofont icofont-checked"></i></button>&nbsp;
+                                            <button class="btn btn-sm btn-warning btn-outline-warning"
+                                                data-toggle="tooltip" title="Download Service Log"
+                                                (click)="printServiceLog(+item.id)" title="Edit"><i
+                                                    class="icofont icofont-file-pdf"></i></button>
                                         </div>
                                     </td>
-                                </tr> 
+                                </tr>
                             </tbody>
                         </table>
-                        <pagination-controls (pageChange)="pageChanged($event)" ></pagination-controls>
+                        <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
                     </div>
                 </div>
             </div>
@@ -222,21 +245,50 @@
 <!--Modal of Delete Confirmation-->
 <ng-template #modalData let-modal>
     <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Warning</h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">×</span>
-      </button>
+        <h4 class="modal-title" id="modal-basic-title">Warning</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
     </div>
     <div class="modal-body">
-      <p><strong>Are you sure you want to delete <span class="text-primary"> this service log</span>?</strong></p>
-      
-      <p>All data related to the service log will be permanently deleted. If this contractor has an associated a unit detail, it cannot be removed from the system
-      </p>
+        <p><strong>Are you sure you want to delete <span class="text-primary"> this service log</span>?</strong></p>
+
+        <p>All data related to the service log will be permanently deleted. If this contractor has an associated a unit
+            detail, it cannot be removed from the system
+        </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="modal.close('Cancel')">Cancel</button>
         <button type="button" class="btn btn-info" (click)="modal.close('Ok')">Confirm</button>
     </div>
-  </ng-template>
-  <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-spin" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+</ng-template>
+<!--Modal of checker servicelog-->
+<ng-template #modalChecker let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Warning</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p><strong>Are you sure you want to change the state of <span class="text-primary"> this service
+                    log</span>?</strong></p>
+
+        <div class="mb-3">
+            <label for="status-select" class="form-label">Status</label>&nbsp;
+            <select [(ngModel)]="statusSelected" name="status-select" class="form-select form-select-sm" id="status">
+                <option value="0" selected>CREATED</option>
+                <option value="2">READY FOR BILLING</option>
+                <option value="3">BILLED</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.close('Cancel')">Cancel</button>
+        <button type="button" class="btn btn-info" (click)="modal.close('Ok')">Confirm</button>
+    </div>
+</ng-template>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-spin" [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>
 <!-- Hover table card end -->

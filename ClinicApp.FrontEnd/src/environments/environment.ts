@@ -5,6 +5,7 @@
 
 export const environment = {
   production: true,
+  url_pdf: 'https://pdftest.abaanalystgroup.live/',
   apiUrl: 'https://test.abaanalystgroup.live/api/', // Development
   // apiUrl: 'https://migration.abaanalystgroup.live/api/', // Development
   // apiUrl: 'http://34.224.222.1:8082/api/', // Expanding y VillaLyan
