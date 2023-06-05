@@ -708,7 +708,17 @@ export class ServiceLogComponent implements OnInit {
         (err) => this.spinnerService.hide()
       );
     } else {
-      this.cleanFilter();
+      this.spinnerService.show();
+      this.serviceLogService.getServiceLog(this.paginations_status).subscribe(
+        (x) => {
+          this.list_service_log = x.data;
+          this.config.currentPage = x.pageNumber;
+          this.config.totalItems = x.totalRecords;
+          this.spinnerService.hide();
+          this.filterName = "";
+        },
+        (err) => this.spinnerService.hide()
+      );
     }
   }
 }
