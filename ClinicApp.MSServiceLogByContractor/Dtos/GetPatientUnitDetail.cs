@@ -6,6 +6,7 @@ public class GetPatientUnitDetail
     public string? Signature { get; set; }
     public string? EntryTime { get; set; }
     public string? DepartureTime { get; set; }
+    public DateTime DateOfService { get; set; }
     public int ProcedureId { get; set; }
     public int PlaceOfServiceId { get; set; }
 }

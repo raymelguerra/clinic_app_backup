@@ -195,7 +195,8 @@ public class ServiceLogByContractorService : IServiceLogByContractor
                     PlaceOfServiceId = pud.UnitDetail.PlaceOfServiceId,
                     ProcedureId = pud.UnitDetail.SubProcedureId,
                     Signature = pud.Signature,
-                    UnitDetailId = pud.UnitDetailId
+                    UnitDetailId = pud.UnitDetailId,
+                    DateOfService = pud.UnitDetail.DateOfService
                 })
                 .ToList()
             })
