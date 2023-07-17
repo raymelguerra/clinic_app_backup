@@ -402,7 +402,7 @@ public class ServiceLogByContractorService : IServiceLogByContractor
         {
             var servLogs = await _db.ServiceLogs.Include(x => x.UnitDetails).Where(x => x.ClientId == clientId && DateTime.Compare(x.CreatedDate!.Value.Date, createDate.Date) == 0).ToListAsync<ServiceLog>();
 
-            if (servLogs.Count() == 0) return "No analysts found at the specified XP code(s) time";
+            if (servLogs.Count() == 0) return String.Empty;
 
             var subProcedures = await _db.SubProcedures.ToListAsync();
             var subProcXp = subProcedures.Where(x => x.Name.Contains("53XP")).Select(x => x.Id).ToList();
