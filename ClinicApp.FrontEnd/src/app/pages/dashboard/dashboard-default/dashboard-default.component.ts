@@ -15,6 +15,7 @@ import { tap } from "rxjs/operators";
 import { DatePipe } from "@angular/common";
 import { DashboardService } from "./dashboard.service.js";
 import { forkJoin } from "rxjs";
+import { GlobalConstants } from "../../../shared/common.variables";
 
 interface ProblemData {
   client: string;
@@ -55,6 +56,17 @@ export class DashboardDefaultComponent implements OnInit {
   companies: Company[] = [];
   periods: Period[] = [];
   problems: ProblemData[] = [];
+
+  // Auto fields from component
+  config: any = {
+    totalItems: 10,
+    itemsPerPage: 5,
+    currentPage: 1
+  };
+  paginations_status = {
+    PageNumber: 1,
+    PageSize: GlobalConstants.ITEMS_PER_PAGE,
+  };
 
   constructor(
     private readonly periodService: PeriodService,
@@ -113,6 +125,12 @@ export class DashboardDefaultComponent implements OnInit {
       )
       .subscribe();
   };
+
+  // pagination methods
+  pageChanged(event) {
+    this.paginations_status.PageNumber = event;
+    // this.config.currentPage = event;
+  }
 }
 
 function buildChartJS(a, b, f, c) {

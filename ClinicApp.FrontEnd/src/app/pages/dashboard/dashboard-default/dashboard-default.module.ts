@@ -6,6 +6,7 @@ import { DashboardDefaultComponent } from "./dashboard-default.component";
 import { SharedModule } from "../../../shared/shared.module";
 import { ChartModule } from "angular2-chartjs";
 import { FormsModule } from "@angular/forms";
+import { NgxPaginationModule } from "ngx-pagination";
 
 @NgModule({
   declarations: [DashboardDefaultComponent],
@@ -14,6 +15,7 @@ import { FormsModule } from "@angular/forms";
     FormsModule,
     DashboardDefaultRoutingModule,
     SharedModule,
+    NgxPaginationModule,
     ChartModule,
   ],
 })

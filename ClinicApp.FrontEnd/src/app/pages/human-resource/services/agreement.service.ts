@@ -10,7 +10,7 @@ import { Agreement } from '../models/agreement.model';
 })
 export class AgreementService {
 
-  private agreementUrl = environment.apiUrl + 'client/agreements';
+  private agreementUrl = environment.apiUrl + 'client/agreement';
   // private agreementUrl = 'http://localhost:5175/api/client/' + 'agreements';
 
    constructor(private http: HttpClient) { }
@@ -47,7 +47,7 @@ export class AgreementService {
   }
   //GetAgreementByContractor
   GetAgreementByContractor(id: number): Observable<Agreement[]> {
-    return this.http.get<Agreement[]>(this.agreementUrl)
+    return this.http.get<Agreement[]>(`${this.agreementUrl}/GetAgreementByContractor/${id}`)
       .pipe(
         tap(data => console.log('All: ' + JSON.stringify(data))),
         catchError(this.handleError)
@@ -64,6 +64,7 @@ export class AgreementService {
     // in a real world app, we may send the server to some remote logging infrastructure
     // instead of just logging it to the console
     let errorMessage = '';
+    console.log(err)
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       errorMessage = `An error occurred: ${err.error.message}`;

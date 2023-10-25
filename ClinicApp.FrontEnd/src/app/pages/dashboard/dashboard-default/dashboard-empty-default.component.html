@@ -39,7 +39,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="d-flex" *ngFor="let item of problems; let i = index">
+                            <tr class="d-flex" *ngFor="let item of problems | paginate: { itemsPerPage: 10, currentPage: p }; let i = index;">
                                 <th class="col-1" scope="row">{{i + 1}}</th>
                                 <td class="col-3">{{item.client}}</td>
                                 <td class="col-3">{{item.contractor}}</td>
@@ -48,6 +48,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
                 </div>
             </div>
         </div>

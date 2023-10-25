@@ -28,6 +28,12 @@ import { Client } from "../../human-resource/models/client.model";
 import { ActivatedRoute } from "@angular/router";
 import { ServiceLogStatus } from "../models/servicelog-status.model";
 
+import * as XLSX from "xlsx";
+import { ExcelData } from "../models/excel-data.model";
+import { ExcelWorkService } from "../services/excel-work.service";
+import { AgreementService } from "../../human-resource/services/agreement.service";
+import { CompanyService } from "../../human-resource/services/company.service";
+
 interface DateInterface {
   id: number;
   value: string;
@@ -119,7 +125,10 @@ export class ServiceLogComponent implements OnInit {
     private fb: FormBuilder,
     private spinnerService: NgxSpinnerService,
     private modalService: NgbModal,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private excelWorkService: ExcelWorkService,
+    private agreementService: AgreementService,
+    private companyService: CompanyService
   ) {
     this.validationMessages = {
       name: {
@@ -719,6 +728,71 @@ export class ServiceLogComponent implements OnInit {
         },
         (err) => this.spinnerService.hide()
       );
+    }
+  }
+
+  // upload file
+  selectedFile: File | undefined;
+
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
+
+  uploadFile() {
+    if (this.selectedFile) {
+      const reader = new FileReader();
+
+      reader.onload = async (e: any) => {
+        const data = new Uint8Array(e.target.result);
+        try {
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+          const listExcelData = jsonData.map(this.excelWorkService.adaptExcel);
+
+          //TODO - New Fixture
+          const ctrName =
+            this.excelWorkService.findContractorsInExcel(listExcelData)[0].name;
+
+          let sl = await this.excelWorkService.getServiceLogs(
+            this.placeOfServiceService,
+            this.datePipe,
+            this.periodService,
+            this.subProcedure,
+            this.clientService,
+            this.contractorService,
+            this.agreementService,
+            this.companyService,
+            listExcelData,
+            ctrName,
+            this.serviceLogForm,
+            this.fb,
+            this.unitDetail_list
+          );
+          console.log(sl);
+
+          // this.serviceLogForm.patchValue(serviceLog);
+        } catch (error) {
+          if (error.message.includes("File is password-protected")) {
+            // El archivo está protegido por contraseña
+            console.log(
+              "El archivo está protegido por contraseña. Proporciona la contraseña para desbloquearlo."
+            );
+          } else {
+            // Otra excepción ocurrió al leer el archivo
+            console.error("Error al leer el archivo:", error);
+          }
+        }
+      };
+
+      reader.readAsArrayBuffer(this.selectedFile);
+    } else {
+      // Manejar el caso en el que no se haya seleccionado un archivo
+      console.log("Por favor, seleccione un archivo Excel.");
     }
   }
 }
