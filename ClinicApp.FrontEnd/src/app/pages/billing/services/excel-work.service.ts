@@ -114,24 +114,39 @@ export class ExcelWorkService {
               unit.subProcedure = procData.filter(
                 (x) =>
                   x["name"] ===
-                  val.procedure.replace("CPT", "").replace("-", "")
+                  val.procedure.replace("CPT-", "").replace("-", "")
               );
+              console.log(val.procedure.replace("CPT-", "").replace("-", ""))
               unit.subProcedureId = null;
               unit.unit = +val.totalUnits;
 
               units.push(unit);
-              this.addUnitDetail(unitDetail_list, serviceLogForm, fb)
+              this.addUnitDetail(unitDetail_list, serviceLogForm, fb);
             }
+            const current = datePipe.transform(
+              xlsData[0].startDate,
+              "yyyy-MM-ddThh:mm:ss"
+            );
+            console.log(current);
             let servicelog = {} as LoadServiceLog;
             servicelog.client = [clientsData.data[0]];
             servicelog.clientId = null;
             servicelog.contractor = [ctrData.data[0]];
             servicelog.contractorId = null;
-            servicelog.period = periodsData;
+            servicelog.period = [
+              this.adaptPeriodDTO(
+                periodsData.find(
+                  (x) =>
+                    new Date(x.startDate) <= new Date(current) &&
+                    new Date(x.endDate) >= new Date(current)
+                ),
+                datePipe
+              ),
+            ];
             servicelog.periodId = null;
             servicelog.unitDetails = units;
 
-            // console.log(servicelog)
+            console.log(servicelog);
             serviceLogForm.patchValue(servicelog);
           } else throw "There are no matching agreements";
         });
@@ -181,5 +196,13 @@ export class ExcelWorkService {
     currency: item["Currency"],
     claimStatus: item["Claim (Status)"],
     claimReference: item["Claim (Reference)"],
+  });
+
+  adaptPeriodDTO = (val: any, datePipe: DatePipe) => ({
+    id: val.id,
+    value: `${val.payPeriod}: ${datePipe.transform(
+      val.startDate,
+      "MM/dd/yyyy"
+    )} to ${datePipe.transform(val.endDate, "MM/dd/yyyy")}`,
   });
 }
