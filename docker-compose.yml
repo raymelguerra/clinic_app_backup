@@ -37,19 +37,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  test.clinicapp.contractorbyservicelogs:
-    image: test.clinicapp.contractorbyservicelogs:v1.2
-    build:
-      context: .
-      dockerfile: ClinicApp.MSServiceLogByContractor/Dockerfile
-    restart: always
-    expose:
-       - 80
-       - 443
-    environment: 
-       - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.dashboard:
     image: test.clinicapp.dashboard:v1.2
     build:
@@ -61,7 +49,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.excelgen:
     image: test.clinicapp.excelgen:v1.2
     build:
@@ -73,7 +61,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.authorizationandusermanager:
     image: test.clinicapp.authorizationandusermanager:v1.2
     build:
@@ -85,7 +73,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.client:
     image: test.clinicapp.client:v1.2
     build:
@@ -97,7 +85,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.contractor:
     image: test.clinicapp.contractor:v1.2
     build:
@@ -109,7 +97,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.infrastructure:
     image: test.clinicapp.infrastructure:v1.2
     build:
@@ -121,7 +109,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   test.clinicapp.servicelog:
     image: test.clinicapp.servicelog:v1.2
     build:
@@ -133,4 +121,4 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=new_aba_test;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
