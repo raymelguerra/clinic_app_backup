@@ -166,7 +166,7 @@ public class ClientController : ControllerBase
     }
 
     // GET: api/Agreements/5
-    [HttpGet("Agreement/GetAgreementByContractor{id}")]
+    [HttpGet("Agreement/GetAgreementByContractor/{id}")]
     public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreementByContractor(int id)
     {
         var agreements = await _client.GetAgreementByContractor(id);
