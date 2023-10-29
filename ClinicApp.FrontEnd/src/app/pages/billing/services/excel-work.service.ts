@@ -108,7 +108,7 @@ export class ExcelWorkService {
                 "yyyy-MM-dd"
               );
               unit.placeOfService = posData.filter(
-                (x) => x["name"] === val.pos
+                (x) => x["value"] === val.pos
               );
               unit.placeOfServiceId = null;
               unit.subProcedure = procData.filter(
@@ -118,13 +118,14 @@ export class ExcelWorkService {
               );
               console.log(val.procedure.replace("CPT-", "").replace("-", ""));
               unit.subProcedureId = null;
-              unit.unit = +val.totalUnits;
+              unit.unit = +val.totalUnits * 4;
 
               units.push(unit);
               this.addUnitDetail(unitDetail_list, serviceLogForm, fb);
             }
             const current = datePipe.transform(
-              xlsData[0].startDate,
+              // xlsData[0].startDate,
+              new Date().toISOString(),
               "yyyy-MM-ddThh:mm:ss"
             );
             console.log(current);
@@ -175,8 +176,8 @@ export class ExcelWorkService {
   }
 
   adaptExcel = (item: any) => ({
-    startDate: item["Start Date"],
-    endDate: item["End Date"],
+    startDate: item["Date"],
+    endDate: item["Date"],
     primaryPayer: item["Primary Payer"],
     insurancePlan: item["Insurance Plan"],
     recipientID: item["Recipient ID"],
@@ -189,8 +190,8 @@ export class ExcelWorkService {
     renderingProvider: item["Rendering Provider"],
     credential: item["Credential"],
     npi: item["NPI"],
-    procedure: item["Procedure"],
-    totalUnits: item["Total Units"],
+    procedure: item["Procedures"],
+    totalUnits: item["Total hours"],
     billedAmount: item["Billed Amount"],
     currency: item["Currency"],
     claimStatus: item["Claim (Status)"],
