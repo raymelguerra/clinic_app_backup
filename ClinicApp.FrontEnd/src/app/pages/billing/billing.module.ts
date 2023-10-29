@@ -11,9 +11,10 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PendingComponent } from './pending/pending.component';
+import { ContractorSelectionModalComponent } from './contractor-selection-modal/contractor-selection-modal.component';
 
 @NgModule({
-  declarations: [PeriodPaymentComponent, ServiceLogComponent, PendingComponent],
+  declarations: [PeriodPaymentComponent, ServiceLogComponent, PendingComponent, ContractorSelectionModalComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -24,6 +25,7 @@ import { PendingComponent } from './pending/pending.component';
     NgxPaginationModule,
     NgMultiSelectDropDownModule.forRoot(),
     NgbNavModule,
-  ]
+  ],
+  entryComponents: [ContractorSelectionModalComponent]
 })
 export class BillingModule { }
