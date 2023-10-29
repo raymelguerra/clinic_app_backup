@@ -39,6 +39,7 @@ declare const $: any;
   ],
 })
 export class DashboardDefaultComponent implements OnInit {
+  p: number = 1;
   totalValueGraphData1 = buildChartJS(
     "#fff",
     [45, 25, 35, 20, 45, 20, 40, 10, 30, 45],
