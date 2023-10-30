@@ -64,7 +64,6 @@ export class ExcelWorkService {
     client: ClientService,
     contractor: ContractorService,
     agreement: AgreementService,
-    company: CompanyService,
     xlsData: ExcelData[],
     ctrName: string,
     serviceLogForm: FormGroup,

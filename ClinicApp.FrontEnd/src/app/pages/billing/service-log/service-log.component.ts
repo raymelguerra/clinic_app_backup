@@ -133,8 +133,7 @@ export class ServiceLogComponent implements OnInit {
     private modalService: NgbModal,
     private notificationService: NotificationService,
     private excelWorkService: ExcelWorkService,
-    private agreementService: AgreementService,
-    private companyService: CompanyService
+    private agreementService: AgreementService
   ) {
     this.validationMessages = {
       name: {
@@ -684,7 +683,6 @@ export class ServiceLogComponent implements OnInit {
               this.clientService,
               this.contractorService,
               this.agreementService,
-              this.companyService,
               listExcelData,
               ctrName,
               this.serviceLogForm,
