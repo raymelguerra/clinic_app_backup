@@ -80,11 +80,6 @@ export class ExcelWorkService {
     ]).subscribe(([clientsData, periodsData, ctrData, cmpData]) => {
       if (clientsData.data.length > 0 && ctrData.data.length > 0) {
         //NOTE - Verificar que ese cliente y contractor tengan un agreement
-        const company = cmpData.find(
-          (x) =>
-            x.acronym ===
-            xlsData[0].accountNumber.replace(/^\s+/, "").substring(0, 2)
-        );
         forkJoin([
           agreement.GetAgreementByContractor(ctrData.data[0].id),
           procedure.getSubProcedure(clientsData.data[0].id, ctrData.data[0].id),
@@ -93,13 +88,14 @@ export class ExcelWorkService {
           console.log(aggData);
           const isValid = aggData.filter(
             (agg) =>
-              agg.clientId === clientsData.data[0].id &&
-              agg.companyId === company.id
+              agg.clientId === clientsData.data[0].id // &&
+              // agg.companyId === company.id
           );
           if (isValid.length > 0) {
             const parsedData = xlsData.filter((x) =>
               x.renderingProvider.includes(ctrName)
             );
+            const regex = /\(([^)]+)\)/;
             let units = [] as LoadUnitDetail[];
             for (let val of parsedData) {
               let unit = {} as LoadUnitDetail;
@@ -108,7 +104,7 @@ export class ExcelWorkService {
                 "yyyy-MM-dd"
               );
               unit.placeOfService = posData.filter(
-                (x) => x["value"] === val.pos
+                (x) => x["value"] === regex.exec(val.pos)[1]
               );
               unit.placeOfServiceId = null;
               unit.subProcedure = procData.filter(
@@ -118,7 +114,7 @@ export class ExcelWorkService {
               );
               console.log(val.procedure.replace("CPT-", "").replace("-", ""));
               unit.subProcedureId = null;
-              unit.unit = +val.totalUnits * 4;
+              unit.unit = +val.totalUnits;
 
               units.push(unit);
               this.addUnitDetail(unitDetail_list, serviceLogForm, fb);
@@ -176,22 +172,22 @@ export class ExcelWorkService {
   }
 
   adaptExcel = (item: any) => ({
-    startDate: item["Date"],
-    endDate: item["Date"],
+    startDate: item["start_date"],
+    endDate: item["end_date"],
     primaryPayer: item["Primary Payer"],
     insurancePlan: item["Insurance Plan"],
     recipientID: item["Recipient ID"],
-    recipientName: item["Recipient Name"],
+    recipientName: item["client_name"],
     accountNumber: item["Account Number"],
     referringPhysicianNPI: item["Referring Physician NPI"],
-    pos: item["POS"],
+    pos: item["location_1_name"],
     emergency: item["Emergency"],
     diagnosisCode: item["Diagnosis Code"],
-    renderingProvider: item["Rendering Provider"],
+    renderingProvider: item["provider_name"],
     credential: item["Credential"],
     npi: item["NPI"],
-    procedure: item["Procedures"],
-    totalUnits: item["Total hours"],
+    procedure: item["billing_code_1_code"],
+    totalUnits: item["units"],
     billedAmount: item["Billed Amount"],
     currency: item["Currency"],
     claimStatus: item["Claim (Status)"],
