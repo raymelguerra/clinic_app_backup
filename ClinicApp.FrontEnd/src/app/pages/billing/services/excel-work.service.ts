@@ -76,8 +76,8 @@ export class ExcelWorkService {
       client.getClientByName(xlsData[0].recipientName),
       period.getPeriods(),
       contractor.getContractortByName(ctr),
-      company.getCompanies(),
-    ]).subscribe(([clientsData, periodsData, ctrData, cmpData]) => {
+      // company.getCompanies(),
+    ]).subscribe(([clientsData, periodsData, ctrData]) => {
       if (clientsData.data.length > 0 && ctrData.data.length > 0) {
         //NOTE - Verificar que ese cliente y contractor tengan un agreement
         forkJoin([
@@ -87,9 +87,8 @@ export class ExcelWorkService {
         ]).subscribe(([aggData, procData, posData]) => {
           console.log(aggData);
           const isValid = aggData.filter(
-            (agg) =>
-              agg.clientId === clientsData.data[0].id // &&
-              // agg.companyId === company.id
+            (agg) => agg.clientId === clientsData.data[0].id // &&
+            // agg.companyId === company.id
           );
           if (isValid.length > 0) {
             const parsedData = xlsData.filter((x) =>
