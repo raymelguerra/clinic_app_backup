@@ -47,6 +47,7 @@
         "screenfull": "^3.3.2",
         "ti-icons": "^0.1.2",
         "tslib": "^1.10.0",
+        "xlsx": "^0.18.5",
         "zone.js": "~0.9.1"
     },
     "devDependencies": {

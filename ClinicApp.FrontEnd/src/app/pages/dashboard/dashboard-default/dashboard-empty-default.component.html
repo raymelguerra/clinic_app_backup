@@ -1,3 +1,57 @@
 <div class="container main-title">
   <h1>Welcome to ABA Manager!</h1>
 </div>
+<div class="row justify-content-center align-items-center g-2">
+  <div class="col-8">
+      <div class="container main-title">
+          <h3>Service Log problems</h3>
+      </div>
+      <div class="row">
+          <div class="col-4">
+              <label for="company-select" class="form-label">Company</label>&nbsp;
+              <select name="company-select" [(ngModel)]="companySelect" (change)="onCompanyChange()"
+                  class="form-select form-select-sm" id="company">
+                  <option *ngFor="let item of companies" value={{item.id}} selected>{{item.name}}</option>
+              </select>
+          </div>
+          <div class="col-4">
+              <label for="company-period" class="form-label">Period</label>&nbsp;
+              <select [(ngModel)]="periodSelect" (change)="onPeriodChange()" name="company-period"
+                  class="form-select form-select-sm" id="period">
+                  <option *ngFor="let item of periods" value={{item.id}} selected>{{adaptPeriodDTO(item).value}}
+                  </option>
+              </select>
+          </div>
+          <div class="col-4"></div>
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+              &nbsp;
+              <div class="table-responsive">
+                  <table class="table table-hover table-bordered">
+                      <thead class="thead-dark">
+                          <tr class="d-flex">
+                              <th class="col-1">#</th>
+                              <th class="col-3">Client</th>
+                              <th class="col-3">Contractor</th>
+                              <th class="col-2">Procedure</th>
+                              <th class="col-3">Date Of Service</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr class="d-flex" *ngFor="let item of problems | paginate: { itemsPerPage: 10, currentPage: p }; let i = index;">
+                              <th class="col-1" scope="row">{{i + 1}}</th>
+                              <td class="col-3">{{item.client}}</td>
+                              <td class="col-3">{{item.contractor}}</td>
+                              <td class="col-2">{{item.procedure}}</td>
+                              <td class="col-3">{{item.dateOfService | date: 'MM/dd/yyyy'}}</td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="col-6"></div>
+</div>
