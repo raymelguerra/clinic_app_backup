@@ -38,7 +38,10 @@ namespace ClinicApp.Infrastructure.Services
                                join c in _context.Clients on a.ClientId equals c.Id
                                where p.ContractorId == contractorId && c.Id == clientId
                                select new { procedureId = p.ProcedureId }).Distinct().FirstOrDefaultAsync();
-            return await _context.SubProcedures.Include(x => x.Procedure).Where(x => x.ProcedureId == query!.procedureId).ToListAsync<SubProcedure>();
+            if (query != null)
+                return await _context.SubProcedures.Include(x => x.Procedure).Where(x => x.ProcedureId == query!.procedureId).ToListAsync<SubProcedure>();
+            else
+                return null;
         }
     }
 }
