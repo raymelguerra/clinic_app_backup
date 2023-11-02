@@ -80,6 +80,21 @@ public class ClientService : IClient
                 ClientId = agreement.ClientId,
                 CompanyId = agreement.CompanyId,
                 PayrollId = agreement.PayrollId,
+                Payroll = _context.Payrolls.Where(x => x.Id == agreement.PayrollId).Select(x =>
+                    new Payroll
+                    {
+                        CompanyId = agreement.CompanyId,
+                        Id = x.Id,
+                        ContractorId = x.ContractorId,
+                        Company = null!,
+                        Contractor = null!,
+                        ContractorType = null!,
+                        ContractorTypeId = x.ContractorTypeId,
+                        Procedure = null!,
+                        ProcedureId = x.ProcedureId
+
+
+                    }).FirstOrDefault() ?? new Payroll(),
                 RateEmployees = agreement.RateEmployees
             });
 
