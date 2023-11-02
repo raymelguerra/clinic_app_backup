@@ -71,10 +71,41 @@ public class ClientService : IClient
         return new PatientAccount { };
     }
 
-    public async Task<IEnumerable<Agreement>> GetAgreement()
+    public async Task<IEnumerable<Agreement>> GetAgreement(int? clientIdFilter = null)
     {
-        return await _context.Agreements.Include("Client").Include("Payroll").ToListAsync();
+        var query = _context.Agreements
+            .Select(agreement => new Agreement
+            {
+                Id = agreement.Id,
+                ClientId = agreement.ClientId,
+                CompanyId = agreement.CompanyId,
+                PayrollId = agreement.PayrollId,
+                Payroll = _context.Payrolls.Where(x => x.Id == agreement.PayrollId).Select(x =>
+                    new Payroll
+                    {
+                        CompanyId = agreement.CompanyId,
+                        Id = x.Id,
+                        ContractorId = x.ContractorId,
+                        Company = null!,
+                        Contractor = null!,
+                        ContractorType = null!,
+                        ContractorTypeId = x.ContractorTypeId,
+                        Procedure = null!,
+                        ProcedureId = x.ProcedureId
+
+
+                    }).FirstOrDefault() ?? new Payroll(),
+                RateEmployees = agreement.RateEmployees
+            });
+
+        if (clientIdFilter.HasValue)
+        {
+            query = query.Where(agreement => agreement.ClientId == clientIdFilter.Value);
+        }
+
+        return await query.ToListAsync();
     }
+
 
     public async Task<Agreement?> GetAgreement(int id)
     {

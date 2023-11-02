@@ -53,8 +53,8 @@ export class AgreementService {
         catchError(this.handleError)
       );
   }
-  getAgreements(): Observable<Agreement[]> {
-    return this.http.get<Agreement[]>(this.agreementUrl)
+  getAgreements(clientId: number): Observable<Agreement[]> {
+    return this.http.get<Agreement[]>(`${this.agreementUrl}/?clientIdFilter=${clientId}`)
       .pipe(
         tap(data => console.log('All: ' + JSON.stringify(data))),
         catchError(this.handleError)

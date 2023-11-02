@@ -79,69 +79,83 @@ export class ExcelWorkService {
     ]).subscribe(([clientsData, periodsData, ctrData]) => {
       if (clientsData.data.length > 0 && ctrData.data.length > 0) {
         //NOTE - Verificar que ese cliente y contractor tengan un agreement
+
+        // console.error(ctrData.data.filter(x=> x.payrolls.find(x=> x.company.id == company_id)))
+        console.error(clientsData);
+
         forkJoin([
-          agreement.GetAgreementByContractor(ctrData.data[0].id),
-          procedure.getSubProcedure(clientsData.data[0].id, ctrData.data[0].id),
+          agreement.getAgreements(clientsData.data[0].id),
           placeOfServiceService.getPlaceOfService(),
-        ]).subscribe(([aggData, procData, posData]) => {
-          console.log(aggData);
+        ]).subscribe(([aggData, posData]) => {
           const isValid = aggData.filter(
-            (agg) => agg.clientId === clientsData.data[0].id // &&
+            (agg) => ctrData.data.find((x) => agg.payroll.contractorId == x.id) // &&
             // agg.companyId === company.id
           );
+          console.log(isValid);
           if (isValid.length > 0) {
-            const parsedData = xlsData.filter((x) =>
-              x.renderingProvider.includes(ctrName)
-            );
-            const regex = /\(([^)]+)\)/;
-            let units = [] as LoadUnitDetail[];
-            for (let val of parsedData) {
-              let unit = {} as LoadUnitDetail;
-              unit.dateOfService = datePipe.transform(
-                val.startDate,
-                "yyyy-MM-dd"
-              );
-              unit.placeOfService = posData.filter(
-                (x) => x["value"] === regex.exec(val.pos)[1]
-              );
-              unit.placeOfServiceId = null;
-              unit.subProcedure = procData.filter(
-                (x) =>
-                  x["name"] ===
-                  val.procedure.replace("CPT-", "").replace("-", "")
-              );
-              console.log(val.procedure.replace("CPT-", "").replace("-", ""));
-              unit.subProcedureId = null;
-              unit.unit = +val.totalUnits;
+            const ctr =  ctrData.data.find((x) => aggData.find(agg => agg.payroll.contractorId == x.id))
+            procedure
+              .getSubProcedure(clientsData.data[0].id, ctr.id)
+              .pipe(
+                tap((procData) => {
+                  
+                  const parsedData = xlsData.filter((x) =>
+                    x.renderingProvider.includes(ctrName)
+                  );
+                  const regex = /\(([^)]+)\)/;
+                  let units = [] as LoadUnitDetail[];
+                  for (let val of parsedData) {
+                    let unit = {} as LoadUnitDetail;
+                    unit.dateOfService = datePipe.transform(
+                      val.startDate,
+                      "yyyy-MM-dd"
+                    );
+                    unit.placeOfService = posData.filter(
+                      (x) => x["value"] === regex.exec(val.pos)[1]
+                    );
+                    unit.placeOfServiceId = null;
+                    unit.subProcedure = procData.filter(
+                      (x) =>
+                        x["name"] ===
+                        val.procedure.replace("CPT-", "").replace("-", "")
+                    );
+                    console.log(
+                      val.procedure.replace("CPT-", "").replace("-", "")
+                    );
+                    unit.subProcedureId = null;
+                    unit.unit = +val.totalUnits;
 
-              units.push(unit);
-              this.addUnitDetail(unitDetail_list, serviceLogForm, fb);
-            }
-            const current = datePipe.transform(
-              // xlsData[0].startDate,
-              new Date().toISOString(),
-              "yyyy-MM-ddThh:mm:ss"
-            );
-            console.log(current);
-            let servicelog = {} as LoadServiceLog;
-            servicelog.client = [clientsData.data[0]];
-            servicelog.clientId = null;
-            servicelog.contractor = [ctrData.data[0]];
-            servicelog.contractorId = null;
-            servicelog.period = [
-              this.adaptPeriodDTO(
-                periodsData.find(
-                  (x) =>
-                    new Date(x.startDate) <= new Date(current) &&
-                    new Date(x.endDate) >= new Date(current)
-                ),
-                datePipe
-              ),
-            ];
-            servicelog.periodId = null;
-            servicelog.unitDetails = units;
+                    units.push(unit);
+                    this.addUnitDetail(unitDetail_list, serviceLogForm, fb);
+                  }
+                  const current = datePipe.transform(
+                    // xlsData[0].startDate,
+                    new Date().toISOString(),
+                    "yyyy-MM-ddThh:mm:ss"
+                  );
+                  console.log(current);
+                  let servicelog = {} as LoadServiceLog;
+                  servicelog.client = [clientsData.data[0]];
+                  servicelog.clientId = null;
+                  servicelog.contractor = [ctr];
+                  servicelog.contractorId = null;
+                  servicelog.period = [
+                    this.adaptPeriodDTO(
+                      periodsData.find(
+                        (x) =>
+                          new Date(x.startDate) <= new Date(current) &&
+                          new Date(x.endDate) >= new Date(current)
+                      ),
+                      datePipe
+                    ),
+                  ];
+                  servicelog.periodId = null;
+                  servicelog.unitDetails = units;
 
-            serviceLogForm.patchValue(servicelog);
+                  serviceLogForm.patchValue(servicelog);
+                })
+              )
+              .subscribe();
           } else alert("There are no matching agreements");
         });
       }
