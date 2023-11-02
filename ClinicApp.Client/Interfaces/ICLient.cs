@@ -16,7 +16,7 @@ public interface IClient
     public Task<object?> DeleteClient(int id);
     public bool ClientExists(int id);
 
-    public Task<IEnumerable<Agreement>> GetAgreement();
+    public Task<IEnumerable<Agreement>> GetAgreement(int? filterClientId = null);
     public Task<IEnumerable<Agreement>?> GetAgreementByContractor(int id);
     public Task<Agreement?> GetAgreement(int id);
     public Task<object?> PutAgreement(int id, Agreement agreement);
