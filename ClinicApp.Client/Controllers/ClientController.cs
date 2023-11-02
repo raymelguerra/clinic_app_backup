@@ -159,9 +159,9 @@ public class ClientController : ControllerBase
 
     // GET: api/Agreements
     [HttpGet("Agreement")]
-    public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreement()
+    public async Task<ActionResult<IEnumerable<Agreement>>> GetAgreement([FromQuery] int? clientIdFilter)
     {
-        var ag = await _client.GetAgreement();
+        var ag = await _client.GetAgreement(clientIdFilter);
         return Ok(ag);
     }
 
