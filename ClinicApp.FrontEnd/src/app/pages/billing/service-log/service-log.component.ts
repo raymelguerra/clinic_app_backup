@@ -687,7 +687,8 @@ export class ServiceLogComponent implements OnInit {
               ctrName,
               this.serviceLogForm,
               this.fb,
-              this.unitDetail_list
+              this.unitDetail_list,
+              // result.cmp
             );
             console.log(sl);
           }
