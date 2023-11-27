@@ -37,7 +37,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   vl.clinicapp.dashboard:
     image: vl.clinicapp.dashboard:v1.2
     build:
@@ -49,7 +49,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   vl.clinicapp.excelgen:
     image: vl.clinicapp.excelgen:v1.2
     build:
@@ -61,7 +61,7 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
   vl.clinicapp.authorizationandusermanager:
     image: vl.clinicapp.authorizationandusermanager:v1.2
     build:
