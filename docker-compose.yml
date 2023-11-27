@@ -7,13 +7,13 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 9486:80
+      - 9686:80
     depends_on:
       - ep.clinicapp.backend.proxy 
   ep.clinicapp.backend.proxy:
     image: nginx:latest
     ports:
-      - 9488:80
+      - 9688:80
     restart: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
