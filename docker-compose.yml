@@ -1,33 +1,33 @@
 version: '3.4'
 services:
-  expvl.clinicapp.frontend:
-    image: expvl.clinicapp.frontend:v1.2
+  vl.clinicapp.frontend:
+    image: vl.clinicapp.frontend:v1.2
     build: 
       context: ./ClinicApp.FrontEnd
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 9086:80
+      - 9486:80
     depends_on:
-      - expvl.clinicapp.backend.proxy 
-  expvl.clinicapp.backend.proxy:
+      - vl.clinicapp.backend.proxy 
+  vl.clinicapp.backend.proxy:
     image: nginx:latest
     ports:
-      - 9088:80
+      - 9488:80
     restart: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-    - expvl.clinicapp.authorizationandusermanager
-    - expvl.clinicapp.infrastructure
-    - expvl.clinicapp.client
-    - expvl.clinicapp.servicelog
-    - expvl.clinicapp.contractor
-    - expvl.clinicapp.billing
-    - expvl.clinicapp.dashboard
-    - expvl.clinicapp.excelgen
-  expvl.clinicapp.billing:
-    image: expvl.clinicapp.billing:v1.2
+    - vl.clinicapp.authorizationandusermanager
+    - vl.clinicapp.infrastructure
+    - vl.clinicapp.client
+    - vl.clinicapp.servicelog
+    - vl.clinicapp.contractor
+    - vl.clinicapp.billing
+    - vl.clinicapp.dashboard
+    - vl.clinicapp.excelgen
+  vl.clinicapp.billing:
+    image: vl.clinicapp.billing:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSBilling/Dockerfile
@@ -38,8 +38,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  expvl.clinicapp.dashboard:
-    image: expvl.clinicapp.dashboard:v1.2
+  vl.clinicapp.dashboard:
+    image: vl.clinicapp.dashboard:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSDashboard/Dockerfile
@@ -50,8 +50,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  expvl.clinicapp.excelgen:
-    image: expvl.clinicapp.excelgen:v1.2
+  vl.clinicapp.excelgen:
+    image: vl.clinicapp.excelgen:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSExcelGen/Dockerfile
@@ -62,8 +62,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  expvl.clinicapp.authorizationandusermanager:
-    image: expvl.clinicapp.authorizationandusermanager:v1.2
+  vl.clinicapp.authorizationandusermanager:
+    image: vl.clinicapp.authorizationandusermanager:v1.2
     build:
       context: .
       dockerfile: ClinicApp.AuthorizationAndUserManager/Dockerfile
@@ -73,9 +73,9 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  expvl.clinicapp.client:
-    image: expvl.clinicapp.client:v1.2
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  vl.clinicapp.client:
+    image: vl.clinicapp.client:v1.2
     build:
       context: .
       dockerfile: ClinicApp.Client/Dockerfile
@@ -85,9 +85,9 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  expvl.clinicapp.contractor:
-    image: expvl.clinicapp.contractor:v1.2
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  vl.clinicapp.contractor:
+    image: vl.clinicapp.contractor:v1.2
     build:
       context: .
       dockerfile: ClinicApp.Contractor/Dockerfile
@@ -97,9 +97,9 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  expvl.clinicapp.infrastructure:
-    image: expvl.clinicapp.infrastructure:v1.2
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  vl.clinicapp.infrastructure:
+    image: vl.clinicapp.infrastructure:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSInfrastructure/Dockerfile
@@ -109,9 +109,9 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  expvl.clinicapp.servicelog:
-    image: expvl.clinicapp.servicelog:v1.2
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+  vl.clinicapp.servicelog:
+    image: vl.clinicapp.servicelog:v1.2
     build:
       context: .
       dockerfile: ClinicApp.ServiceLog/Dockerfile
@@ -121,4 +121,4 @@ services:
        - 443
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
-       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=epvl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
+       - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=vl_db;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
