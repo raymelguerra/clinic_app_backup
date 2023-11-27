@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://vl.abaanalystgroup.live/api/'
+  apiUrl: 'https://villalyan.abaanalystgroup.live/api/'
 };
