@@ -1,0 +1,32 @@
+﻿<MudPaper Class="pa-4 ma-2" Elevation="3">
+    <MudGrid Spacing="1" Justify="Justify.SpaceBetween">
+        <MudItem>
+            <MudGrid Spacing="0" Justify="Justify.FlexStart">
+                <MudItem sm="4" md="4" lg="4">
+                    <MudIcon Icon="@Icon" Size="Size.Large" Color="Color.Inherit"/>
+                </MudItem>
+                <MudItem sm="8" md="8" lg="8">
+                    <MudText Typo="Typo.h4" Align="Align.Left"><b>@Title</b></MudText>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem>
+            <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+                <MudItem sm="6" md="6" lg="6">
+                    <MudTooltip Text="@Concat(0)">
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" hidden="@HiddenAddButton" OnClick="@(() => AddButtonAction.Invoke())" />
+                    </MudTooltip>
+                </MudItem>
+                <MudItem sm="6" md="6" lg="6">
+                    <MudTooltip Text="@Concat(1)">
+                        <MudFab Color="Color.Dark" StartIcon="@Icons.Material.Filled.Download" Size="Size.Small" hidden="@HiddenDownloadButton" OnClick="@(() => DownloadButtonAction.Invoke())" />
+                    </MudTooltip>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudPaper Class="pa-4 ma-1" Elevation="1">
+    @ChildContent
+</MudPaper>

@@ -1,0 +1,34 @@
+﻿@page "/patient"
+@using ClinicApp.Core.Models
+
+<PageTitle>Patient</PageTitle>
+
+<ClinicApp.WebApp.Components.ContentPage Title="Patient"
+                                         Icon="@Icons.Material.Filled.SupervisedUserCircle"
+                                         HiddenAddButton="false"
+                                         HiddenDownloadButton="true" AddButtonAction="AddClient">
+
+    <MudDataGrid Items="@Clients" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <PropertyColumn Property="x => x.RecipientId" Title="Recipient" />
+            <PropertyColumn Property="x => x.PatientAccount" Title="Patient Account" />
+            <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+                        <MudItem sm="6" md="6" lg="6">
+                            <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" />
+                        </MudItem>
+                        <MudItem sm="6" md="6" lg="6">
+                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" />
+                        </MudItem>
+                    </MudGrid>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Client" />
+        </PagerContent>
+    </MudDataGrid>
+
+</ClinicApp.WebApp.Components.ContentPage>

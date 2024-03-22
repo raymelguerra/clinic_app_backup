@@ -1,0 +1,53 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(paValidator.ValidateValue)" ValidationDelay="0">
+            <MudGrid Spacing="1">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.LicenseNumber"
+                                  For="@(() => Model.LicenseNumber)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="License Number"
+                                  Validation="paValidator.Validation" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudDatePicker @bind-Date="Model.CreateDate"
+                                   For="@(() => Model.CreateDate)"
+                                   Immediate="true"
+                                   Variant="Variant.Outlined"
+                                   Label="Date Created" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudDatePicker @bind-Date="Model.ExpireDate"
+                                   For="@(() => Model.ExpireDate)"
+                                   Immediate="true"
+                                   Variant="Variant.Outlined"
+                                   Label="Expiry Date" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Auxiliar"
+                                  For="@(() => Model.Auxiliar)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Auxiliar License Number" />
+                </MudItem>
+                <MudItem xs="12" sm="12" xl="12">
+                    <MudList Clickable="true" @bind-SelectedItem="selectedItem" @bind-SelectedValue="selectedValue">
+                        <MudListItem Icon="@Icons.Material.Filled.History" Text="History">
+                            <NestedList>
+                                @foreach (var item in PatientAccountList)
+                                {
+                                    <MudListItem Text="@($"Authorization Number: {item.Auxiliar??item.LicenseNumber} | Date created: {item.CreateDate?.ToString("MM-dd-yyyy")} | Expire date: {item.ExpireDate?.ToString("MM-dd-yyyy")}")" Value="item" />
+                                }
+                            </NestedList>
+                        </MudListItem>
+                    </MudList>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Edit">Edit</MudButton>
+        <MudButton OnClick="Cancel"> Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

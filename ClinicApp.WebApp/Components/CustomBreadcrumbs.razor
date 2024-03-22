@@ -1,0 +1,35 @@
+﻿@using ClinicApp.WebApp.Services
+@inherits ComponentBase
+
+<MudBreadcrumbs Items="NavigationHistory"></MudBreadcrumbs>
+
+@code {
+    [Inject] private NavigationService NavigationService { get; set; }
+
+    private List<BreadcrumbItem> NavigationHistory { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        NavigationHistory.Add(new BreadcrumbItem("", href: "/", icon: Icons.Material.Filled.Home));
+        NavigationService.NavigationHistory.ToList().ForEach((value) =>
+        {
+            NavigationHistory.Add(new BreadcrumbItem(GetPageTitle(value), href: value));
+        });
+    }
+
+    private string GetPageTitle(string url)
+    {
+        var segments = url.Split('/');
+        return segments.Last();
+    }
+
+    protected override void OnInitialized()
+    {
+        NavigationService.OnNavigationHistoryChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        NavigationService.OnNavigationHistoryChanged -= StateHasChanged;
+    }
+}

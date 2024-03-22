@@ -1,0 +1,25 @@
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/Ubuntu-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/Ubuntu-Bold.ttf') format('truetype');
+}
+
+/*-.mud-table-toolbar*/
+.mud-dialog .mud-dialog-title {
+    background: var(--mud-palette-primary-darken);
+    color: white;
+    font-family: 'Ubuntu';
+    margin-bottom: 8px !important;
+}
+
+.mud-dialog .mud-dialog-title .mud-button-close {
+    color: white;
+}

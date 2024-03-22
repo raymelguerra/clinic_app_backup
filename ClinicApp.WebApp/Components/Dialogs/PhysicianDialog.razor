@@ -1,0 +1,118 @@
+﻿@using ClinicApp.Core.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(phyValidator.ValidateValue)" ValidationDelay="0">
+            @* <MudPaper Class="pa-4" Elevation="0"> *@
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Name"
+                                  For="@(() => Model.Name)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Name" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.RenderingProvider"
+                                  For="@(() => Model.RenderingProvider)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Rendering Provider" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Extra"
+                                  For="@(() => Model.Extra)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Associated" />
+                </MudItem>
+            </MudGrid>
+            @* </MudPaper> *@
+            <MudGrid Class="mt-2">
+                <MudItem xs="12" sm="12" xl="12">
+                    <MudTable Items="@Model.Payrolls"
+                              Dense="true"
+                              Hover="true"
+                              ReadOnly="false"
+                              CanCancelEdit="true"
+                              Breakpoint="Breakpoint.Sm"
+                              Height="140px"
+                              HorizontalScrollbar="true"
+                              @bind-SelectedItem="SelectedItem"
+                              CommitEditTooltip="Commit Edit"
+                              CancelEditTooltip="Cancel Edit"
+                              OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))"
+                              RowEditPreview="BackupItem"
+                              RowEditCancel="ResetItemToOriginalValues"
+                              RowEditCommit="ItemHasBeenCommitted"
+                              IsEditRowSwitchingBlocked="false"
+                              ApplyButtonPosition="TableApplyButtonPosition.End"
+                              EditButtonPosition="TableEditButtonPosition.End"
+                              EditTrigger="TableEditTrigger.EditButton">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Payrolls</MudText>
+                            <MudSpacer />
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" />
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Company</MudTh>
+                            <MudTh>Insurance</MudTh>
+                            <MudTh>Contractor Type</MudTh>
+                            <MudTh>Procedure</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Company">
+                                <MudChip Disabled="true" Color="Color.Primary">@(context.Company != null ? context.Company.Name : string.Empty)</MudChip>
+                            </MudTd>
+                            <MudTd DataLabel="Insurance"> @("Insurance test")</MudTd>
+                            <MudTd DataLabel="ContractorType">@(context.ContractorType != null ? context.ContractorType.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Procedure">@(context.Procedure != null ? context.Procedure.Name : string.Empty)</MudTd>
+                        </RowTemplate>
+                        <RowEditingTemplate>
+                            <MudTd DataLabel="Company">
+                                <MudChip Disabled="true" Color="Color.Primary">@context.Company.Name</MudChip>
+                            </MudTd>
+                            <MudTd DataLabel="Insurance">
+                                <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@("Insurance 1")" />
+                                    <MudSelectItem Value="@("Insurance 2")" />
+                                    <MudSelectItem Value="@("Insurance 3")" />
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd DataLabel="ContractorType">
+                                <MudSelect T="string" Label="Contractor Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@("1")">Analyst</MudSelectItem>
+                                    <MudSelectItem Value="@("2")">RBT</MudSelectItem>
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd DataLabel="Procedure">
+                                <MudSelect T="string" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@("1")">2014</MudSelectItem>
+                                    <MudSelectItem Value="@("2")">7019</MudSelectItem>
+                                </MudSelect>
+                            </MudTd>
+                        </RowEditingTemplate>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                        <EditButtonContent Context="button">
+                            <MudGrid Spacing="2" Justify="Justify.FlexEnd">
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                            </MudGrid>
+                        </EditButtonContent>
+
+                    </MudTable>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>

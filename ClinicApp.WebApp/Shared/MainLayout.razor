@@ -1,0 +1,93 @@
+﻿@using ClinicApp.WebApp.Components
+@inherits LayoutComponentBase
+
+<PageTitle>ClinicApp.WebApp</PageTitle>
+
+<MudThemeProvider Theme="MyCustomTheme" />
+<MudDialogProvider FullWidth="true"
+                   MaxWidth="MaxWidth.Medium"
+                   CloseButton="true"
+                   DisableBackdropClick="true"
+                   Position="DialogPosition.TopCenter"
+                   CloseOnEscapeKey="true" />
+<MudSnackbarProvider />
+
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Rounded.Person" Color="Color.Inherit" Link="#" Target="_blank" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="@open" Variant="@DrawerVariant.Responsive" Breakpoint="@Breakpoint.Sm" Elevation="1">
+        <MudDrawerHeader class="d-flex justify-center" hidden="@(!open)">
+            <MudImage ObjectFit="ObjectFit.Fill" Width="140" Src="img/expanding.png" Alt="Expanding logo" Class="rounded-lg" />
+        </MudDrawerHeader>
+        <MudNavMenu Dense="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
+            <MudNavLink Icon="@Icons.Material.Filled.Dashboard" Href="/home">Dashboard</MudNavLink>
+            <MudNavGroup Title="Human Resources" Icon="@Icons.Material.Filled.Groups">
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/physician">Physician</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/patient">Patient</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="Billing" Icon="@Icons.Material.Filled.ShowChart">
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/counter">Service Log</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/pep">Period and payments</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/pep">Pending</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="Management" Icon="@Icons.Material.Filled.Settings">
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/counter">Insurance</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/pep" Disabled="true">User</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.ArrowRight" Href="/pep" Disabled="true">Period</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="Reports" Icon="@Icons.Material.Filled.Checklist" Disabled="true">
+            </MudNavGroup>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent Class="pt-4 px-4">
+        <MudContainer Class="mt-16">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool open = true;
+
+    void ToggleDrawer()
+    {
+        open = !open;
+    }
+
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Typography = new Typography()
+            {
+
+                // Default = new Default()
+                // {
+                //     // FontFamily = new[] { "Poppins", "Helvetica", "Arial", "sans-serif" }
+                //     FontSize = "16px"
+                // },
+                H4 = new H4
+                {
+                    FontFamily = new[] { "Ubuntu", "sans-serif" },
+                    //     FontSize = "1.25rem",
+                    //     LineHeight = 1.4,
+                    //     LetterSpacing = "0.01071em",
+                },
+
+            },
+            Palette = new PaletteLight()
+            {
+                Primary = Colors.Indigo.Default,
+                Secondary = Colors.Blue.Accent4,
+                AppbarBackground = Colors.Indigo.Darken4,
+                Success = Colors.Green.Darken3,
+                Background = Colors.Grey.Lighten4
+            },
+            PaletteDark = new PaletteDark()
+            {
+                Primary = Colors.Blue.Lighten1
+            }
+        };
+}

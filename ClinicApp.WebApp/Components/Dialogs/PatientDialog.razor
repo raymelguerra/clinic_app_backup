@@ -1,0 +1,145 @@
+﻿@using ClinicApp.Core.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(ptValidator.ValidateValue)" ValidationDelay="0">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Name"
+                                  For="@(() => Model.Name)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Full Name" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.RecipientId"
+                                  For="@(() => Model.RecipientId)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Recipient Id" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.PatientAccount"
+                                  For="@(() => Model.PatientAccount)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Patient Account" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Sequence"
+                                  For="@(() => Model.Sequence)"
+                                  Immediate="true"
+                                  Text=1
+                                  Variant="Variant.Outlined"
+                                  Label="Sequence" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.ReferringProvider"
+                                  For="@(() => Model.ReferringProvider)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Referring Provider" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.WeeklyApprovedAnalyst"
+                                  For="@(() => Model.WeeklyApprovedAnalyst)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Weekly Approved Analyst (Hr)" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.WeeklyApprovedRbt"
+                                  For="@(() => Model.WeeklyApprovedRbt)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Weekly Approved RBT (Hr)" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect For="@(() => Model.ReleaseInformation)" @bind-Value="Model.ReleaseInformation" Label="Release Information" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect For="@(() => Model.Diagnosis)" @bind-Value="Model.Diagnosis" Label="Release Information" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField T="string" Label="Authorization Number" @bind-Value="Model.AuthorizationNumber" Variant="Variant.Outlined" Adornment="@Adornment.End" AdornmentIcon="@Icons.Filled.AddCard" OnAdornmentClick="@ShowPatienAccountDialog">
+                    </MudTextField>
+                </MudItem>
+            </MudGrid>
+            <MudGrid Class="mt-2">
+                <MudItem xs="12" sm="12" xl="12">
+                    <MudTable Items="@Model.Agreements"
+                              Dense="true"
+                              Hover="true"
+                              ReadOnly="false"
+                              CanCancelEdit="true"
+                              Breakpoint="Breakpoint.Sm"
+                              Height="140px"
+                              HorizontalScrollbar="true"
+                              @bind-SelectedItem="SelectedItem"
+                              CommitEditTooltip="Commit Edit"
+                              CancelEditTooltip="Cancel Edit"
+                              OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))"
+                              RowEditPreview="BackupItem"
+                              RowEditCancel="ResetItemToOriginalValues"
+                              RowEditCommit="ItemHasBeenCommitted"
+                              IsEditRowSwitchingBlocked="false"
+                              ApplyButtonPosition="TableApplyButtonPosition.End"
+                              EditButtonPosition="TableEditButtonPosition.End"
+                              EditTrigger="TableEditTrigger.EditButton">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Agreements</MudText>
+                            <MudSpacer />
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" />
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Contractor</MudTh>
+                            <MudTh>Payroll</MudTh>
+                            <MudTh>Rate Employees</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Contractor"> @("Contractor test")</MudTd>
+                            <MudTd DataLabel="Payroll">@(context.Payroll != null ? context.Payroll.Procedure.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Rate employees">@context.RateEmployees</MudTd>
+                        </RowTemplate>
+                        <RowEditingTemplate>
+                            <MudTd DataLabel="Contractor">
+                                <MudAutocomplete T="string" Label="Contractor" SearchFunc="@SearchContractor"
+                                                 ResetValueOnEmptyText="true"
+                                                 CoerceText="false" CoerceValue="false" />
+                            </MudTd>
+                            <MudTd DataLabel="Payroll">
+                                <MudSelect T="string" Label="Payroll" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@("1")">Analyst-2035</MudSelectItem>
+                                    <MudSelectItem Value="@("2")">RBT-H2014</MudSelectItem>
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd DataLabel="RateEmployees">
+                                <MudNumericField T="double" Label="Rate Employees" Format="F1" Variant="Variant.Outlined" />
+                            </MudTd>
+                        </RowEditingTemplate>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                        <EditButtonContent Context="button">
+                            <MudGrid Spacing="2" Justify="Justify.FlexEnd">
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                            </MudGrid>
+                        </EditButtonContent>
+                    </MudTable>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
