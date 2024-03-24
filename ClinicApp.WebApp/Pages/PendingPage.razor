@@ -1,0 +1,41 @@
+﻿@page "/pending"
+@using ClinicApp.Core.Models
+
+<PageTitle>Pending issues</PageTitle>
+
+<ClinicApp.WebApp.Components.ContentPage Title="Pending issues"
+                                         Icon="@Icons.Material.Outlined.FileCopy"
+                                         HiddenAddButton="true"
+                                         HiddenDownloadButton="true">
+
+    <MudDataGrid Items="@ServiceLogs" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+        <Columns>
+            <PropertyColumn Property="@(x => x.CreatedDate.HasValue ? x.CreatedDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Created Date" />
+            <PropertyColumn Property="x => x.Period.PayPeriod" Title="Pay Period" />
+            <TemplateColumn Title="Physician">
+                <CellTemplate>
+                    <MudButton Style="font-weight: normal; text-transform: none;" EndIcon="@Icons.Material.Outlined.Link" OnClick="(args) => ShowDialog(context.Item.ContractorId, PendingBy.PHYSICIAN)"> @context.Item.Contractor.Name</MudButton>
+                </CellTemplate>
+            </TemplateColumn> 
+            <TemplateColumn Title="Patient">
+                <CellTemplate>
+                    <MudButton Style="font-weight: normal; text-transform: none;" EndIcon="@Icons.Material.Outlined.Link" OnClick="(args) => ShowDialog(context.Item.ClientId, PendingBy.PATIENT)"> @context.Item.Client.Name</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Pending" Title="Pending by" />
+            <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+                        <MudItem>
+                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" />
+                        </MudItem>
+                    </MudGrid>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="ServiceLog" />
+        </PagerContent>
+    </MudDataGrid>
+
+</ClinicApp.WebApp.Components.ContentPage>

@@ -1,0 +1,135 @@
+﻿@using ClinicApp.Core.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(slValidator.ValidateValue)" ValidationDelay="0">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Insurance 1")" />
+                        <MudSelectItem Value="@("Insurance 2")" />
+                        <MudSelectItem Value="@("Insurance 3")" />
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect @bind-Value="Model.ContractorId" For="@(() => Model.ContractorId)" Label="Contractor" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="1">Contractor 1</MudSelectItem>
+                        <MudSelectItem Value="2">Contractor 2</MudSelectItem>
+                        <MudSelectItem Value="3">Contractor 3</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect @bind-Value="Model.ClientId" For="@(() => Model.ClientId)" Label="Client" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="1">Contractor 1</MudSelectItem>
+                        <MudSelectItem Value="2">Contractor 2</MudSelectItem>
+                        <MudSelectItem Value="3">Contractor 3</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect @bind-Value="Model.PeriodId" For="@(() => Model.PeriodId)" Label="Period" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="1">Period 1</MudSelectItem>
+                        <MudSelectItem Value="2">Period 2</MudSelectItem>
+                        <MudSelectItem Value="3">Period 3</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+            <MudGrid Class="mt-2">
+                <MudItem xs="12" sm="12" xl="12">
+                    <MudTable Items="@Model.UnitDetails"
+                              Dense="true"
+                              Hover="true"
+                              ReadOnly="false"
+                              CanCancelEdit="true"
+                              Breakpoint="Breakpoint.Sm"
+                              HorizontalScrollbar="true"
+                              @bind-SelectedItem="SelectedItem"
+                              CommitEditTooltip="Commit Edit"
+                              CancelEditTooltip="Cancel Edit"
+                              OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))"
+                              RowEditPreview="BackupItem"
+                              RowEditCancel="ResetItemToOriginalValues"
+                              RowEditCommit="ItemHasBeenCommitted"
+                              IsEditRowSwitchingBlocked="false"
+                              ApplyButtonPosition="TableApplyButtonPosition.End"
+                              EditButtonPosition="TableEditButtonPosition.End"
+                              EditTrigger="TableEditTrigger.EditButton">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Unit Details</MudText>
+                            <MudSpacer />
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" />
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Date of service</MudTh>
+                            <MudTh>Unit</MudTh>
+                            <MudTh>Place of service</MudTh>
+                            <MudTh>Procedure</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="DateOfService">@(context.DateOfService.ToString("MM-dd-yyyy"))</MudTd>
+                            <MudTd DataLabel="Unit"> @context.Unit</MudTd>
+                            <MudTd DataLabel="PlaceOfService">@(context.PlaceOfService != null ? context.PlaceOfService.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Procedure">@(context.SubProcedure != null ? context.SubProcedure.Name : string.Empty)</MudTd>
+                        </RowTemplate>
+                        <RowEditingTemplate>
+                            <MudTd DataLabel="DateOfService">
+                                <MudDatePicker Immediate="true"
+                                               Variant="Variant.Outlined"
+                                               Label="Date Created" />
+                            </MudTd>
+                            <MudTd DataLabel="Unit">
+                                <MudNumericField Label="Unit" Variant="Variant.Outlined" Min="0" Max="20" />
+                            </MudTd>
+                            <MudTd DataLabel="PlaceOfService">
+                                <MudSelect T="string" Label="PlaceOfService" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@("1")">Home</MudSelectItem>
+                                    <MudSelectItem Value="@("2")">School</MudSelectItem>
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd DataLabel="Procedure">
+                                <MudSelect T="string" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@("1")">2014</MudSelectItem>
+                                    <MudSelectItem Value="@("2")">7019</MudSelectItem>
+                                </MudSelect>
+                            </MudTd>
+                        </RowEditingTemplate>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                        <EditButtonContent Context="button">
+                            <MudGrid Spacing="2" Justify="Justify.FlexEnd">
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                            </MudGrid>
+                        </EditButtonContent>
+
+                    </MudTable>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudGrid Spacing="1" Justify="Justify.SpaceBetween">
+            <MudItem>
+                <MudFileUpload T="IBrowserFile">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                                   for="@context.Id">
+                            Import
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+            </MudItem>
+            <MudItem>
+                <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+                <MudButton OnClick="Cancel">Cancel</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>

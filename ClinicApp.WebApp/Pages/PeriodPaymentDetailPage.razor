@@ -1,0 +1,131 @@
+﻿@page "/periodpaymentdetails/{PeriodId:int}"
+@using ClinicApp.Core.Models
+
+<PageTitle>Period and payments</PageTitle>
+
+@if (Period == null)
+{
+    <p>...loading</p>
+}
+else
+{
+    <ClinicApp.WebApp.Components.ContentPage Title=@($"Periods and Payments Details: {Period.PayPeriod}")
+                                             Icon="@Icons.Material.Outlined.CalendarMonth"
+                                             HiddenAddButton="true"
+                                             HiddenDownloadButton="true">
+        <MudGrid Spacing="2" Justify="Justify.SpaceAround">
+            <MudItem xs="12" sm="12" md="4" lg="4" xl="4">
+                <MudCard Outlined="true" Elevation="3" Class="blue lighten-4">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">
+                            Billed To Insurance
+                        </MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.FlexStart">
+                            <MudItem>
+                                <MudIcon Icon="@Icons.Material.Outlined.RequestPage" Color="Color.Default" Size="Size.Large" />
+                            </MudItem>
+                            <MudItem>
+                                <MudText Typo="Typo.h5">241,779.24 </MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="12" md="4" lg="4" xl="4">
+                <MudCard Outlined="true" Elevation="3" Class="yellow lighten-4">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">
+                            Amount Paid to Contractors
+                        </MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.FlexStart">
+                            <MudItem>
+                                <MudIcon Icon="@Icons.Material.Outlined.Payments" Color="Color.Default" Size="Size.Large" />
+                            </MudItem>
+                            <MudItem>
+                                <MudText Typo="Typo.h5">172,972.25</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="12" md="4" lg="4" xl="4">
+                <MudCard Outlined="true" Elevation="3" Class="green lighten-4">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">
+                            Profit
+                        </MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Justify="Justify.FlexStart">
+                            <MudItem>
+                                <MudIcon Icon="@Icons.Material.Outlined.AttachMoney" Color="Color.Default" Size="Size.Large" />
+                            </MudItem>
+                            <MudItem>
+                                <MudText Typo="Typo.h5"> 68,806.99 </MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </ClinicApp.WebApp.Components.ContentPage>
+    <MudPaper Class="pa-4 ma-2" Elevation="3">
+        <MudGrid Spacing="2" Justify="Justify.SpaceBetween">
+            <MudItem>
+                <MudGrid Spacing="2" Justify="Justify.FlexStart">
+
+                    <MudItem>
+                        <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            <MudSelectItem T="string" Value=@("Insurance 1") />
+                            <MudSelectItem T="string" Value=@("Insurance 2") />
+                            <MudSelectItem T="string" Value=@("Insurance 3") />
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem>
+                        <MudAutocomplete Variant="Variant.Outlined" T="string" Label="Contractor" SearchFunc="@SearchContractor"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="false" CoerceValue="false" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            <MudItem>
+                <MudGrid Justify="Justify.FlexEnd">
+                    <MudItem>
+                        <MudIconButton Title="Generate and download summary" Size="@Size.Large" Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Spacing="5">
+            <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                    @for (int i = 0; i < 10; i++)
+                    {
+                        <MudTabPanel Text=@($"Client prueba {i}")>
+                            <MudGrid Spacing="2" Justify="Justify.SpaceBetween">
+                                @for (int j = 0; j < 5; j++)
+                                {
+                                    <MudItem>
+                                        <MudGrid Spacing="2" Justify="Justify.FlexStart">
+                                            <MudItem>
+                                                <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                                    <MudSelectItem T="string" Value=@("Insurance 1") />
+                                                    <MudSelectItem T="string" Value=@("Insurance 2") />
+                                                    <MudSelectItem T="string" Value=@("Insurance 3") />
+                                                </MudSelect>
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        </MudTabPanel>
+                    }
+                </MudTabs>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+}

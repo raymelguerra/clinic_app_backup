@@ -1,0 +1,35 @@
+﻿@page "/periodpayment"
+@using ClinicApp.Core.Models
+
+<PageTitle>Period and payments</PageTitle>
+
+<ClinicApp.WebApp.Components.ContentPage Title="Periods and Payments"
+                                         Icon="@Icons.Material.Outlined.CalendarMonth"
+                                         HiddenAddButton="true"
+                                         HiddenDownloadButton="true">
+
+    <MudDataGrid Items="@Periods" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+        <Columns>
+            <PropertyColumn Property="x => x.PayPeriod" Title="Pay Period" />
+            <PropertyColumn Property="@(x => $"{x.StartDate.ToString("MM-dd-yyyy")} - {x.EndDate.ToString("MM-dd-yyyy")}")" Title="Period" />
+            <PropertyColumn Property="@(x => x.DocumentDeliveryDate.ToString(" MM-dd-yyyy"))" Title="Document Delivery" />
+            <PropertyColumn Property="@(x => x.PaymentDate.ToString(" MM-dd-yyyy"))" Title="Payment" />
+            <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+                        <MudItem>
+                            <MudIconButton Title="Show details" Size="@Size.Small" Icon="@Icons.Material.Outlined.RemoveRedEye" Class="pa-0" Color="Color.Info" OnClick="(args) => ShowPeriodDetails(data.Item.Id)" />
+                        </MudItem>
+                        <MudItem>
+                            <MudIconButton Title="Generate and download summary" Size="@Size.Small" Icon="@Icons.Custom.FileFormats.FileExcel" Color="Color.Success" Class="pa-0" />
+                        </MudItem>
+                    </MudGrid>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Period" />
+        </PagerContent>
+    </MudDataGrid>
+
+</ClinicApp.WebApp.Components.ContentPage>
