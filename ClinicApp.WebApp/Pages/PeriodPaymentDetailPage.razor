@@ -73,7 +73,7 @@ else
             </MudItem>
         </MudGrid>
     </ClinicApp.WebApp.Components.ContentPage>
-    <MudPaper Class="pa-4 ma-2" Elevation="3">
+    <MudPaper Class="pa-4 ma-1" Elevation="3">
         <MudGrid Spacing="2" Justify="Justify.SpaceBetween">
             <MudItem>
                 <MudGrid Spacing="2" Justify="Justify.FlexStart">
@@ -86,7 +86,7 @@ else
                         </MudSelect>
                     </MudItem>
                     <MudItem>
-                        <MudAutocomplete Variant="Variant.Outlined" T="string" Label="Contractor" SearchFunc="@SearchContractor"
+                        <MudAutocomplete Variant="Variant.Outlined" T="string" Label="Phisician" SearchFunc="@SearchContractor"
                                          ResetValueOnEmptyText="true"
                                          CoerceText="false" CoerceValue="false" />
                     </MudItem>
@@ -102,23 +102,30 @@ else
         </MudGrid>
         <MudGrid Spacing="5">
             <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
-                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" Color="@Color.Default" Outlined="true" PanelClass="pa-6">
                     @for (int i = 0; i < 10; i++)
                     {
-                        <MudTabPanel Text=@($"Client prueba {i}")>
+                        <MudTabPanel Text=@($"Patient prueba {i+1}")>
                             <MudGrid Spacing="2" Justify="Justify.SpaceBetween">
                                 @for (int j = 0; j < 5; j++)
                                 {
-                                    <MudItem>
-                                        <MudGrid Spacing="2" Justify="Justify.FlexStart">
-                                            <MudItem>
-                                                <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                                    <MudSelectItem T="string" Value=@("Insurance 1") />
-                                                    <MudSelectItem T="string" Value=@("Insurance 2") />
-                                                    <MudSelectItem T="string" Value=@("Insurance 3") />
-                                                </MudSelect>
-                                            </MudItem>
-                                        </MudGrid>
+                                    <MudItem xs="12" sm="12" md="6" lg="6" xl="6">
+                                        <MudTable Items="@UnitDetails" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+                                            <HeaderContent>
+                                                <MudTh>Date</MudTh>
+                                                <MudTh>Duration (Quarter)</MudTh>
+                                                <MudTh>Hours</MudTh>
+                                                <MudTh>Place of services</MudTh>
+                                                <MudTh>Procedure</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Date">@context.DateOfService.ToShortDateString()</MudTd>
+                                                <MudTd DataLabel="Duration (Quarter)">@context.Unit</MudTd>
+                                                <MudTd DataLabel="Hours">@(context.Unit / 4)</MudTd>
+                                                <MudTd DataLabel="Place of services">@context.PlaceOfService.Name</MudTd>
+                                                <MudTd DataLabel="Sub Procedure">@context.SubProcedure.Name</MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
                                     </MudItem>
                                 }
                             </MudGrid>
@@ -128,4 +135,53 @@ else
             </MudItem>
         </MudGrid>
     </MudPaper>
+}
+
+@code {
+    private List<UnitDetail> UnitDetails { get; set; } = new List<UnitDetail>();
+    private bool _loading = false;
+
+    protected override void OnInitialized()
+    {
+        _loading = true;
+        UnitDetails = GenerateStaticUnitDetails();
+        _loading = false;
+    }
+
+    private List<UnitDetail> GenerateStaticUnitDetails()
+    {
+        List<UnitDetail> unitDetails = new List<UnitDetail>
+        {
+            new UnitDetail
+            {
+                DateOfService = DateTime.Now.AddDays(-1),
+                Unit = 2,
+                PlaceOfService = new PlaceOfService { Name = "Hospital A" },
+                SubProcedure = new SubProcedure { Name = "Procedure A" }
+            },
+            new UnitDetail
+            {
+                DateOfService = DateTime.Now.AddDays(-2),
+                Unit = 1,
+                PlaceOfService = new PlaceOfService { Name = "Clinic B" },
+                SubProcedure = new SubProcedure { Name = "Procedure B" }
+            },
+            new UnitDetail
+            {
+                DateOfService = DateTime.Now.AddDays(-3),
+                Unit = 3,
+                PlaceOfService = new PlaceOfService { Name = "Hospital C" },
+                SubProcedure = new SubProcedure { Name = "Procedure C" }
+            },
+            new UnitDetail
+            {
+                DateOfService = DateTime.Now.AddDays(-4),
+                Unit = 4,
+                PlaceOfService = new PlaceOfService { Name = "Clinic D" },
+                SubProcedure = new SubProcedure { Name = "Procedure D" }
+            }
+        };
+
+        return unitDetails;
+    }
 }

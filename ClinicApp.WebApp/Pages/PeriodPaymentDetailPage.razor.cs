@@ -33,12 +33,12 @@ public partial class PeriodPaymentDetailPage : ComponentBase
             StartDate = DateTime.Now
         }
        };
-        
-        Period = Periods.First(x=> x.Id == PeriodId);
+
+        Period = Periods.First(x => x.Id == PeriodId);
     }
     private async Task ShowPeriodDetails()
     {
-        
+
     }
 
     #region Contractor Search
@@ -54,20 +54,21 @@ public partial class PeriodPaymentDetailPage : ComponentBase
     }
     private string[] states =
   {
-        "Alabama", "Alaska", "American Samoa", "Arizona",
-        "Arkansas", "California", "Colorado", "Connecticut",
-        "Delaware", "District of Columbia", "Federated States of Micronesia",
-        "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
-        "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
-        "Louisiana", "Maine", "Marshall Islands", "Maryland",
-        "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-        "Missouri", "Montana", "Nebraska", "Nevada",
-        "New Hampshire", "New Jersey", "New Mexico", "New York",
-        "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
-        "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
-        "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-        "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
-        "Washington", "West Virginia", "Wisconsin", "Wyoming",
+        "María García",
+    "Juan Pérez",
+    "Ana Martínez",
+    "Carlos López",
+    "Laura Rodríguez",
+    "David González",
+    "Isabel Fernández",
+    "Alejandro Ramírez",
+    "Patricia Ruiz",
+    "Sergio Herrera",
+    "Claudia Medina",
+    "Ricardo Torres",
+    "Natalia Gómez",
+    "Andrés Vargas",
+    "Paula Sánchez"
     };
 
     #endregion
