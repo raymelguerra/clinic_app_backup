@@ -11,8 +11,8 @@ else
 {
     <ClinicApp.WebApp.Components.ContentPage Title=@($"Periods and Payments Details: {Period.PayPeriod}")
                                              Icon="@Icons.Material.Outlined.CalendarMonth"
-                                             HiddenAddButton="true"
-                                             HiddenDownloadButton="true">
+                                             HiddenGoBackButton="false"
+                                             GoBackButtonAction="GoBack">
         <MudGrid Spacing="2" Justify="Justify.SpaceAround">
             <MudItem xs="12" sm="12" md="4" lg="4" xl="4">
                 <MudCard Outlined="true" Elevation="3" Class="blue lighten-4">

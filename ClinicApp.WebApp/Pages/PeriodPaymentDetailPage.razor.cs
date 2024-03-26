@@ -7,6 +7,7 @@ namespace ClinicApp.WebApp.Pages;
 public partial class PeriodPaymentDetailPage : ComponentBase
 {
     [Inject] IDialogService DialogService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
     [Parameter] public int PeriodId { get; set; }
 
     private Period Period = new Period();
@@ -36,9 +37,9 @@ public partial class PeriodPaymentDetailPage : ComponentBase
 
         Period = Periods.First(x => x.Id == PeriodId);
     }
-    private async Task ShowPeriodDetails()
+    private async Task GoBack()
     {
-
+        NavigationManager.NavigateTo("/periodpayment", true);
     }
 
     #region Contractor Search

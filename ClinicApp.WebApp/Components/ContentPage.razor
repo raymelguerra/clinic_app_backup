@@ -11,15 +11,20 @@
             </MudGrid>
         </MudItem>
         <MudItem>
-            <MudGrid Spacing="0">
-                <MudItem xs="6" sm="6" xl="6">
-                    <MudTooltip Text="@Concat(0)">
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" hidden="@HiddenAddButton" OnClick="@(() => AddButtonAction.Invoke())" />
+            <MudGrid Spacing="1">
+                <MudItem>
+                    <MudTooltip Text="@($"Add {Title}")">
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" hidden="@HiddenAddButton" OnClick="@(() => AddButtonAction.Invoke())" />
                     </MudTooltip>
                 </MudItem>
-                <MudItem xs="6" sm="6" xl="6">
-                    <MudTooltip Text="@Concat(1)">
-                        <MudFab Color="Color.Dark" StartIcon="@Icons.Material.Filled.Download" Size="Size.Small" hidden="@HiddenDownloadButton" OnClick="@(() => DownloadButtonAction.Invoke())" />
+                <MudItem>
+                    <MudTooltip Text="@($"Download {Title}")">
+                        <MudIconButton Color="Color.Dark" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Download" Size="Size.Small" hidden="@HiddenDownloadButton" OnClick="@(() => DownloadButtonAction.Invoke())" />
+                    </MudTooltip>
+                </MudItem>
+                <MudItem>
+                    <MudTooltip Text="@("Go Back")">
+                        <MudIconButton Color="Color.Secondary" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.ArrowBack" Size="Size.Small" hidden="@HiddenGoBackButton" OnClick="@(() => GoBackButtonAction.Invoke())" />
                     </MudTooltip>
                 </MudItem>
             </MudGrid>

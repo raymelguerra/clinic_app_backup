@@ -9,7 +9,10 @@ namespace ClinicApp.WebApp.Components
         [Parameter]
         public string Title { get; set; }
         [Parameter]
-        public bool HiddenAddButton { get; set; } = true;
+        public bool HiddenAddButton { get; set; } = true; 
+        
+        [Parameter]
+        public bool HiddenGoBackButton { get; set; } = true;
         [Parameter]
         public bool HiddenDownloadButton { get; set; } = true;
         [Parameter]
@@ -18,10 +21,8 @@ namespace ClinicApp.WebApp.Components
         public Func<Task> AddButtonAction { get; set; }
         [Parameter]
         public Func<Task> DownloadButtonAction { get; set; }
+        [Parameter]
+        public Func<Task> GoBackButtonAction { get; set; }
 
-        public string Concat(int value){
-            var option = value == 0 ? "Add" : "Download";
-            return $"{option} {Title}";
-}
     }
 }
