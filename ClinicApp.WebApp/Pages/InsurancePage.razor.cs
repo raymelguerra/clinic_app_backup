@@ -38,7 +38,7 @@ public partial class InsurancePage : ComponentBase
                         Name ="Home"
                     },
                     Unit = 18,
-                    SubProcedure = new SubProcedure
+                    Procedure = new Procedure
                     {
                         Name ="H2014"
                     }
@@ -60,7 +60,7 @@ public partial class InsurancePage : ComponentBase
                     Name = "Home"
                 },
                 Unit = 18,
-                SubProcedure = new SubProcedure
+                Procedure = new Procedure
                 {
                     Name = "H2014"
                 }

@@ -1,58 +1,70 @@
 ﻿using ClinicApp.Core.Models;
+using ClinicApp.WebApp.Interfaces;
 using ClinicApp.WebApp.Services.Validations;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using static MudBlazor.Colors;
+using MudBlazor.Internal;
+
 namespace ClinicApp.WebApp.Components.Dialogs;
 
 public partial class PatientDialog : ComponentBase
 {
-    [Parameter]
-    public Client Model { get; set; }
-    public IEnumerable<PatientAccount> PatientAccountList { get; set; }
-    [Inject] ISnackbar Snackbar { get; set; }
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Inject] IDialogService DialogService { get; set; }
+    [Inject] private IClient ClientService { get; set; } = null!;
+    [Inject] private IDiagnosis? DiagnosisService { get; set; }
+    [Inject] private IReleaseInformation? ReleaseInformationService { get; set; }
+    [Inject] ISnackbar? Snackbar { get; set; }
+    [Inject] IDialogService? DialogService { get; set; }
 
-    private MudForm form;
-    private PatientValidator ptValidator = new();
-    // private MudDialog dialog;
-    private MudBlazor.Internal.MudInputAdornment dialog;
+    [Parameter]
+    public Client? Model { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    public IEnumerable<ReleaseInformation>? _releaseInformations { get; set; }
+    public IEnumerable<Diagnosis>? _diagnoses { get; set; }
+
+
+    private MudForm? form;
+    private PatientValidator? ptValidator = new();
 
     // Agreements table
-    private Agreement SelectedItem { get; set; } = new();
-    private Agreement elementBeforeEdit { get; set; }
+    private Agreement? SelectedItem { get; set; } = new();
+    private Agreement? elementBeforeEdit { get; set; }
 
-    protected override Task OnParametersSetAsync()
+    Func<dynamic, string> converter = p => p?.Name;
+    protected override async Task OnParametersSetAsync()
     {
-        PatientAccountList = new List<PatientAccount> {
-            //new PatientAccount {
-            //    Id = 1,
-            //    ClientId = 1,
-            //    CreateDate = DateTime.Now,
-            //    ExpireDate = DateTime.Now,
-            //    LicenseNumber = "pepepep"
-            //},
-            //new PatientAccount {
-            //    Id = 2,
-            //    ClientId = 1,
-            //    CreateDate = DateTime.Now,
-            //    ExpireDate = DateTime.Now,
-            //    LicenseNumber = "123123125439"
-            //},
-            //new PatientAccount {
-            //    Id = 2,
-            //    ClientId = 1,
-            //    CreateDate = DateTime.Now,
-            //    ExpireDate = DateTime.Now,
-            //    LicenseNumber = "DOES NOT APPLY",
-            //    Auxiliar = "HG883747"
-            //},
-        };
-        return base.OnParametersSetAsync();
+        var relInf = ReleaseInformationService!.GetReleaseInformationAsync("");
+        var diag = DiagnosisService!.GetDiagnosisAsync("");
+
+        await Task.WhenAll(relInf, diag);
+
+        _releaseInformations = relInf.Result;
+        _diagnoses = diag.Result;
+
     }
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    async void Submit()
+    {
+        await form!.Validate();
+        if (!form.IsValid) return;
+
+        try
+        {
+            Model!.DiagnosisId = Model.Diagnosis.Id;
+            Model!.ReleaseInformationId = Model.ReleaseInformation.Id;
+
+            var result = MudDialog!.Title.Contains("Add") ? await ClientService!.PostClientAsync(Model!) : await ClientService!.PutClientAsync(Model!.Id, Model);
+            if (result)
+                MudDialog!.Close(DialogResult.Ok(true));
+            else
+                Snackbar!.Add($"Oops, there was an error adding a new patient.", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar!.Add($"Oops, an error occurred. The error type is: {ex.Message}.", Severity.Error);
+        }
+    }
+
     void Cancel() => MudDialog.Cancel();
 
     #region Contractor Search
@@ -67,7 +79,7 @@ public partial class PatientDialog : ComponentBase
         return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
     private string[] states =
-  {
+    {
         "Alabama", "Alaska", "American Samoa", "Arizona",
         "Arkansas", "California", "Colorado", "Connecticut",
         "Delaware", "District of Columbia", "Federated States of Micronesia",
@@ -97,13 +109,7 @@ public partial class PatientDialog : ComponentBase
                 Id = 1,
                 Name = "Expanding Possibilities",
             },
-            Payroll = new Payroll
-            {
-                Contractor = new(),
-                ContractorId = 1,
-                ContractorType = new(),
-                Procedure = new()
-            },
+            Payroll = new(),
         });
         StateHasChanged();
     }
@@ -139,7 +145,7 @@ public partial class PatientDialog : ComponentBase
     #region Patient account
     private async Task ShowPatienAccountDialog()
     {
-        var parameters = new DialogParameters<PatientAccountDialog> { { x => x.PatientAccountList, PatientAccountList } };
+        var parameters = new DialogParameters<PatientAccountDialog> { { x => x.Model, Model!.PatientAccounts ?? new PatientAccount() } };
         var options = new DialogOptions
         {
             CloseOnEscapeKey = true,
@@ -148,7 +154,16 @@ public partial class PatientDialog : ComponentBase
             Position = DialogPosition.TopCenter,
         };
 
-        var result = await DialogService.ShowAsync<PatientAccountDialog>("Action Patient Account", parameters, options);
+        var dialog = await DialogService.ShowAsync<PatientAccountDialog>("Action Patient Account", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled && result.Data != null)
+        {
+            Model.PatientAccounts = (PatientAccount)result.Data;
+
+            Model.AuthorizationNumber = Model.PatientAccounts.LicenseNumber != string.Empty ? Model.PatientAccounts.LicenseNumber : Model.PatientAccounts.Auxiliar;
+            StateHasChanged();
+        }
+
     }
     #endregion
 }

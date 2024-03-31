@@ -1,41 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClinicApp.Core.Models;
 
-public partial class Client
+public class Client
 {
+    [Key]
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
 
-    public string? RecipientId { get; set; }
+    public string RecipientId { get; set; } = null!;
 
-    public string? PatientAccount { get; set; }
+    public string PatientAccount { get; set; } = null!;
 
+    [Required]
     public int ReleaseInformationId { get; set; }
+    
+    [Required]
+    public int PatientAccountId { get; set; }
 
     public string? ReferringProvider { get; set; }
 
     public string? AuthorizationNumber { get; set; }
 
+    [Required]
     public int Sequence { get; set; }
 
+    [Required]
     public int DiagnosisId { get; set; }
 
+    [Required]
     public bool Enabled { get; set; }
 
-    public int WeeklyApprovedRbt { get; set; }
+    [Required]
+    public int WeeklyApprovedRBT { get; set; }
 
+    [Required]
     public int WeeklyApprovedAnalyst { get; set; }
 
-    public virtual ICollection<Agreement> Agreements { get; set; } = new List<Agreement>();
+    [ForeignKey("ReleaseInformationId")]
+    public ReleaseInformation? ReleaseInformation { get; set; }
 
-    public virtual Diagnosis Diagnosis { get; set; } = null!;
+    [ForeignKey("DiagnosisId")]
+    public Diagnosis? Diagnosis { get; set; }
+    
+    [ForeignKey("PatientAccountId")]
+    public PatientAccount PatientAccounts { get; set; } = null!;
 
-    public virtual ICollection<PatientAccount> PatientAccounts { get; } = new List<PatientAccount>();
-
-    public virtual ReleaseInformation ReleaseInformation { get; set; } = null!;
-
-    public virtual ICollection<ServiceLog> ServiceLogs { get; set; } = new List<ServiceLog>();
+    public virtual List<Agreement>? Agreements { get; set; }
 }

@@ -68,7 +68,7 @@
                             <MudTd DataLabel="DateOfService">@(context.DateOfService.ToString("MM-dd-yyyy"))</MudTd>
                             <MudTd DataLabel="Unit"> @context.Unit</MudTd>
                             <MudTd DataLabel="PlaceOfService">@(context.PlaceOfService != null ? context.PlaceOfService.Name : string.Empty)</MudTd>
-                            <MudTd DataLabel="Procedure">@(context.SubProcedure != null ? context.SubProcedure.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Procedure">@(context.Procedure != null ? context.Procedure.Name : string.Empty)</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>
                             <MudTd DataLabel="DateOfService">

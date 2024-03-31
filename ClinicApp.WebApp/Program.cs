@@ -1,7 +1,10 @@
+using ClinicApp.Infrastructure.Data;
 using ClinicApp.WebApp.Data;
+using ClinicApp.WebApp.Interfaces;
 using ClinicApp.WebApp.Services;
 using MudBlazor;
 using MudBlazor.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,6 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
-
     config.SnackbarConfiguration.PreventDuplicates = false;
     config.SnackbarConfiguration.NewestOnTop = false;
     config.SnackbarConfiguration.ShowCloseIcon = true;
@@ -21,11 +23,25 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 
+
+builder.Logging.ClearProviders().AddConsole();
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
+
 builder.Services.AddScoped<NavigationService>();
 
-// For delete
-builder.Services.AddSingleton<WeatherForecastService>();
+// Add Services Injections
+builder.Services.AddTransient<IClient, ClientService>();
+builder.Services.AddTransient<IDiagnosis, DiagnosisService>();
+builder.Services.AddTransient<IReleaseInformation, ReleaseInformationService>();
+builder.Services.AddTransient<IPhysician, PhysicianService>();
+builder.Services.AddTransient<IContractorType, ContractorTypeService>();
+builder.Services.AddTransient<IProcedure, ProcedureService>();
+builder.Services.AddTransient<IInsurance, InsuranceService>();
+builder.Services.AddTransient<ICompany, CompanyService>();
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -36,6 +52,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSession();
 
 app.UseHttpsRedirection();
 

@@ -52,43 +52,69 @@
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">Payrolls</MudText>
                             <MudSpacer />
-                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" Disabled="HaveNewAgreement()" /> @* Disabled="@HaveNewAgreement()" *@
                         </ToolBarContent>
                         <HeaderContent>
-                            <MudTh>Company</MudTh>
+                           @*  <MudTh>Company</MudTh> *@
                             <MudTh>Insurance</MudTh>
                             <MudTh>Contractor Type</MudTh>
                             <MudTh>Procedure</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="Company">
+                            @* <MudTd DataLabel="Company">
                                 <MudChip Disabled="true" Color="Color.Primary">@(context.Company != null ? context.Company.Name : string.Empty)</MudChip>
-                            </MudTd>
-                            <MudTd DataLabel="Insurance"> @("Insurance test")</MudTd>
+                            </MudTd> *@
+                            <MudTd DataLabel="Insurance"> @(context.InsuranceProcedure != null && context.InsuranceProcedure.Insurance !=null ? context.InsuranceProcedure.Insurance.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="ContractorType">@(context.ContractorType != null ? context.ContractorType.Name : string.Empty)</MudTd>
-                            <MudTd DataLabel="Procedure">@(context.Procedure != null ? context.Procedure.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Procedure">@(context.InsuranceProcedure != null && context.InsuranceProcedure.Procedure != null ? context.InsuranceProcedure.Procedure.Name : string.Empty)</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>
-                            <MudTd DataLabel="Company">
+                            @* <MudTd DataLabel="Company">
                                 <MudChip Disabled="true" Color="Color.Primary">@context.Company.Name</MudChip>
-                            </MudTd>
+                            </MudTd> *@
                             <MudTd DataLabel="Insurance">
-                                <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    <MudSelectItem Value="@("Insurance 1")" />
-                                    <MudSelectItem Value="@("Insurance 2")" />
-                                    <MudSelectItem Value="@("Insurance 3")" />
+                                <MudSelect For="@(() => context.InsuranceProcedure.Insurance)" @bind-Value="context.InsuranceProcedure.Insurance" ToStringFunc="@converter" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TextChanged="@(x=> OnInsuranceChanged(x))">
+                                    @if (_insurances == null || _insurances.Count() == 0)
+                                    {
+                                        <MudSelectItem T="Insurance" Value="null">No matching records found</MudSelectItem>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var ins in _insurances)
+                                        {
+                                            <MudSelectItem Value="@ins" />
+                                        }
+                                    }
                                 </MudSelect>
                             </MudTd>
                             <MudTd DataLabel="ContractorType">
-                                <MudSelect T="string" Label="Contractor Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    <MudSelectItem Value="@("1")">Analyst</MudSelectItem>
-                                    <MudSelectItem Value="@("2")">RBT</MudSelectItem>
+                                <MudSelect For="@(() => context.ContractorType)" @bind-Value="context.ContractorType" ToStringFunc="@converter" Label="Contractor Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    @if (_contractorTypes == null || _contractorTypes.Count() == 0)
+                                    {
+                                        <MudSelectItem T="ContractorType" Value="null">No matching records found</MudSelectItem>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var ctr in _contractorTypes)
+                                        {
+                                            <MudSelectItem Value="@ctr" />
+                                        }
+                                    }
                                 </MudSelect>
                             </MudTd>
                             <MudTd DataLabel="Procedure">
-                                <MudSelect T="string" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    <MudSelectItem Value="@("1")">2014</MudSelectItem>
-                                    <MudSelectItem Value="@("2")">7019</MudSelectItem>
+                                <MudSelect For="@(() => context.InsuranceProcedure.Procedure)" @bind-Value="context.InsuranceProcedure.Procedure" ToStringFunc="@converter" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    @if (_procedures == null || _procedures.Count() == 0 || (context.ContractorType == default(ContractorType) || context.InsuranceProcedure.Insurance == default(Insurance)))
+                                    {
+                                        <MudSelectItem T="Procedure" Value="null">No matching records found</MudSelectItem>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var pro in _procedures)
+                                        {
+                                            <MudSelectItem Value="@pro" />
+                                        }
+                                    }
                                 </MudSelect>
                             </MudTd>
                         </RowEditingTemplate>

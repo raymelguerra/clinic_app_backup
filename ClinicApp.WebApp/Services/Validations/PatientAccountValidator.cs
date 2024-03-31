@@ -15,7 +15,7 @@ public class PatientAccountValidator : AbstractValidator<PatientAccount>
         RuleFor(x => x.Auxiliar)
             .NotEmpty().When(x => string.IsNullOrEmpty(x.LicenseNumber))
                 .WithMessage("Auxiliar is required when License number is empty.")
-            .MaximumLength(100).WithMessage("Auxiliar must not exceed 100 characters.");
+            .MaximumLength(50).WithMessage("Auxiliar must not exceed 50 characters.");
 
         RuleFor(x => x.CreateDate)
             .NotNull().WithMessage("Create date is required.");
@@ -24,9 +24,6 @@ public class PatientAccountValidator : AbstractValidator<PatientAccount>
           .NotNull().WithMessage("Expire date is required.")
           .GreaterThan(x => x.CreateDate).WithMessage("Expire date must be greater than create date.");
 
-        RuleFor(x => x.ClientId)
-            .NotEmpty().WithMessage("Client ID is required.")
-            .GreaterThan(0).WithMessage("Client ID must be greater than 0.");
     }
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

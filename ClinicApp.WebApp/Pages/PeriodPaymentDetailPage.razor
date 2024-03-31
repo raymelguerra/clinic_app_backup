@@ -123,7 +123,7 @@ else
                                                 <MudTd DataLabel="Duration (Quarter)">@context.Unit</MudTd>
                                                 <MudTd DataLabel="Hours">@(context.Unit / 4)</MudTd>
                                                 <MudTd DataLabel="Place of services">@context.PlaceOfService.Name</MudTd>
-                                                <MudTd DataLabel="Sub Procedure">@context.SubProcedure.Name</MudTd>
+                                                <MudTd DataLabel="Procedure">@context.Procedure.Name</MudTd>
                                             </RowTemplate>
                                         </MudTable>
                                     </MudItem>
@@ -157,28 +157,28 @@ else
                 DateOfService = DateTime.Now.AddDays(-1),
                 Unit = 2,
                 PlaceOfService = new PlaceOfService { Name = "Hospital A" },
-                SubProcedure = new SubProcedure { Name = "Procedure A" }
+                Procedure = new Procedure { Name = "Procedure A" }
             },
             new UnitDetail
             {
                 DateOfService = DateTime.Now.AddDays(-2),
                 Unit = 1,
                 PlaceOfService = new PlaceOfService { Name = "Clinic B" },
-                SubProcedure = new SubProcedure { Name = "Procedure B" }
+                Procedure = new Procedure { Name = "Procedure B" }
             },
             new UnitDetail
             {
                 DateOfService = DateTime.Now.AddDays(-3),
                 Unit = 3,
                 PlaceOfService = new PlaceOfService { Name = "Hospital C" },
-                SubProcedure = new SubProcedure { Name = "Procedure C" }
+                Procedure = new Procedure { Name = "Procedure C" }
             },
             new UnitDetail
             {
                 DateOfService = DateTime.Now.AddDays(-4),
                 Unit = 4,
                 PlaceOfService = new PlaceOfService { Name = "Clinic D" },
-                SubProcedure = new SubProcedure { Name = "Procedure D" }
+                Procedure = new Procedure { Name = "Procedure D" }
             }
         };
 

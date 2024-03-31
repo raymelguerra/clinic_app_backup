@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ClinicApp.Core.Models;
 
-public partial class Procedure
+public class Procedure
 {
+    [Key]
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
 
-    public double Rate { get; set; }
+    [Required]
+    public int ContractorTypeId { get; set; }
 
-    public virtual ICollection<Payroll> Payrolls { get; } = new List<Payroll>();
+    [ForeignKey("ContractorTypeId")]
+    public ContractorType? ContractorType { get; set; }
 
-    public virtual ICollection<SubProcedure> SubProcedures { get; } = new List<SubProcedure>();
 }

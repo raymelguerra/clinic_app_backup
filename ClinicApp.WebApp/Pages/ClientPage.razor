@@ -8,24 +8,28 @@
                                          HiddenAddButton="false"
                                          HiddenDownloadButton="true" AddButtonAction="AddClient">
 
-    <MudDataGrid Items="@Clients" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <MudDataGrid Loading="@_loading" Items="@Clients" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
             <PropertyColumn Property="x => x.Name" Title="Name" />
             <PropertyColumn Property="x => x.RecipientId" Title="Recipient" />
             <PropertyColumn Property="x => x.PatientAccount" Title="Patient Account" />
+            <PropertyColumn Property="x => x.AuthorizationNumber" Title="Authorization Number" />
             <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
                 <CellTemplate>
                     <MudGrid Spacing="1" Justify="Justify.FlexEnd">
                         <MudItem sm="6" md="6" lg="6">
-                            <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" />
+                            <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@((args) => EditClient(data.Item.Id))" />
                         </MudItem>
                         <MudItem sm="6" md="6" lg="6">
-                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" />
+                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" OnClick="@((args) => RemoveClient(data.Item.Id))" />
                         </MudItem>
                     </MudGrid>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
         <PagerContent>
             <MudDataGridPager T="Client" />
         </PagerContent>

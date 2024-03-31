@@ -29,7 +29,6 @@
                     <MudTextField @bind-Value="Model.Sequence"
                                   For="@(() => Model.Sequence)"
                                   Immediate="true"
-                                  Text=1
                                   Variant="Variant.Outlined"
                                   Label="Sequence" />
                 </MudItem>
@@ -48,23 +47,44 @@
                                   Label="Weekly Approved Analyst (Hr)" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudTextField @bind-Value="Model.WeeklyApprovedRbt"
-                                  For="@(() => Model.WeeklyApprovedRbt)"
+                    <MudTextField @bind-Value="Model.WeeklyApprovedRBT"
+                                  For="@(() => Model.WeeklyApprovedRBT)"
                                   Immediate="true"
                                   Variant="Variant.Outlined"
                                   Label="Weekly Approved RBT (Hr)" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect For="@(() => Model.ReleaseInformation)" @bind-Value="Model.ReleaseInformation" Label="Release Information" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-
+                    <MudSelect For="@(() => Model.ReleaseInformation)" @bind-Value="Model.ReleaseInformation" ToStringFunc="@converter" Label="Release Information" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        @if (_releaseInformations == null || _releaseInformations.Count() == 0)
+                        {
+                            <MudSelectItem T="ReleaseInformation" Value="null">No matching records found</MudSelectItem>
+                        }
+                        else
+                        {
+                            @foreach (var inf in _releaseInformations)
+                            {
+                                <MudSelectItem Value="@inf" />
+                            }
+                        }
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect For="@(() => Model.Diagnosis)" @bind-Value="Model.Diagnosis" Label="Release Information" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect For="@(() => Model.Diagnosis)" @bind-Value="Model.Diagnosis" ToStringFunc="@converter" Label="Diagnosis" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        @if (_diagnoses == null || _diagnoses.Count() == 0)
+                        {
+                            <MudSelectItem T="Diagnosis" Value="null">No matching records found</MudSelectItem>
+                        }
+                        else
+                        {
+                            @foreach (var diag in _diagnoses)
+                            {
+                                <MudSelectItem Value="@diag" />
+                            }
+                        }
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudTextField T="string" Label="Authorization Number" @bind-Value="Model.AuthorizationNumber" Variant="Variant.Outlined" Adornment="@Adornment.End" AdornmentIcon="@Icons.Filled.AddCard" OnAdornmentClick="@ShowPatienAccountDialog">
+                    <MudTextField T="string" ReadOnly="true" Label="Authorization Number" For="@(() => Model.AuthorizationNumber)" @bind-Value="Model.AuthorizationNumber" Variant="Variant.Outlined" Adornment="@Adornment.End" AdornmentIcon="@Icons.Filled.AddCard" OnAdornmentClick="@ShowPatienAccountDialog">
                     </MudTextField>
                 </MudItem>
             </MudGrid>
@@ -101,7 +121,7 @@
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel="Contractor"> @("Contractor test")</MudTd>
-                            <MudTd DataLabel="Payroll">@(context.Payroll != null ? context.Payroll.Procedure.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Payroll">@(context.Payroll != null ? context.Payroll.InsuranceProcedure.Procedure.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="Rate employees">@context.RateEmployees</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>

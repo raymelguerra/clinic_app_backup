@@ -41,7 +41,7 @@ public partial class PendingPage : ComponentBase
                         Name ="Home"
                     },
                     Unit = 18,
-                    SubProcedure = new SubProcedure
+                    Procedure = new Procedure
                     {
                         Name ="H2014"
                     }

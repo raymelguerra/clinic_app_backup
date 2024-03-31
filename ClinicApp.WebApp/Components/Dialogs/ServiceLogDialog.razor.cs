@@ -40,7 +40,7 @@ public partial class ServiceLogDialog : ComponentBase
                     Name = "Home"
                 },
                 Unit = 18,
-                SubProcedure = new SubProcedure
+                Procedure = new Procedure
                 {
                     Name = "H2014"
                 }
@@ -60,7 +60,7 @@ public partial class ServiceLogDialog : ComponentBase
         {
             DateOfService = ((UnitDetail)element).DateOfService,
             PlaceOfService = ((UnitDetail)element).PlaceOfService,
-            SubProcedure = ((UnitDetail)element).SubProcedure,
+            Procedure = ((UnitDetail)element).Procedure,
         };
         AddEditionEvent($"RowEditPreview event: made a backup of Element {((UnitDetail)element).PlaceOfService.Name}");
     }
@@ -74,7 +74,7 @@ public partial class ServiceLogDialog : ComponentBase
     {
         ((UnitDetail)element).DateOfService = elementBeforeEdit.DateOfService;
         ((UnitDetail)element).PlaceOfService = elementBeforeEdit.PlaceOfService;
-        ((UnitDetail)element).SubProcedure = elementBeforeEdit.SubProcedure;
+        ((UnitDetail)element).Procedure = elementBeforeEdit.Procedure;
         AddEditionEvent($"RowEditCancel event: Editing of Element {((UnitDetail)element).PlaceOfService.Name} canceled");
     }
     #endregion

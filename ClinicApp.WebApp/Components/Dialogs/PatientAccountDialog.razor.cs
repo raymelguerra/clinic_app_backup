@@ -8,15 +8,13 @@ namespace ClinicApp.WebApp.Components.Dialogs;
 public partial class PatientAccountDialog : ComponentBase
 {
     [Parameter]
-    public IEnumerable<PatientAccount> PatientAccountList { get; set; }
+    public PatientAccount? Model { get; set; }
 
-    public PatientAccount Model { get; set; }
-
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
     private PatientAccountValidator paValidator = new();
-    private MudForm form;
-    private MudListItem selectedItem;
+    private MudForm form = null!;
+    private MudListItem? selectedItem;
     private object selectedValue
     {
         get { return Model; }
@@ -25,14 +23,19 @@ public partial class PatientAccountDialog : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-        if (PatientAccountList != null && PatientAccountList.Count() > 0)
-            Model = PatientAccountList.LastOrDefault();
-        else Model = new();
+        if (Model == null)
+            Model = new();
         return base.OnParametersSetAsync();
     }
 
 
 
-    void Edit() => MudDialog.Close(DialogResult.Ok(true));
+    async void Edit()
+    {
+        await form.Validate();
+        if (!form.IsValid) return;
+
+        MudDialog.Close(DialogResult.Ok(Model));
+    }
     void Cancel() => MudDialog.Cancel();
 }

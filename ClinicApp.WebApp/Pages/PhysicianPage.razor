@@ -8,11 +8,11 @@
                                          HiddenAddButton="false"
                                          HiddenDownloadButton="true" AddButtonAction="AddPhysician">
 
-    <MudDataGrid Items="@Contractors" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <MudDataGrid Loading="@_loading" Items="@Contractors" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
             <PropertyColumn Property="x => x.Name" Title="Name" />
             <PropertyColumn Property="x => x.RenderingProvider" Title="RenderingProvider" />
-            <PropertyColumn Property="x => string.Join(',', x.Payrolls.Select(x=> x.Procedure))" />
+            <PropertyColumn Property="x => x.Payrolls != null ? string.Join(',', x.Payrolls.Select(x=> x.InsuranceProcedure.Procedure.Name)) : string.Empty" />
             <PropertyColumn Property="x => x.Extra" Filterable="false" />
             <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
                 <CellTemplate>

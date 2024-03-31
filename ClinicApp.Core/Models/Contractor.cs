@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClinicApp.Core.Models;
 
-public partial class Contractor
+public class Contractor
 {
+    [Key]
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
 
     public string? RenderingProvider { get; set; }
 
+    [Required]
     public bool Enabled { get; set; }
 
     public string? Extra { get; set; }
 
-    public virtual ICollection<Payroll> Payrolls { get; set; } = new List<Payroll>();
-
-    public virtual ICollection<ServiceLog> ServiceLogs { get; set; } = new List<ServiceLog>();
+    public virtual List<Payroll>? Payrolls { get; set; }
 }

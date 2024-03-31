@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ClinicApp.Core.Models;
 
-public partial class Company
+public class Company
 {
+    [Key]
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
 
-    public string? Acronym { get; set; }
+    public string Acronym { get; set; } = null!;
 
-    public bool Enabled { get; set; }
-
-    public virtual ICollection<Agreement> Agreements { get; } = new List<Agreement>();
-
-    public virtual ICollection<Payroll> Payrolls { get; } = new List<Payroll>();
+    public bool Enabled { get; set; } = true;
 }

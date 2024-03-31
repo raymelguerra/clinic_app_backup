@@ -1,5 +1,7 @@
 ﻿using ClinicApp.Core.Models;
 using ClinicApp.WebApp.Components.Dialogs;
+using ClinicApp.WebApp.Interfaces;
+using ClinicApp.WebApp.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -8,44 +10,33 @@ namespace ClinicApp.WebApp.Pages;
 public partial class PhysicianPage : ComponentBase
 {
     [Inject] IDialogService DialogService { get; set; }
+    [Inject] ISnackbar Snackbar { get; set; }
+    [Inject] IPhysician PhysicianService { get; set; }
+    public bool _loading = false;
 
     IEnumerable<Contractor> Contractors = new List<Contractor>();
 
     protected override async Task OnInitializedAsync()
     {
-        Contractors = new List<Contractor> {
-        new Contractor{
-         Extra= "hola bebe"
+        try
+        {
+            _loading = true;
+            Contractors = await PhysicianService.GetPhysicianAsync("");
         }
-       };
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Oops, an error occurred. The error type is: {ex.Message}.", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
     private async Task AddPhysician()
     {
-        var ctr = new Contractor();
+        Contractor ctr = new();
+        ctr.Payrolls = new();
 
-        ctr.Payrolls = new List<Payroll>() {
-            new Payroll
-            {
-                Company = new Company
-                {
-                    Id = 1,
-                    Name = "Expanding Posibilities"
-                },
-                CompanyId = 1,
-                ContractorType = new ContractorType
-                {
-                    Id = 1,
-                    Name ="Analyst"
-                },
-                ContractorId = 1,
-                Procedure = new Procedure(){
-                    Id = 1,
-                    Name = "2014"
-                },
-                ProcedureId = 1,
-
-            }
-        };
         var parameters = new DialogParameters<PhysicianDialog> { { x => x.Model, ctr } };
 
         var result = await DialogService.ShowAsync<PhysicianDialog>("Add Physician", parameters);

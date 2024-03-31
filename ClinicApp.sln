@@ -28,6 +28,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.MSExcelGen", "Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.WebApp", "ClinicApp.WebApp\ClinicApp.WebApp.csproj", "{99CDAE91-2429-4A13-A78C-DBC43F9A9BB9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.Api", "ClinicApp.Api\ClinicApp.Api.csproj", "{A1BC15DD-4947-402F-AB7B-816B949C336F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.Infrastructure", "ClinicApp.Infrastructure\ClinicApp.Infrastructure.csproj", "{38892F1B-5B2B-4C40-9956-590F39E8B5D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +78,14 @@ Global
 		{99CDAE91-2429-4A13-A78C-DBC43F9A9BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99CDAE91-2429-4A13-A78C-DBC43F9A9BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99CDAE91-2429-4A13-A78C-DBC43F9A9BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1BC15DD-4947-402F-AB7B-816B949C336F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1BC15DD-4947-402F-AB7B-816B949C336F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1BC15DD-4947-402F-AB7B-816B949C336F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1BC15DD-4947-402F-AB7B-816B949C336F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38892F1B-5B2B-4C40-9956-590F39E8B5D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38892F1B-5B2B-4C40-9956-590F39E8B5D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38892F1B-5B2B-4C40-9956-590F39E8B5D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38892F1B-5B2B-4C40-9956-590F39E8B5D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

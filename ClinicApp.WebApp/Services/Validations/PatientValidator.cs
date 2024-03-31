@@ -33,7 +33,7 @@ public class PatientValidator : AbstractValidator<Client>
         RuleFor(client => client.Enabled)
             .NotNull().WithMessage("Enabled property cannot be null.");
 
-        RuleFor(client => client.WeeklyApprovedRbt)
+        RuleFor(client => client.WeeklyApprovedRBT)
             .GreaterThanOrEqualTo(0).WithMessage("WeeklyApprovedRbt must be greater or equal to zero.");
 
         RuleFor(client => client.WeeklyApprovedAnalyst)
@@ -50,6 +50,7 @@ public class PatientValidator : AbstractValidator<Client>
 
         RuleFor(client => client.ReleaseInformation)
             .NotNull().WithMessage("Release information cannot be null.");
+
     }
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

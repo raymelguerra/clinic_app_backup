@@ -10,17 +10,18 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
-    <PackageReference Include="MudBlazor" Version="6.18.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.0" />
+    <PackageReference Include="MudBlazor" Version="6.19.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
     <Folder Include="wwwroot\fonts\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ClinicApp.Core\ClinicApp.Core.csproj" />
+    <ProjectReference Include="..\ClinicApp.Infrastructure\ClinicApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClinicApp.Core.Models;
 
-public partial class Diagnosis
+public class Diagnosis
 {
+    [Key]
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    [Required]
+    public string Name { get; set; } = string.Empty;
 
-    public string? Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
-    public virtual ICollection<Client> Clients { get; } = new List<Client>();
 }

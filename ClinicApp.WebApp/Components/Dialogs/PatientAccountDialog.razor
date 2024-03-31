@@ -7,8 +7,7 @@
                                   For="@(() => Model.LicenseNumber)"
                                   Immediate="true"
                                   Variant="Variant.Outlined"
-                                  Label="License Number"
-                                  Validation="paValidator.Validation" />
+                                  Label="License Number" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
                     <MudDatePicker @bind-Date="Model.CreateDate"
@@ -30,18 +29,6 @@
                                   Immediate="true"
                                   Variant="Variant.Outlined"
                                   Label="Auxiliar License Number" />
-                </MudItem>
-                <MudItem xs="12" sm="12" xl="12">
-                    <MudList Clickable="true" @bind-SelectedItem="selectedItem" @bind-SelectedValue="selectedValue">
-                        <MudListItem Icon="@Icons.Material.Filled.History" Text="History">
-                            <NestedList>
-                                @foreach (var item in PatientAccountList)
-                                {
-                                    <MudListItem Text="@($"Authorization Number: {item.Auxiliar??item.LicenseNumber} | Date created: {item.CreateDate?.ToString("MM-dd-yyyy")} | Expire date: {item.ExpireDate?.ToString("MM-dd-yyyy")}")" Value="item" />
-                                }
-                            </NestedList>
-                        </MudListItem>
-                    </MudList>
                 </MudItem>
             </MudGrid>
         </MudForm>

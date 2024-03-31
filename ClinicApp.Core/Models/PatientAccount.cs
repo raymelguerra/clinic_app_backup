@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClinicApp.Core.Models;
 
-public partial class PatientAccount
+public class PatientAccount
 {
+    [Key]
     public int Id { get; set; }
 
-    public string? LicenseNumber { get; set; }
+    public string LicenseNumber { get; set; } = string.Empty;
 
     public string? Auxiliar { get; set; }
 
@@ -15,7 +18,4 @@ public partial class PatientAccount
 
     public DateTime? ExpireDate { get; set; }
 
-    public int ClientId { get; set; }
-
-    public virtual Client? Client { get; set; }
 }

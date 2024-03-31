@@ -38,7 +38,7 @@ public partial class ServiceLogPage : ComponentBase
                         Name ="Home"
                     },
                     Unit = 18,
-                    SubProcedure = new SubProcedure
+                    Procedure = new Procedure
                     {
                         Name ="H2014"
                     }
@@ -52,19 +52,19 @@ public partial class ServiceLogPage : ComponentBase
         var sl = new ServiceLog();
 
         sl.UnitDetails.Add(new UnitDetail
+        {
+            DateOfService = DateTime.Now,
+            Id = 1,
+            PlaceOfService = new PlaceOfService
             {
-                DateOfService = DateTime.Now,
-                Id = 1,
-                PlaceOfService = new PlaceOfService
-                {
-                    Name = "Home"
-                },
-                Unit = 18,
-                SubProcedure = new SubProcedure
-                {
-                    Name = "H2014"
-                }
-            });
+                Name = "Home"
+            },
+            Unit = 18,
+            Procedure = new Procedure
+            {
+                Name = "H2014"
+            }
+        });
 
         var parameters = new DialogParameters<ServiceLogDialog> { { x => x.Model, sl } };
 
