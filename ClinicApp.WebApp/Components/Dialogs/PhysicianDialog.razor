@@ -33,7 +33,6 @@
                     <MudTable Items="@Model.Payrolls"
                               Dense="true"
                               Hover="true"
-                              ReadOnly="false"
                               CanCancelEdit="true"
                               Breakpoint="Breakpoint.Sm"
                               Height="140px"
@@ -41,39 +40,32 @@
                               @bind-SelectedItem="SelectedItem"
                               CommitEditTooltip="Commit Edit"
                               CancelEditTooltip="Cancel Edit"
-                              OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))"
                               RowEditPreview="BackupItem"
                               RowEditCancel="ResetItemToOriginalValues"
-                              RowEditCommit="ItemHasBeenCommitted"
                               IsEditRowSwitchingBlocked="false"
                               ApplyButtonPosition="TableApplyButtonPosition.End"
                               EditButtonPosition="TableEditButtonPosition.End"
+                              RowEditCommit="ItemHasBeenCommitted"
                               EditTrigger="TableEditTrigger.EditButton">
                         <ToolBarContent>
                             <MudText Typo="Typo.h6">Payrolls</MudText>
                             <MudSpacer />
-                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" Disabled="HaveNewAgreement()" /> @* Disabled="@HaveNewAgreement()" *@
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" Disabled="HaveNewAgreement()" />
                         </ToolBarContent>
                         <HeaderContent>
-                           @*  <MudTh>Company</MudTh> *@
                             <MudTh>Insurance</MudTh>
                             <MudTh>Contractor Type</MudTh>
                             <MudTh>Procedure</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            @* <MudTd DataLabel="Company">
-                                <MudChip Disabled="true" Color="Color.Primary">@(context.Company != null ? context.Company.Name : string.Empty)</MudChip>
-                            </MudTd> *@
-                            <MudTd DataLabel="Insurance"> @(context.InsuranceProcedure != null && context.InsuranceProcedure.Insurance !=null ? context.InsuranceProcedure.Insurance.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Insurance"> @(context.InsuranceProcedure != null && context.InsuranceProcedure.Insurance != null ? context.InsuranceProcedure.Insurance.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="ContractorType">@(context.ContractorType != null ? context.ContractorType.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="Procedure">@(context.InsuranceProcedure != null && context.InsuranceProcedure.Procedure != null ? context.InsuranceProcedure.Procedure.Name : string.Empty)</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>
-                            @* <MudTd DataLabel="Company">
-                                <MudChip Disabled="true" Color="Color.Primary">@context.Company.Name</MudChip>
-                            </MudTd> *@
                             <MudTd DataLabel="Insurance">
-                                <MudSelect For="@(() => context.InsuranceProcedure.Insurance)" @bind-Value="context.InsuranceProcedure.Insurance" ToStringFunc="@converter" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TextChanged="@(x=> OnInsuranceChanged(x))">
+                                <MudSelect For="@(() => context.InsuranceProcedure.Insurance)" @bind-Value="context.InsuranceProcedure.Insurance" ToStringFunc="@converter" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Validation="@prValidator.ValidateValue" TextChanged="OnInsuranceChanged">
+                                    @*TextChanged="@(x=> OnInsuranceChanged(x))"*@
                                     @if (_insurances == null || _insurances.Count() == 0)
                                     {
                                         <MudSelectItem T="Insurance" Value="null">No matching records found</MudSelectItem>
@@ -88,8 +80,9 @@
                                 </MudSelect>
                             </MudTd>
                             <MudTd DataLabel="ContractorType">
-                                <MudSelect For="@(() => context.ContractorType)" @bind-Value="context.ContractorType" ToStringFunc="@converter" Label="Contractor Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    @if (_contractorTypes == null || _contractorTypes.Count() == 0)
+                                <MudSelect @ref="selectCtrType" For="@(() => context.ContractorType)" @bind-Value="context.ContractorType" ToStringFunc="@converter" Label="Contractor Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Validation="@prValidator.ValidateValue" TextChanged="OnContractorTypeChanged">
+                                    @*TextChanged="@(x=> OnContractorTypeChanged(x))"*@
+                                    @if (_contractorTypes == null || _contractorTypes.Count() == 0 || context.InsuranceProcedure.Insurance == default(Insurance))
                                     {
                                         <MudSelectItem T="ContractorType" Value="null">No matching records found</MudSelectItem>
                                     }
@@ -103,14 +96,14 @@
                                 </MudSelect>
                             </MudTd>
                             <MudTd DataLabel="Procedure">
-                                <MudSelect For="@(() => context.InsuranceProcedure.Procedure)" @bind-Value="context.InsuranceProcedure.Procedure" ToStringFunc="@converter" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    @if (_procedures == null || _procedures.Count() == 0 || (context.ContractorType == default(ContractorType) || context.InsuranceProcedure.Insurance == default(Insurance)))
+                                <MudSelect @ref="selProc" For="@(() => context.InsuranceProcedure.Procedure)" @bind-Value="context.InsuranceProcedure.Procedure" ToStringFunc="@converter" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Validation="@prValidator.ValidateValue">
+                                    @if (_procValids == null || _procValids.Count() == 0 || (context.ContractorType == default(ContractorType) || context.InsuranceProcedure.Insurance == default(Insurance)))
                                     {
                                         <MudSelectItem T="Procedure" Value="null">No matching records found</MudSelectItem>
                                     }
                                     else
                                     {
-                                        @foreach (var pro in _procedures)
+                                        @foreach (var pro in _procValids)
                                         {
                                             <MudSelectItem Value="@pro" />
                                         }
@@ -127,11 +120,10 @@
                                     <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
                                 </MudItem>
                                 <MudItem sm="6" md="6" lg="6">
-                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" />
+                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" OnClick="@(() => DeleteItem(button.Item))" Disabled="@button.ButtonDisabled" />
                                 </MudItem>
                             </MudGrid>
                         </EditButtonContent>
-
                     </MudTable>
                 </MudItem>
             </MudGrid>

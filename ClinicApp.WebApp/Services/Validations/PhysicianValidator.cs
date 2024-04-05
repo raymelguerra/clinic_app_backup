@@ -8,7 +8,8 @@ namespace ClinicApp.WebApp.Services.Validations
         public PhysicianValidator()
         {
             RuleFor(x => x.Extra)
-            .Length(1, 100).WithMessage("The 'Extra' field must be between 1 and 100 characters.");
+                .NotEmpty().WithMessage("The 'Associated' field is required.")
+                .Length(1, 100).WithMessage("The 'Associated' field must be between 1 and 100 characters.");
 
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("The 'Name' field is required.")
@@ -24,7 +25,20 @@ namespace ClinicApp.WebApp.Services.Validations
                 .Cascade(CascadeMode.Stop)
                 .NotNull().WithMessage("The 'Payrolls' list cannot be null.")
                 .NotEmpty().WithMessage("The 'Payrolls' list cannot be empty.")
-                .Must(items => items != null && items.Any()).WithMessage("The 'Payrolls' list must contain at least one element.");
+                .Must(items => items != null && items.Any()).WithMessage("The 'Payrolls' list must contain at least one element.")
+                .ForEach(payrollRule =>
+                {
+                    payrollRule.ChildRules(payroll =>
+                    {
+                        payroll.RuleFor(p => p.ContractorType)
+                            .NotNull().WithMessage("Contractor type cannot be null.");
+                        payroll.RuleFor(p => p.InsuranceProcedure.Insurance)
+                            .NotNull().WithMessage("Insurance cannot be null.");
+                        payroll.RuleFor(p => p.InsuranceProcedure.Procedure)
+                            .NotNull().WithMessage("Procedure cannot be null.");
+
+                    });
+                });
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
