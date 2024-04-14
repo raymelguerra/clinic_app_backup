@@ -120,20 +120,29 @@
                             <MudTh>Rate Employees</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="Contractor"> @("Contractor test")</MudTd>
-                            <MudTd DataLabel="Payroll">@(context.Payroll != null ? context.Payroll.InsuranceProcedure.Procedure.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Contractor"></MudTd>
+                            <MudTd DataLabel="Payroll">@(context.Payroll != null && context.Payroll.InsuranceProcedure != null ? context.Payroll.InsuranceProcedure.Procedure.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="Rate employees">@context.RateEmployees</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>
                             <MudTd DataLabel="Contractor">
-                                <MudAutocomplete Variant="Variant.Outlined" T="string" Label="Contractor" SearchFunc="@SearchContractor"
-                                                 ResetValueOnEmptyText="true"
+                                <MudAutocomplete Variant="Variant.Outlined" T="Contractor" Label="Contractor" SearchFunc="@SearchContractor" ToStringFunc="@converter"
+                                                 ResetValueOnEmptyText="true" DebounceInterval=100 @bind-Value="ctrSelected"
                                                  CoerceText="false" CoerceValue="false" />
                             </MudTd>
                             <MudTd DataLabel="Payroll">
-                                <MudSelect T="string" Label="Payroll" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    <MudSelectItem Value="@("1")">Analyst-2035</MudSelectItem>
-                                    <MudSelectItem Value="@("2")">RBT-H2014</MudSelectItem>
+                                <MudSelect For="@(() => context.Payroll)" @bind-Value="context.Payroll" ToStringFunc="@converterPy" Label="Payroll" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    @if (ctrSelected == null || ctrSelected.Payrolls == null || ctrSelected.Payrolls.Count() == 0)
+                                    {
+                                        <MudSelectItem T="Payroll" Value="null">No matching records found</MudSelectItem>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var ins in ctrSelected.Payrolls)
+                                        {
+                                            <MudSelectItem Value="@ins" />
+                                        }
+                                    }
                                 </MudSelect>
                             </MudTd>
                             <MudTd DataLabel="RateEmployees">
@@ -156,6 +165,7 @@
                     </MudTable>
                 </MudItem>
             </MudGrid>
+            <MudText>@(ctrSelected != null ? string.Join(", ", ctrSelected.Payrolls.Select(x=> x.InsuranceProcedure.Insurance.Name)) : string.Empty)</MudText>
         </MudForm>
     </DialogContent>
     <DialogActions>
