@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   clinicapp.frontend:
-    image: clinicapp.frontend:v3.0
+    image: clinicapp.frontend
     restart: always
     ports:
       - 2000:80
@@ -10,7 +10,7 @@ services:
     env_file:
       - test.env
   clinicapp.backend:
-    image: clinicapp.backend:v3.0
+    image: clinicapp.backend
     restart: always
     expose:
        - 80
