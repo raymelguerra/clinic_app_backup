@@ -1,32 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>54366478-4e51-4999-b64c-c1b104c2d3bd</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>54366478-4e51-4999-b64c-c1b104c2d3bd</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.0.0" />
-    <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.0.0" />
-    <PackageReference Include="Keycloak.AuthServices.Common" Version="2.0.0" />
-    <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ClinicApp.Core\ClinicApp.Core.csproj" />
-    <ProjectReference Include="..\ClinicApp.Infrastructure\ClinicApp.Infrastructure.csproj" />
-  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+		<PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.0.0" />
+		<PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.0.0" />
+		<PackageReference Include="Keycloak.AuthServices.Common" Version="2.0.0" />
+		<PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OData" Version="8.2.5" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ClinicApp.Core\ClinicApp.Core.csproj" />
+		<ProjectReference Include="..\ClinicApp.Infrastructure\ClinicApp.Infrastructure.csproj" />
+		<ProjectReference Include="..\Oauth2.sdk\Oauth2.sdk.csproj" />
+	</ItemGroup>
 
 </Project>

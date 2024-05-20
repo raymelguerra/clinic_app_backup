@@ -8,22 +8,15 @@ using System.Text.Json;
 
 namespace Oauth2.sdk.Services
 {
-    public class TokenRefreshMiddleware
-    {
-        private readonly RequestDelegate next;
-        private readonly HttpClient client;
-        private readonly CredentialsSettings credentials;
-
-        public TokenRefreshMiddleware(
-            RequestDelegate _next, 
-            IHttpClientFactory _httpClientFactory, 
-            IOptions<CredentialsSettings> _options
+    public class TokenRefreshMiddleware(
+        RequestDelegate _next,
+        IHttpClientFactory _httpClientFactory,
+        IOptions<CredentialsSettings> _options
         )
-        {
-            next = _next;
-            client = _httpClientFactory.CreateClient();
-            credentials = _options.Value;
-        }
+    {
+        private readonly RequestDelegate next = _next;
+        private readonly HttpClient client = _httpClientFactory.CreateClient();
+        private readonly CredentialsSettings credentials = _options.Value;
 
         public async Task Invoke(HttpContext context)
         {
@@ -79,7 +72,7 @@ namespace Oauth2.sdk.Services
 
     public class TokenResponse
     {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
+        public string? AccessToken { get; set; }
+        public string? RefreshToken { get; set; }
     }
 }

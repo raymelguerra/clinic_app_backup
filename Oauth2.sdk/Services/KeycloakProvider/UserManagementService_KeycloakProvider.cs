@@ -9,13 +9,11 @@ using System.Text;
 
 namespace Oauth2.sdk.Services.KeycloakProvider
 {
-    public class UserManagementService_KeycloakProvider : KeycloakProviderBase, IUserManagementService
+    public class UserManagementService_KeycloakProvider(
+        IOptions<CredentialsSettings> _options,
+        IHttpContextAccessor _httpContextAccessor
+        ) : KeycloakProviderBase(_options, _httpContextAccessor), IUserManagementService
     {
-        public UserManagementService_KeycloakProvider(
-            IOptions<CredentialsSettings> _options,
-            IHttpContextAccessor _httpContextAccessor
-        ) : base(_options, _httpContextAccessor) { }
-
         public async Task<IEnumerable<User>?> GetUsers()
         {
             client.DefaultRequestHeaders.Authorization =
@@ -38,7 +36,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 result);
         }
 
-        public async Task<User> GetUserContextMainData()
+        public User GetUserContextMainData()
         {
             return new User
             {
@@ -198,7 +196,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 .Select(x => x.Value)
                 .ToList();
 
-            return result ??= new List<string>();
+            return result ??= [];
         }
 
         public async Task<bool> GrantUserChangePasswordAsync(string userId)

@@ -3,20 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
+using Asp.Versioning;
 
 namespace ClinicApp.Api.Controllers.v1
 {
+    [Produces("application/json")]
     [Route("api/v1/[controller]")]
-    [Authorize]
+    [ApiVersion("1.0")]
     [ApiController]
-    public class ContractorsController : ControllerBase
+    [Authorize]
+    public class ContractorsController(InsuranceContext context) : ControllerBase
     {
-        private readonly InsuranceContext _context;
-
-        public ContractorsController(InsuranceContext context)
-        {
-            _context = context;
-        }
+        private readonly InsuranceContext _context = context;
 
         // GET: api/Contractors
         [HttpGet]
