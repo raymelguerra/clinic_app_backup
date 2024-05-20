@@ -35,6 +35,7 @@ jobs:
 
       - name: Build and Push API Docker Image
         run: |
+          ls
           docker build -t raymelguerra/clinicapp-api:${{ github.sha }} -f ./ClinicApp.Api/Dockerfile ./ClinicApp.Api
           docker push raymelguerra/clinicapp-api:${{ github.sha }}
 
