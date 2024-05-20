@@ -25,7 +25,7 @@ jobs:
         run: dotnet build ./ClinicApp.Api/ClinicApp.Api.csproj --configuration Release --no-restore
 
       - name: Publish API
-        run: dotnet publish ./ClinicApp.Api/ClinicApp.Api.csproj --configuration Release --no-build --output ./api/out
+        run: dotnet publish ./ClinicApp.Api/ClinicApp.Api.csproj --configuration Release --no-build --output ./ClinicApp.Api/out
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build and Push API Docker Image
         run: |
-          docker build -t raymelguerra/clinicapp-api:${{ github.sha }} ./api
+          docker build -t raymelguerra/clinicapp-api:${{ github.sha }} ./ClinicApp.Api
           docker push raymelguerra/clinicapp-api:${{ github.sha }}
 
           # Tag with "latest"
