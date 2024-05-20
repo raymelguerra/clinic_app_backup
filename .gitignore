@@ -367,3 +367,4 @@ obj/
 .vscode/
 
 *appsettings.Development.json
+test.env

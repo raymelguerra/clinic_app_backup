@@ -1,19 +1,19 @@
 version: '3.4'
 services:
   clinicapp.frontend:
-    image: clinicapp.frontend
+    image: raymelguerra/clinicapp-frontend
     restart: always
     ports:
-      - 2000:80
+      - 2000:8080
     depends_on:
       - clinicapp.backend
     env_file:
       - test.env
   clinicapp.backend:
-    image: clinicapp.backend
+    image: raymelguerra/clinicapp-api
     restart: always
     expose:
-       - 80
+       - 8080
        - 443
     env_file:
       - test.env
