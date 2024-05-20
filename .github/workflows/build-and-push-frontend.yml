@@ -1,0 +1,43 @@
+name: Build and Push frontend Docker Image
+
+on:
+  push:
+    branches:
+      - add_insurance
+
+jobs:
+  build-and-push-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore frontend dependencies
+        run: dotnet restore ./ClinicApp.WebApp/ClinicApp.WebApp.csproj
+
+      - name: Build frontend
+        run: dotnet build ./ClinicApp.WebApp/ClinicApp.WebApp.csproj --configuration Release --no-restore
+
+      - name: Publish frontend
+        run: dotnet publish ./ClinicApp.WebApp/ClinicApp.WebApp.csproj --configuration Release --no-build --output ./ClinicApp.WebApp/out
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push frontend Docker Image
+        run: |
+          docker build -t raymelguerra/clinicapp-frontend:${{ github.sha }} -f ./ClinicApp.WebApp/Dockerfile .
+          docker push raymelguerra/clinicapp-frontend:${{ github.sha }}
+
+          # Tag with "latest"
+          docker tag raymelguerra/clinicapp-frontend:${{ github.sha }} raymelguerra/clinicapp-frontend:latest
+          docker push raymelguerra/clinicapp-frontend:latest

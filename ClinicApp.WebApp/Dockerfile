@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ClinicApp.WebApp/ClinicApp.WebApp.csproj", "ClinicApp.WebApp/"]
+COPY ["./ClinicApp.WebApp/ClinicApp.WebApp.csproj", "ClinicApp.WebApp/"]
 RUN dotnet restore "./ClinicApp.WebApp/ClinicApp.WebApp.csproj"
 COPY . .
 WORKDIR "/src/ClinicApp.WebApp"
