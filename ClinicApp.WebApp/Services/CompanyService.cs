@@ -5,16 +5,17 @@ using Ipcs.WebApp.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Oauth2.sdk;
 using System.Text;
 
 namespace ClinicApp.WebApp.Services
 {
     public class CompanyService(
         IOptions<ApiSettings> options,
-        // IUserManagementService userIdpManagement,
+        IUserManagementService userIdpManagement,
         IHttpClientFactory factory,
         NavigationManager navigationManager
-        ) : HttpClientServiceBase(factory, navigationManager), IDisposable, ICompany
+        ) : HttpClientServiceBase(factory, navigationManager, userIdpManagement), IDisposable, ICompany
     {
         private readonly ApiSettings apiSettings = options.Value;
 

@@ -2,10 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicApp.Api.Controllers.v1
 {
     [Route("api/v1/[controller]")]
+    [Authorize]
     [ApiController]
     public class ContractorsController : ControllerBase
     {

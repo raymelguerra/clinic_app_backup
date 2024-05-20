@@ -366,5 +366,4 @@ node_modules
 obj/
 .vscode/
 
-*/appsettings.Development.json
-/ClinicApp.Api/appsettings.Development.json
+*appsettings.Development.json

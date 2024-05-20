@@ -4,7 +4,8 @@ using ClinicApp.WebApp.Interfaces;
 using ClinicApp.WebApp.Services;
 using MudBlazor;
 using MudBlazor.Services;
-using System.Text.Json.Serialization;
+using Oauth2.sdk.Models;
+using Oauth2.sdk.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddMudServices(config =>
 
 builder.Logging.ClearProviders().AddConsole();
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
+builder.Services.Configure<CredentialsSettings>(builder.Configuration.GetSection("CredentialsSettings"));
 
 builder.Services.AddScoped<NavigationService>();
 
@@ -39,9 +41,22 @@ builder.Services.AddTransient<IProcedure, ProcedureService>();
 builder.Services.AddTransient<IInsurance, InsuranceService>();
 builder.Services.AddTransient<ICompany, CompanyService>();
 
+
+builder.Services.AddSecurityClientApplication(builder.Configuration);
 builder.Services.AddHttpClient();
 
 builder.Services.AddSession();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("default", policy =>
+    {
+        policy.SetIsOriginAllowed(allowedCors => true)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 var app = builder.Build();
 

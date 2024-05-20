@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Oauth2.sdk;
 using System.Net;
 
 namespace Ipcs.WebApp.Services
@@ -7,25 +8,25 @@ namespace Ipcs.WebApp.Services
     {
         protected readonly HttpClient client;
         protected readonly NavigationManager navigationManager;
-        // protected readonly IUserManagementService userIdpManagement;
+        protected readonly IUserManagementService userIdpManagement;
 
         protected HttpClientServiceBase(
             IHttpClientFactory _factory,
-            NavigationManager _navigationManager
-            // IUserManagementService _userIdpManagement
+            NavigationManager _navigationManager,
+            IUserManagementService _userIdpManagement
         )
         {
             client = _factory.CreateClient();
             navigationManager = _navigationManager;
-            // userIdpManagement = _userIdpManagement;
+            userIdpManagement = _userIdpManagement;
         }
 
         protected async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             try
             {
-               // client.DefaultRequestHeaders.Authorization =
-               //     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userIdpManagement.GetToken());
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userIdpManagement.GetToken());
 
                 var response = await client.SendAsync(request);
 

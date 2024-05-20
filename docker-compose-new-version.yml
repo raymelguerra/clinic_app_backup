@@ -1,0 +1,19 @@
+version: '3.4'
+services:
+  clinicapp.frontend:
+    image: clinicapp.frontend:v3.0
+    restart: always
+    ports:
+      - 2000:80
+    depends_on:
+      - clinicapp.backend
+    env_file:
+      - test.env
+  clinicapp.backend:
+    image: clinicapp.backend:v3.0
+    restart: always
+    expose:
+       - 80
+       - 443
+    env_file:
+      - test.env
