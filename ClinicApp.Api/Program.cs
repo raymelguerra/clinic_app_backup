@@ -35,9 +35,6 @@ builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttri
 // Add services to the container.
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-
 
 var app = builder.Build();
 
@@ -46,7 +43,6 @@ app.UseSwagger()
     {
         c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        //c.SwaggerEndpoint("/swagger/v2/swagger.json", "v2");
         c.RoutePrefix = string.Empty;
     });
 
@@ -70,8 +66,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<CustomExceptionMiddleware>();
-
-// app.UseCors(a => a.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.MapControllers();
 

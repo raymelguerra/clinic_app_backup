@@ -1,4 +1,5 @@
 ﻿using ClinicApp.Infrastructure.Dto;
+using Oauth2.sdk.Exceptions;
 using System.Net;
 
 namespace ClinicApp.Api.Middlewares
@@ -33,15 +34,25 @@ namespace ClinicApp.Api.Middlewares
                 }.ToString());
             }
 
-            //if (exception is ForbiddenAccessException)
-            //{
-            //    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            //    return context.Response.WriteAsync(new ErrorDetails()
-            //    {
-            //        StatusCode = context.Response.StatusCode,
-            //        Message = "Forbidden Access"
-            //    }.ToString());
-            //}
+            if (exception is ForbiddenAccessException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return context.Response.WriteAsync(new ErrorDetails()
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Forbidden Access"
+                }.ToString());
+            }
+
+            if (exception is ConflictException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                return context.Response.WriteAsync(new ErrorDetails()
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Conflict"
+                }.ToString());
+            }
 
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return context.Response.WriteAsync(new ErrorDetails()

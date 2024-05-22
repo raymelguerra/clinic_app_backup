@@ -1,0 +1,23 @@
+﻿@page "/notfound"
+@inject NavigationManager Navigation
+
+<MudCard Elevation="0" Style="border-radius:0.5rem;background-color:antiquewhite">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h5" Align="Align.Center">Page not found</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIcon Size=Size.Large Icon="@Icons.Material.Filled.FindInPage" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText Typo="Typo.body1" Align="Align.Center">Sorry, there's nothing at this address.</MudText>
+    </MudCardContent>
+</MudCard>
+<MudButton StartIcon="@Icons.Material.Filled.Home"
+           Class="mt-5"
+           Variant="Variant.Text"
+           Color="Color.Primary"
+           OnClick="GoBack">
+    Home
+</MudButton>

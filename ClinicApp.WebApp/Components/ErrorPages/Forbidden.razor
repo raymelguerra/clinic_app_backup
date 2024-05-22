@@ -1,0 +1,20 @@
+﻿@page "/forbidden"
+@inject NavigationManager Navigation
+
+<MudCard Elevation="0" Style="border-radius:0.5rem;background-color:antiquewhite">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudIcon Size=Size.Large Icon="@Icons.Material.Filled.Lock" Style="color: red;" />
+            <MudText Typo="Typo.h5" Align="Align.Center">Access denied</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent> 
+        <MudText Typo="Typo.body1" Align="Align.Center">You do not have the necessary permissions to access this page.</MudText>
+    </MudCardContent>
+</MudCard>
+<MudButton StartIcon="@Icons.Material.Filled.Home"
+           Class="mt-5"
+           Variant="Variant.Text"
+           Color="Color.Primary"
+           OnClick="GoBack">Home
+</MudButton>

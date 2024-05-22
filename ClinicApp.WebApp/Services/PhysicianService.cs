@@ -32,6 +32,9 @@ namespace ClinicApp.WebApp.Services
             var request = new HttpRequestMessage(
                 HttpMethod.Get, $"{apiSettings.Endpoint}/Contractors{filter}");
 
+            client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userIdpManagement.GetToken());
+
             using var response = await SendAsync(request);
 
             if (!response.IsSuccessStatusCode)

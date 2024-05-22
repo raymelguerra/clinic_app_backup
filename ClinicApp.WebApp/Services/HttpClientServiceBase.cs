@@ -25,9 +25,6 @@ namespace Ipcs.WebApp.Services
         {
             try
             {
-                client.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", userIdpManagement.GetToken());
-
                 var response = await client.SendAsync(request);
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)

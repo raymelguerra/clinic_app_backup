@@ -17,7 +17,8 @@
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudSpacer />
-        <MudGrid Spacing="4" Justify="Justify.FlexEnd">
+        <AccessControl />
+       @*  <MudGrid Spacing="4" Justify="Justify.FlexEnd">
             <MudItem>
                 <MudBadge Content="10" Elevation="2" Origin="Origin.TopRight" Color="Color.Error" Overlap="true">
                     <MudMenu>
@@ -45,7 +46,7 @@
                     </ChildContent>
                 </MudMenu>
             </MudItem>
-        </MudGrid>
+        </MudGrid> *@
     </MudAppBar>
     <MudDrawer @bind-Open="@open" Variant="@DrawerVariant.Responsive" Breakpoint="@Breakpoint.Sm" Elevation="1">
         <MudDrawerHeader class="d-flex justify-center" hidden="@(!open)">

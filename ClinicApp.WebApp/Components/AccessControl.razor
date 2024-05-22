@@ -1,0 +1,22 @@
+﻿@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        <MudMenu>
+            <ActivatorContent>
+                <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem OnClick="OnClick" IconSize="Size.Small" IconColor="Color.Primary" Icon="@Icons.Material.Rounded.LockPerson">Logout</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+        <MudLink Color="Color.Inherit"> @context.User.Identity?.Name </MudLink>
+    </Authorized>
+    <NotAuthorized>
+        <a href="login?redirectUri=@Uri.EscapeDataString(Navigation.BaseUri)">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private void OnClick(MouseEventArgs args) => Navigation.NavigateTo($"Logout", true);
+}
