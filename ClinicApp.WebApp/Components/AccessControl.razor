@@ -13,6 +13,9 @@
         <MudLink Color="Color.Inherit"> @context.User.Identity?.Name </MudLink>
     </Authorized>
     <NotAuthorized>
+        @{
+            Console.WriteLine(Navigation.BaseUri);
+        }
         <a href="login?redirectUri=@Uri.EscapeDataString(Navigation.BaseUri)">Log in</a>
     </NotAuthorized>
 </AuthorizeView>

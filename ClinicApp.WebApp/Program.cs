@@ -1,5 +1,4 @@
 using ClinicApp.Infrastructure.Data;
-using ClinicApp.WebApp.Data;
 using ClinicApp.WebApp.Interfaces;
 using ClinicApp.WebApp.Services;
 using MudBlazor;
@@ -8,6 +7,7 @@ using Oauth2.sdk.Models;
 using Oauth2.sdk.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddRazorPages();
