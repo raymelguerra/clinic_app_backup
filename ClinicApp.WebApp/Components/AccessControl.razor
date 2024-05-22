@@ -16,7 +16,10 @@
         @{
             Console.WriteLine(Navigation.BaseUri);
         }
-        <a href="login?redirectUri=@Uri.EscapeDataString(Navigation.BaseUri)">Log in</a>
+        @if (Navigation.BaseUri.Contains("https://"))
+        {
+            <a href="login?redirectUri=@Uri.EscapeDataString(Navigation.BaseUri)">Log in</a>
+        }
     </NotAuthorized>
 </AuthorizeView>
 
