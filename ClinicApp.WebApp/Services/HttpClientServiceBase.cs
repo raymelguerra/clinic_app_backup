@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Oauth2.sdk;
+using Oauth2.sdk.Models;
 using System.Net;
 
 namespace Ipcs.WebApp.Services
@@ -9,16 +11,18 @@ namespace Ipcs.WebApp.Services
         protected readonly HttpClient client;
         protected readonly NavigationManager navigationManager;
         protected readonly IUserManagementService userIdpManagement;
-
+        protected readonly IOptions<CredentialsSettings> options;
         protected HttpClientServiceBase(
             IHttpClientFactory _factory,
             NavigationManager _navigationManager,
-            IUserManagementService _userIdpManagement
+            IUserManagementService _userIdpManagement,
+            IOptions<CredentialsSettings> _options
         )
         {
             client = _factory.CreateClient();
             navigationManager = _navigationManager;
             userIdpManagement = _userIdpManagement;
+            options = _options;
         }
 
         protected async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
@@ -28,7 +32,7 @@ namespace Ipcs.WebApp.Services
                 var response = await client.SendAsync(request);
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
-                    navigationManager.NavigateTo($"Login?redirectUri={Uri.EscapeDataString(navigationManager.Uri)}", true);
+                    navigationManager.NavigateTo($"Login?redirectUri={Uri.EscapeDataString(options.Value.RedirectUri!)}", true);
 
                 if (response.StatusCode == HttpStatusCode.Forbidden)
                     navigationManager.NavigateTo("/forbidden");
