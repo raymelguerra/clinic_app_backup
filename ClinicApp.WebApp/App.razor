@@ -6,10 +6,7 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
-            @{
-                var layoutType = typeof(MainLayout);
-            }
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="layoutType">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
                 <Authorizing>
                     <p>Determining session state, please wait...</p>
                 </Authorizing>
