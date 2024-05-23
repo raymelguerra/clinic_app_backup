@@ -1,4 +1,8 @@
-﻿@inject NavigationManager Navigation
+﻿@using ClinicApp.WebApp.Components.ErrorPages
+@using Microsoft.Extensions.Options
+@using Oauth2.sdk.Models
+@inject NavigationManager Navigation
+@inject IOptions<CredentialsSettings> options
 
 @if (_isAuthenticated)
 {
@@ -24,7 +28,7 @@ else
 
         if (!_isAuthenticated)
         {
-            Navigation.NavigateTo($"Login?redirectUri={Uri.EscapeDataString(Navigation.Uri)}", true);
+            Navigation.NavigateTo($"Login?redirectUri={options.Value.RedirectUri!}", true); //Uri.EscapeDataString(Navigation.Uri)
         }
     }
 }
