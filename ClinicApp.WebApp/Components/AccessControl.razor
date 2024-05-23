@@ -1,4 +1,8 @@
-﻿@inject NavigationManager Navigation
+﻿@using ClinicApp.Infrastructure.Data
+@using Microsoft.Extensions.Options
+@using Oauth2.sdk.Models
+@inject NavigationManager Navigation
+@inject IOptions<CredentialsSettings> options
 
 <AuthorizeView>
     <Authorized>
@@ -13,13 +17,7 @@
         <MudLink Color="Color.Inherit"> @context.User.Identity?.Name </MudLink>
     </Authorized>
     <NotAuthorized>
-        @{
-            Console.WriteLine(Navigation.BaseUri);
-        }
-        @if (Navigation.BaseUri.Contains("https://"))
-        {
-            <a href="login?redirectUri=@Uri.EscapeDataString(Navigation.BaseUri)">Log in</a>
-        }
+        <a href="login?redirectUri=@Uri.EscapeDataString(options.Value.RedirectUri!)">Log in</a>
     </NotAuthorized>
 </AuthorizeView>
 
