@@ -43,7 +43,7 @@ builder.Services.AddTransient<IInsurance, InsuranceService>();
 builder.Services.AddTransient<ICompany, CompanyService>();
 
 // Add convert to https middleware
-builder.Services.AddSingleton<ConvertToHttpsUriMiddleware>();
+builder.Services.AddTransient<ConvertToHttpsUriMiddleware>();
 
 builder.Services.AddSecurityClientApplication(builder.Configuration);
 builder.Services.AddHttpClient();
