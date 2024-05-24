@@ -28,7 +28,7 @@ else
 
         if (!_isAuthenticated)
         {
-            Navigation.NavigateTo($"Login?redirectUri={options.Value.RedirectUri!}", true); //Uri.EscapeDataString(Navigation.Uri)
+            Navigation.NavigateTo($"Login?redirectUri={Uri.EscapeDataString(Navigation.Uri)}", true); //Uri.EscapeDataString(Navigation.Uri)
         }
     }
 }

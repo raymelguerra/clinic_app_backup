@@ -5,6 +5,7 @@ using MudBlazor;
 using MudBlazor.Services;
 using Oauth2.sdk.Models;
 using Oauth2.sdk.DependencyInjection;
+using ClinicApp.WebApp.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,8 @@ builder.Services.AddTransient<IProcedure, ProcedureService>();
 builder.Services.AddTransient<IInsurance, InsuranceService>();
 builder.Services.AddTransient<ICompany, CompanyService>();
 
+// Add convert to https middleware
+builder.Services.AddSingleton<ConvertToHttpsUriMiddleware>();
 
 builder.Services.AddSecurityClientApplication(builder.Configuration);
 builder.Services.AddHttpClient();
@@ -67,6 +70,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// add middlewares
+app.UseMiddleware<ConvertToHttpsUriMiddleware>();
 
 app.UseSession();
 
