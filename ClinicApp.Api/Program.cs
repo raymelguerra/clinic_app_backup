@@ -25,6 +25,9 @@ builder.Services.AddDbContext<InsuranceContext>(config =>
     config.UseNpgsql(contextconfig.Insurance_ConnectionString);
 });
 
+// Configurar la zona horaria predeterminada
+TimeZoneInfo timeZone = TimeZoneInfo.Utc;
+builder.Services.AddSingleton(timeZone);
 
 // Security configuration
 builder.Services.AddOpenApiEntries();
@@ -43,22 +46,9 @@ app.UseSwagger()
     {
         c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        //c.SwaggerEndpoint("/swagger/v2/swagger.json", "v2");
         c.RoutePrefix = string.Empty;
     });
-
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialize>();
-    dbInitializer.Initialize();
-}
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 
@@ -70,3 +60,9 @@ app.UseMiddleware<CustomExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialize>();
+//    dbInitializer.Initialize();
+//}

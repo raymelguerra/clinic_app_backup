@@ -25,6 +25,8 @@ namespace ClinicApp.Api.DependencyInjection
             services.Configure<CredentialsSettings>(configuration.GetSection("CredentialsSettings"));
             services.AddSecurityResourcesServer(configuration);
 
+            // convert to string this result configuration.GetSection("CredentialsSettings")
+            Console.WriteLine(configuration.GetSection("CredentialsSettings").Get<CredentialsSettings>());
             return services;
         }
     }

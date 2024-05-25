@@ -40,7 +40,7 @@ namespace Oauth2.sdk.DependencyInjection
                 var credentialsSettings =
                         configuration.GetSection("CredentialsSettings").Get<CredentialsSettings>();
 
-                options.Authority = $"{credentialsSettings.Authority}realms/{credentialsSettings.Realm}/";
+                options.Authority = $"{credentialsSettings!.Authority}realms/{credentialsSettings.Realm}/";
                 options.ClientId = credentialsSettings.ClientId;
                 options.ClientSecret = credentialsSettings.ClientSecret;
                 options.RequireHttpsMetadata = credentialsSettings.Authority!.StartsWith("https://"); 
@@ -84,7 +84,7 @@ namespace Oauth2.sdk.DependencyInjection
                     var credentialsSettings =
                         configuration.GetSection("CredentialsSettings").Get<CredentialsSettings>();
 
-                    options.Authority = $"{credentialsSettings.Authority}realms/{credentialsSettings.Realm}/";
+                    options.Authority = $"{credentialsSettings!.Authority}realms/{credentialsSettings.Realm}/";
                     options.RequireHttpsMetadata = credentialsSettings.Authority!.StartsWith("https://");
                     options.Audience = credentialsSettings.Audience;
 
@@ -96,10 +96,11 @@ namespace Oauth2.sdk.DependencyInjection
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = $"{credentialsSettings.Authority}realms/{credentialsSettings.Realm}/",
                         ValidAudience = credentialsSettings.ClientId,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(credentialsSettings.ClientSecret!))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(credentialsSettings.ClientSecret!)),
+                        ClockSkew = TimeSpan.Zero
                     };
 
-                    options.BackchannelHttpHandler = 
+                    options.BackchannelHttpHandler =
                         new HttpClientHandler { ServerCertificateCustomValidationCallback = delegate { return true; } };
                 });
 
