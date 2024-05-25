@@ -6,54 +6,42 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudMenu>
-            <ActivatorContent>
-                <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />
-            </ActivatorContent>
-            <ChildContent>
-                <MudMenuItem OnClick="OnClick" IconSize="Size.Small" IconColor="Color.Primary" Icon="@Icons.Material.Rounded.LockPerson">Logout</MudMenuItem>
-            </ChildContent>
-        </MudMenu>
-        <MudLink Color="Color.Inherit"> @context.User.Identity?.Name </MudLink>
+        <MudGrid Spacing="4" Justify="Justify.FlexEnd">
+            <MudItem>
+                <MudBadge Elevation="2" Origin="Origin.TopRight" Color="Color.Error" Dot="true">
+                    <MudMenu>
+                        <ActivatorContent>
+                            <MudIcon Icon="@Icons.Material.Outlined.Notifications" Size="Size.Medium"></MudIcon>
+                        </ActivatorContent>
+                        <ChildContent>
+                            <MudMenuItem><MudText Typo="Typo.subtitle2"> Patient Account Problems</MudText><MudDivider Vertical="true" FlexItem="true" /> <MudChip Color="Color.Error" Size="Size.Small">5 Errors</MudChip></MudMenuItem>
+                            <MudDivider />
+                            <MudMenuItem><MudText Typo="Typo.subtitle2"> Services Logs Problems</MudText><MudDivider Vertical="true" FlexItem="true" /> <MudChip Color="Color.Error" Size="Size.Small">2 Errors</MudChip></MudMenuItem>
+                            <MudDivider />
+                            <MudMenuItem><MudText Typo="Typo.subtitle2"> Insurance Problems</MudText><MudDivider Vertical="true" FlexItem="true" /> <MudChip Color="Color.Error" Size="Size.Small">3 Errors</MudChip></MudMenuItem>
+                        </ChildContent>
+                    </MudMenu>
+                </MudBadge>
+            </MudItem>
+            <MudItem>
+                <MudMenu>
+                    <ActivatorContent>
+                        <MudIcon Title="@context.User.Identity?.Name" Icon="@Icons.Material.Filled.Person" Size="Size.Medium"></MudIcon>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem>Profile</MudMenuItem>
+                        <MudMenuItem OnClick="OnClick">Logout</MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
+            </MudItem>
+        </MudGrid>
     </Authorized>
     <NotAuthorized>
-        <a href="login?redirectUri=@Uri.EscapeDataString(Navigation.Uri)">Log in</a>
+        <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit" Size="Size.Medium" Href="@($"login?redirectUri={Uri.EscapeDataString(Navigation.Uri)}")"></MudIconButton>
+       
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
     private void OnClick(MouseEventArgs args) => Navigation.NavigateTo($"Logout", true);
 }
-@* {
-    <MudGrid Spacing="4" Justify="Justify.FlexEnd">
-        <MudItem>
-            <MudBadge Content="10" Elevation="2" Origin="Origin.TopRight" Color="Color.Error" Overlap="true">
-                <MudMenu>
-                    <ActivatorContent>
-                        <MudIcon Icon="@Icons.Material.Outlined.Notifications" Size="Size.Medium"></MudIcon>
-                    </ActivatorContent>
-                    <ChildContent>
-                        <MudMenuItem><MudText Typo="Typo.subtitle2"> Patient Account Problems</MudText><MudDivider Vertical="true" FlexItem="true" /> <MudChip Color="Color.Error" Size="Size.Small">5 Errors</MudChip></MudMenuItem>
-                        <MudDivider />
-                        <MudMenuItem><MudText Typo="Typo.subtitle2"> Services Logs Problems</MudText><MudDivider Vertical="true" FlexItem="true" /> <MudChip Color="Color.Error" Size="Size.Small">2 Errors</MudChip></MudMenuItem>
-                        <MudDivider />
-                        <MudMenuItem><MudText Typo="Typo.subtitle2"> Insurance Problems</MudText><MudDivider Vertical="true" FlexItem="true" /> <MudChip Color="Color.Error" Size="Size.Small">3 Errors</MudChip></MudMenuItem>
-                    </ChildContent>
-                </MudMenu>
-            </MudBadge>
-        </MudItem>
-        <MudItem>
-            <MudMenu>
-                <ActivatorContent>
-                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Medium"></MudIcon>
-                </ActivatorContent>
-                <ChildContent>
-                    <MudMenuItem>Profile</MudMenuItem>
-                    <MudMenuItem>Logout</MudMenuItem>
-                </ChildContent>
-            </MudMenu>
-        </MudItem>
-    </MudGrid>
-
-
-} *@
