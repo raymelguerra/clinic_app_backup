@@ -9,11 +9,13 @@ using System.Text;
 
 namespace Oauth2.sdk.Services.KeycloakProvider
 {
-    public class UserManagementService_KeycloakProvider(
-        IOptions<CredentialsSettings> _options,
-        IHttpContextAccessor _httpContextAccessor
-        ) : KeycloakProviderBase(_options, _httpContextAccessor), IUserManagementService
+    public class UserManagementService_KeycloakProvider : KeycloakProviderBase, IUserManagementService
     {
+        public UserManagementService_KeycloakProvider(
+            IOptions<CredentialsSettings> _options,
+            IHttpContextAccessor _httpContextAccessor
+        ) : base(_options, _httpContextAccessor) { }
+
         public async Task<IEnumerable<User>?> GetUsers()
         {
             client.DefaultRequestHeaders.Authorization =
@@ -36,7 +38,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 result);
         }
 
-        public User GetUserContextMainData()
+        public async Task<User> GetUserContextMainData()
         {
             return new User
             {
@@ -83,7 +85,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 lastName = user.LastName,
                 enabled = user.Enabled,
                 email = user.Email,
-                credentials = new []
+                credentials = new[]
                 {
                     new {
                             type = "password",
@@ -127,15 +129,15 @@ namespace Oauth2.sdk.Services.KeycloakProvider
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetToken());
 
-            var json = JsonConvert.SerializeObject(new 
-            { 
-                id=user.Id,
-                username=user.Username,
-                firstName=user.FirstName,
-                lastName=user.LastName,
-                enabled=user.Enabled,
-                email =user.Email,
-                attributes=user.Attributes
+            var json = JsonConvert.SerializeObject(new
+            {
+                id = user.Id,
+                username = user.Username,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                enabled = user.Enabled,
+                email = user.Email,
+                attributes = user.Attributes
             });
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -196,7 +198,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 .Select(x => x.Value)
                 .ToList();
 
-            return result ??= [];
+            return result ??= new List<string>();
         }
 
         public async Task<bool> GrantUserChangePasswordAsync(string userId)
@@ -207,7 +209,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
             var response = await client.GetAsync(
                 $"{credentials.Authority}admin/realms/{credentials.Realm}/clients?clientId=account");
 
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 var clients = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(
                     await response.Content.ReadAsStringAsync());
@@ -230,7 +232,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                         {
                             id = roleId,
                             name = "manage-account"
-                        } 
+                        }
                     });
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
 

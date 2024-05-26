@@ -1,7 +1,6 @@
 ﻿using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Data;
 using ClinicApp.WebApp.Interfaces;
-using Ipcs.WebApp.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;

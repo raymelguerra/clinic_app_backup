@@ -25,10 +25,6 @@ builder.Services.AddDbContext<InsuranceContext>(config =>
     config.UseNpgsql(contextconfig.Insurance_ConnectionString);
 });
 
-// Configurar la zona horaria predeterminada
-TimeZoneInfo timeZone = TimeZoneInfo.Utc;
-builder.Services.AddSingleton(timeZone);
-
 // Security configuration
 builder.Services.AddOpenApiEntries();
 builder.Services.AddSecurityApplication(builder.Configuration);
@@ -38,8 +34,14 @@ builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttri
 // Add services to the container.
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
 
-
 var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialize>();
+    dbInitializer.Initialize();
+}
 
 app.UseSwagger()
     .UseSwaggerUI(c =>
@@ -60,9 +62,3 @@ app.UseMiddleware<CustomExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialize>();
-//    dbInitializer.Initialize();
-//}

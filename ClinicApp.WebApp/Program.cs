@@ -6,6 +6,7 @@ using MudBlazor.Services;
 using Oauth2.sdk.Models;
 using Oauth2.sdk.DependencyInjection;
 using ClinicApp.WebApp.Middlewares;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ builder.Services.AddTransient<IContractorType, ContractorTypeService>();
 builder.Services.AddTransient<IProcedure, ProcedureService>();
 builder.Services.AddTransient<IInsurance, InsuranceService>();
 builder.Services.AddTransient<ICompany, CompanyService>();
+builder.Services.AddTransient<ISecurityManagement, SecurityManagementService>();
 
 // Add convert to https middleware
 builder.Services.AddTransient<ConvertToHttpsUriMiddleware>();
@@ -71,10 +73,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession();
+
 // add middlewares
 app.UseMiddleware<ConvertToHttpsUriMiddleware>();
-
-app.UseSession();
 
 app.UseHttpsRedirection();
 

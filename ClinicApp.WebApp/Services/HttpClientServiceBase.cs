@@ -4,7 +4,7 @@ using Oauth2.sdk;
 using Oauth2.sdk.Models;
 using System.Net;
 
-namespace Ipcs.WebApp.Services
+namespace ClinicApp.WebApp.Services
 {
     public abstract class HttpClientServiceBase
     {

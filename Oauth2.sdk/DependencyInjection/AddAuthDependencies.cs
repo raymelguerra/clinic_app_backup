@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -43,7 +44,7 @@ namespace Oauth2.sdk.DependencyInjection
                 options.Authority = $"{credentialsSettings!.Authority}realms/{credentialsSettings.Realm}/";
                 options.ClientId = credentialsSettings.ClientId;
                 options.ClientSecret = credentialsSettings.ClientSecret;
-                options.RequireHttpsMetadata = credentialsSettings.Authority!.StartsWith("https://"); 
+                options.RequireHttpsMetadata = credentialsSettings.Authority!.StartsWith("https://");
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.SaveTokens = true;

@@ -1,14 +1,23 @@
 ﻿@page "/"
 @page "/home"
+@using Oauth2.sdk
+
+@attribute [Authorize]
+@inject IUserManagementService UserManagement
+@inject IRolesManagementService RolesManagement
 
 <PageTitle>Home</PageTitle>
 
 <MudCard Outlined="true" Elevation="3" Class="grey lighten-3">
     <MudCardContent>
         <MudText Typo="Typo.h6">Welcome</MudText>
-        <MudText Class="mb-5" Typo="Typo.h5">Raymel Ramos</MudText>
+        <MudText Class="mb-5" Typo="Typo.h5">@UserManagement.GetUserFullNames() (@UserManagement.GetUserName())</MudText>
         <MudText Typo="Typo.body1">You are associated with the following role:</MudText>
-        <MudChip Color="Color.Primary">Administrator</MudChip>
+        @foreach (var role in userRoles)
+        {
+            <MudChip Color="Color.Primary">@role</MudChip>
+        }
+        @* <MudChip Color="Color.Primary">Administrator</MudChip> *@
     </MudCardContent>
 </MudCard>
 
