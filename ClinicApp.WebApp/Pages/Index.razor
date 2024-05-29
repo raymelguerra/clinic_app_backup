@@ -1,6 +1,7 @@
 ﻿@page "/"
 @page "/home"
 @using Oauth2.sdk
+@using System.Globalization
 
 @attribute [Authorize]
 @inject IUserManagementService UserManagement
@@ -15,7 +16,7 @@
         <MudText Typo="Typo.body1">You are associated with the following role:</MudText>
         @foreach (var role in userRoles)
         {
-            <MudChip Color="Color.Primary">@role</MudChip>
+            <MudChip Color="Color.Primary">@(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(role))</MudChip>
         }
         @* <MudChip Color="Color.Primary">Administrator</MudChip> *@
     </MudCardContent>

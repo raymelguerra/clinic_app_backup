@@ -6,7 +6,6 @@ using MudBlazor.Services;
 using Oauth2.sdk.Models;
 using Oauth2.sdk.DependencyInjection;
 using ClinicApp.WebApp.Middlewares;
-using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -4,7 +4,7 @@
     {
         private void GoBack()
         {
-            Navigation.NavigateTo("/main");
+            Navigation.NavigateTo("/home");
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Oauth2.sdk.DependencyInjection
                 {
                     OnUserInformationReceived = context =>
                     {
-                        MapKeyCloakRolesToRoleClaims(context);
+                        MapKeyCloakRolesToRoleClaims(context, credentialsSettings);
                         return Task.CompletedTask;
                     }
                 };

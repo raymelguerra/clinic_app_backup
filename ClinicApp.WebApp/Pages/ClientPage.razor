@@ -1,5 +1,6 @@
 ﻿@page "/patient"
 @using ClinicApp.Core.Models
+@attribute [Authorize(Roles = "staff,admin")]
 
 <PageTitle>Patient</PageTitle>
 

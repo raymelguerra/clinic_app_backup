@@ -14,5 +14,6 @@
         public string? Audience { get; set; } 
         public int? InactivityTime { get; set; }
         public bool GrandAccountSelfmanagament { get; set; } = false;
+        public string? ClientApiId { get; set; }
     }
 }

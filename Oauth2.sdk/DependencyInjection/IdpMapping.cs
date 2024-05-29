@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Configuration;
+using Oauth2.sdk.Models;
 using System.Security.Claims;
 
 namespace Oauth2.sdk.DependencyInjection
 {
     public static class IdpMapping
     {
-        public static void MapKeyCloakRolesToRoleClaims(UserInformationReceivedContext context)
+        public static void MapKeyCloakRolesToRoleClaims(UserInformationReceivedContext context, CredentialsSettings credentials)
         {
             if (context.Principal?.Identity is not ClaimsIdentity claimsIdentity) return;
 
@@ -24,7 +26,7 @@ namespace Oauth2.sdk.DependencyInjection
             }
 
             if (context.User.RootElement.TryGetProperty("resource_access", out var clientAccess)
-                && clientAccess.TryGetProperty(context.Options.ClientId!, out var client)
+                && clientAccess.TryGetProperty(credentials.ClientApiId!, out var client)
                 && client.TryGetProperty("roles", out var clientRoles))
             {
                 foreach (var role in clientRoles.EnumerateArray())

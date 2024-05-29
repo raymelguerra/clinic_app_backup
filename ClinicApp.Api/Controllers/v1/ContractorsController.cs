@@ -20,8 +20,6 @@ namespace ClinicApp.Api.Controllers.v1
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contractor>>> GetContractors()
         {
-            // get all request headers
-            var headers = Request.Headers;
             return await _context.Contractors.ToListAsync();
         }
 
