@@ -1,11 +1,15 @@
 using ClinicApp.Api.DependencyInjection;
+using ClinicApp.Api.Interfaces;
 using ClinicApp.Api.Middlewares;
+using ClinicApp.Api.Services;
+using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Data;
 using ClinicApp.Infrastructure.Interfaces;
 using ClinicApp.Infrastructure.Persistence;
-using Ipcs.Infrastructure.Persistence.Configurations;
+using ClinicApp.Infrastructure.Persistence.Configurations;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Oauth2.sdk.DependencyInjection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +35,15 @@ builder.Services.AddSecurityApplication(builder.Configuration);
 
 builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true).AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
+
+//Add menus configuration
+builder.Configuration
+    .AddJsonFile("menu-approles.json", optional: false, reloadOnChange: true);
+builder.Services.Configure<MenuConfiguration>(
+    builder.Configuration.GetSection("MenuConfiguration"));
+
 // Add services to the container.
+builder.Services.AddScoped<IMenusService, MenusService>();
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
 
 var app = builder.Build();

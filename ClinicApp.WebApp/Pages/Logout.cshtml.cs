@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Ipcs.WebApp.Pages
+namespace ClinicApp.WebApp.Pages
 {
     public class LogoutModel : PageModel
     {

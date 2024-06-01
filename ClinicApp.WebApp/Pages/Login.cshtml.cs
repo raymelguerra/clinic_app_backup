@@ -1,10 +1,8 @@
-using ClinicApp.Infrastructure.Dto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Options;
 
-namespace Ipcs.WebApp.Pages
+namespace ClinicApp.WebApp.Pages
 {
     public class LoginModel : PageModel
     {

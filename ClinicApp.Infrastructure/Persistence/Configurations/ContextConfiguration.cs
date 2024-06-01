@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ipcs.Infrastructure.Persistence.Configurations
+﻿namespace ClinicApp.Infrastructure.Persistence.Configurations
 {
     public class ContextConfiguration
     {

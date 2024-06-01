@@ -3,7 +3,7 @@
 @using Oauth2.sdk
 @using System.Globalization
 
-@attribute [Authorize]
+@attribute [Authorize(Roles = "staff,admin,biller")]
 @inject IUserManagementService UserManagement
 @inject IRolesManagementService RolesManagement
 

@@ -1,0 +1,130 @@
+{
+  "MenuConfiguration": {
+    "Menus": [
+      {
+        "Name": "Human Resources",
+        "Index": 1,
+        "Childrens": [
+          {
+            "Name": "Physician",
+            "Path": "/physician",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "staff" ]
+
+          },
+          {
+            "Name": "Patient",
+            "Path": "/patient",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "staff" ]
+          }
+        ],
+        "Disabled": false,
+        "Icon": "Groups"
+      },
+      {
+        "Name": "Billing",
+        "Index": 2,
+        "Childrens": [
+          {
+            "Name": "Service Log",
+            "Path": "/servicelog",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "biller" ]
+          },
+          {
+            "Name": "Period and payments",
+            "Path": "/periodpayment",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "biller" ]
+          },
+          {
+            "Name": "Pending",
+            "Path": "/pending",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "biller" ]
+          }
+        ],
+        "Disabled": false,
+        "Icon": "ShowChart"
+      },
+      {
+        "Name": "Management",
+        "Index": 3,
+        "Childrens": [
+          {
+            "Name": "User",
+            "Path": "/users",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin" ]
+          },
+          {
+            "Name": "Insurance",
+            "Path": "/insurance",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin" ]
+          },
+          {
+            "Name": "Period",
+            "Path": "/period",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin" ]
+          },
+          {
+            "Name": "Diagnosis",
+            "Path": "/diagnosis",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin" ]
+          },
+          {
+            "Name": "Procedure",
+            "Path": "/procedure",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin" ]
+          }
+        ],
+        "Disabled": false,
+        "Icon": "Settings"
+      },
+      {
+        "Name": "Reports",
+        "Index": 4,
+        "Childrens": [
+          {
+            "Name": "Service Log",
+            "Path": "/servicelog",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "biller" ]
+          },
+          {
+            "Name": "Period and payments",
+            "Path": "/periodpayment",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "biller" ]
+          },
+          {
+            "Name": "Pending",
+            "Path": "/pending",
+            "Disabled": false,
+            "Icon": "ArrowRight",
+            "Roles": [ "admin", "biller" ]
+          }
+        ],
+        "Disabled": true,
+        "Icon": "ShowChart"
+      }
+    ]
+  }
+}

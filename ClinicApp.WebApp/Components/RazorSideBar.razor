@@ -1,0 +1,65 @@
+﻿@using System.Reflection
+@using ClinicApp.Core.Models
+@using ClinicApp.WebApp.Interfaces
+
+@inject IAppMenusService service;
+@inject NavigationManager NavManager;
+
+<MudDrawer @bind-Open="@Open" Variant="@DrawerVariant.Responsive" Breakpoint="@Breakpoint.Sm" Elevation="1" PreserveOpenState="true">
+    <MudDrawerHeader class="d-flex justify-center" hidden="@(!Open)">
+        <MudImage ObjectFit="ObjectFit.Fill" Width="140" Src="img/expanding.png" Alt="Expanding logo" Class="rounded-lg" />
+    </MudDrawerHeader>
+    <MudNavMenu Dense="true" Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
+        <MudNavLink Icon="@Icons.Material.Filled.Home" Href="home">Home</MudNavLink>
+        @foreach (var menu in Menus?.OrderBy(x => x.Index))
+        {
+            <MudNavGroup Icon="@GetFormatedIcon(@menu.Icon)" Size="Size.Large" Title="@menu.Name" Disabled="@menu.Disabled">
+                @foreach (var child in menu.Childrens!.OrderBy(x => x.Index))
+                {
+                    @if (child.Path is not null)
+                    {
+                        <MudNavLink Icon="@GetFormatedIcon(child.Icon)" Size="Size.Small" Href="@child.Path" Disabled="@child.Disabled">@child.Name</MudNavLink>
+                    }
+
+                    @if (child.Childrens?.Count > 0)
+                    {
+                        <MudNavGroup Icon="@GetFormatedIcon(@child.Icon)" Size="Size.Large" Title="@child.Name" Disabled="@child.Disabled">
+                            @foreach (var child1 in child.Childrens!.OrderBy(x => x.Index))
+                            {
+                                <MudNavLink Icon="@GetFormatedIcon(child1.Icon)" Size="Size.Small" Href="@child1.Path" Disabled="@child1.Disabled">@child1.Name</MudNavLink>
+                            }
+                        </MudNavGroup>
+                    }
+                }
+            </MudNavGroup>
+        }
+    </MudNavMenu>
+</MudDrawer>
+
+@code {
+
+    [Parameter]
+    public bool Open { get; set; } = false;
+
+    public IEnumerable<ParentMenu> Menus { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Menus?.Count() == 0)
+        {
+            Menus = await service.GetMenusAsync();
+        }
+    }
+
+    private string GetFormatedIcon(string IconName)
+    {
+        try
+        {
+            return typeof(Icons.Material.Filled).GetField(IconName).GetValue(null).ToString();
+        }
+        catch (Exception)
+        {
+            return Icons.Material.Filled.Abc;
+        }
+    }
+}
