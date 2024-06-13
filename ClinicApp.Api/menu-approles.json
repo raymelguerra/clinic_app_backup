@@ -101,28 +101,14 @@
         "Index": 4,
         "Childrens": [
           {
-            "Name": "Service Log",
-            "Path": "/servicelog",
-            "Disabled": false,
-            "Icon": "ArrowRight",
-            "Roles": [ "admin", "biller" ]
-          },
-          {
-            "Name": "Period and payments",
-            "Path": "/periodpayment",
-            "Disabled": false,
-            "Icon": "ArrowRight",
-            "Roles": [ "admin", "biller" ]
-          },
-          {
-            "Name": "Pending",
-            "Path": "/pending",
-            "Disabled": false,
+            "Name": "Physician reports",
+            "Path": "/physician-reports",
+            "Disabled": true,
             "Icon": "ArrowRight",
             "Roles": [ "admin", "biller" ]
           }
         ],
-        "Disabled": true,
+        "Disabled": false,
         "Icon": "ShowChart"
       }
     ]

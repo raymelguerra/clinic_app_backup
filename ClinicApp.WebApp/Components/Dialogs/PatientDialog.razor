@@ -115,18 +115,18 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" />
                         </ToolBarContent>
                         <HeaderContent>
-                            <MudTh>Contractor</MudTh>
+                            <MudTh>Physician</MudTh>
                             <MudTh>Payroll</MudTh>
                             <MudTh>Rate Employees</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="Contractor"></MudTd>
+                            <MudTd DataLabel="Physician"></MudTd>
                             <MudTd DataLabel="Payroll">@(context.Payroll != null && context.Payroll.InsuranceProcedure != null ? context.Payroll.InsuranceProcedure.Procedure.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="Rate employees">@context.RateEmployees</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>
-                            <MudTd DataLabel="Contractor">
-                                <MudAutocomplete Variant="Variant.Outlined" T="Contractor" Label="Contractor" SearchFunc="@SearchContractor" ToStringFunc="@converter"
+                            <MudTd DataLabel="Physician">
+                                <MudAutocomplete Variant="Variant.Outlined" T="Contractor" Label="Physician" SearchFunc="@SearchContractor" ToStringFunc="@converter"
                                                  ResetValueOnEmptyText="true" DebounceInterval=100 @bind-Value="ctrSelected"
                                                  CoerceText="false" CoerceValue="false" />
                             </MudTd>
