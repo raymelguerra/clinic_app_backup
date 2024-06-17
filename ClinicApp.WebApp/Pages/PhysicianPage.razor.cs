@@ -9,9 +9,9 @@ namespace ClinicApp.WebApp.Pages;
 
 public partial class PhysicianPage : ComponentBase
 {
-    [Inject] IDialogService DialogService { get; set; }
-    [Inject] ISnackbar Snackbar { get; set; }
-    [Inject] IPhysician PhysicianService { get; set; }
+    [Inject] IDialogService DialogService { get; set; } = null!;
+    [Inject] ISnackbar Snackbar { get; set; } = null!;
+    [Inject] IPhysician PhysicianService { get; set; } = null!;
     public bool _loading = false;
 
     IEnumerable<Contractor> Contractors = new List<Contractor>();

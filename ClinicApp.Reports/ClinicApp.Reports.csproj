@@ -7,14 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Templates\expanding.png" />
+    <PackageReference Include="FastReport.OpenSource" Version="2024.2.1" />
+    <PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2024.2.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Templates\expanding.png">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <ProjectReference Include="..\ClinicApp.Infrastructure\ClinicApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

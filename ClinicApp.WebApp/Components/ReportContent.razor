@@ -1,0 +1,31 @@
+﻿<MudPaper Class="pa-1 mb-1" Elevation="3" Style="background: var(--mud-palette-primary-darken); color: white;">
+    <MudGrid Spacing="0" Justify="Justify.SpaceBetween">
+        <MudItem>
+            <MudGrid Spacing="1">
+                <MudItem>
+                    <MudText Typo="Typo.h5" Align="Align.Left" Color="Color.Inherit">@Title</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem>
+            <MudGrid Spacing="1">
+                <MudItem>
+                    <MudTooltip Text="@($"Add")">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Add" Variant="Variant.Outlined" Color="Color.Inherit" Size="Size.Small" hidden="@HiddenSendButton" OnClick="@(() => SendButtonAction.Invoke())" />
+                    </MudTooltip>
+                </MudItem>
+                <MudItem>
+                    <MudTooltip Text="@($"Download")">
+                        <MudIconButton Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Download" Color="Color.Inherit" hidden="@HiddenDownloadButton" OnClick="@(() => DownloadButtonAction.Invoke())"></MudIconButton>
+                        @* <MudIconButton Color="Color.Inherit" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Download" Size="Size.Small" hidden="@HiddenDownloadButton" OnClick="@(() => DownloadButtonAction.Invoke())" /> *@
+                    </MudTooltip>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudPaper Class="pa-2" Elevation="1">
+    @ChildContent
+</MudPaper>
+

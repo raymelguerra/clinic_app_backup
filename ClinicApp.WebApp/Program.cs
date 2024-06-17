@@ -43,6 +43,7 @@ builder.Services.AddTransient<IInsurance, InsuranceService>();
 builder.Services.AddTransient<ICompany, CompanyService>();
 builder.Services.AddTransient<ISecurityManagement, SecurityManagementService>();
 builder.Services.AddTransient<IAppMenusService, AppMenusService>();
+builder.Services.AddTransient<IReport, ReportService>();
 
 // Add convert to https middleware
 builder.Services.AddTransient<ConvertToHttpsUriMiddleware>();

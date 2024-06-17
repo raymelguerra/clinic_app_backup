@@ -5,28 +5,28 @@ namespace ClinicApp.Core.Dtos;
 
 public class UserVM
 {
-    public string Id { get; set; }
+    public string? Id { get; set; }
     [Required(ErrorMessage = "Username is required")]
     [NotNullOrOnlyNumbers(ErrorMessage = "Invalid Username")]
-    public string Username { get; set; }
+    public string? Username { get; set; }
 
     public bool Enabled { get; set; } = true;
 
     [Required(ErrorMessage = "Name is required")]
     [NotNullOrOnlyNumbers(ErrorMessage = "Invalid Name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Required(ErrorMessage = "Surname is required")]
     [NotNullOrOnlyNumbers(ErrorMessage = "Invalid Surname")]
-    public string SurName { get; set; }
+    public string? SurName { get; set; }
 
     [Required(ErrorMessage = "Email is required")]
     [RegularExpression(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", ErrorMessage = "Invalid email address")]
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
-    public string Department { get; set; }
+    public string? Department { get; set; }
 
-    public List<string> Roles { get; set; }
+    public List<string>? Roles { get; set; }
 
     public IEnumerable<ValidationResult> Validate()
     {

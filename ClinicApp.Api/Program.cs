@@ -7,9 +7,10 @@ using ClinicApp.Infrastructure.Data;
 using ClinicApp.Infrastructure.Interfaces;
 using ClinicApp.Infrastructure.Persistence;
 using ClinicApp.Infrastructure.Persistence.Configurations;
+using ClinicApp.Reports.Interfaces;
+using ClinicApp.Reports.Services;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
-using Oauth2.sdk.DependencyInjection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,7 @@ builder.Services.Configure<MenuConfiguration>(
 // Add services to the container.
 builder.Services.AddScoped<IMenusService, MenusService>();
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
+builder.Services.AddTransient<IReportsFR, ReportsFRServices>();
 
 var app = builder.Build();
 
