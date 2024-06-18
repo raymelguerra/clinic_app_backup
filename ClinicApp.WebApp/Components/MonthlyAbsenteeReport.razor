@@ -5,8 +5,8 @@
 <ReportContent Title="Montlhy Attendance" HiddenSendButton="true" HiddenDownloadButton="false" DownloadButtonAction="DownloadReport">
     <MudTable Items="@_monthlyAttendanceList" Striped="true">
         <ToolBarContent>
-            <MudGrid>
-                <MudItem>
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="6" md="6" lg="6" xl="6">
                     <MudSelect T="string" Label="Months" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" Value="GetMonthName(_selectedMonth)" ValueChanged="OnMonthChange">
                         @for (int i = 1; i <= 12; i++)
                         {
@@ -14,7 +14,7 @@
                         }
                     </MudSelect>
                 </MudItem>
-                <MudItem>
+                <MudItem xs="6" md="6" lg="6" xl="6">
                     <MudSwitch T="bool" Color="Color.Primary" ValueChanged="@((e) => OnOnlyAbsenteeChange(e))" Label="@(OnlyAbsentee ? "Only absentee" : "All")" />
                 </MudItem>
             </MudGrid>
