@@ -45,8 +45,8 @@ builder.Services.Configure<MenuConfiguration>(
 
 // Add services to the container.
 builder.Services.AddScoped<IMenusService, MenusService>();
+builder.Services.AddScoped<IReportsFR, ReportsFRServices>();
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
-builder.Services.AddTransient<IReportsFR, ReportsFRServices>();
 
 var app = builder.Build();
 

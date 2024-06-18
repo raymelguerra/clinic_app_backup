@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.Infrastructure", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oauth2.sdk", "Oauth2.sdk\Oauth2.sdk.csproj", "{361B5C3E-CA8B-49AF-A1A3-E07DC95E8446}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClinicApp.Reports", "ClinicApp.Reports\ClinicApp.Reports.csproj", "{9F8D1540-2F2B-4F9D-85E6-9B0C30543239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClinicApp.Reports", "ClinicApp.Reports\ClinicApp.Reports.csproj", "{9F8D1540-2F2B-4F9D-85E6-9B0C30543239}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

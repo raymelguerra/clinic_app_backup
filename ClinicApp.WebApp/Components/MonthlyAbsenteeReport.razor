@@ -1,0 +1,38 @@
+﻿@using System.Globalization
+@inject NavigationManager NavigationManager;
+@attribute [Authorize(Roles = "staff,admin")]
+
+<ReportContent Title="Montlhy Attendance" HiddenSendButton="true" HiddenDownloadButton="false" DownloadButtonAction="DownloadReport">
+    <MudTable Items="@_monthlyAttendanceList" Striped="true">
+        <ToolBarContent>
+            <MudGrid>
+                <MudItem>
+                    <MudSelect T="string" Label="Months" Variant="Variant.Outlined" Margin="Margin.Dense" AnchorOrigin="Origin.BottomCenter" Value="GetMonthName(_selectedMonth)" ValueChanged="OnMonthChange">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <MudSelectItem Value="@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)" />
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem>
+                    <MudSwitch T="bool" Color="Color.Primary" ValueChanged="@((e) => OnOnlyAbsenteeChange(e))" Label="@(OnlyAbsentee ? "Only absentee" : "All")" />
+                </MudItem>
+            </MudGrid>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Physician Name</MudTh>
+            <MudTh>Rendering Provider</MudTh>
+            <MudTh>Attendance Count</MudTh>
+            <MudTh>Extra</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Physician Name">@context.PhysicianName</MudTd>
+            <MudTd DataLabel="Rendering Provider">@context.RenderingProvider</MudTd>
+            <MudTd DataLabel="Attendance Count">@context.AttendanceCount</MudTd>
+            <MudTd DataLabel="Extra">@context.Extra</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</ReportContent>

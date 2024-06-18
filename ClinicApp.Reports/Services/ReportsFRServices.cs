@@ -8,37 +8,46 @@ namespace ClinicApp.Reports.Services
 {
     public class ReportsFRServices : IReportsFR
     {
-        const string REPORT_PATH = "ReportsTemplates/MonthlyAbsenteeReport.frx";
+        private readonly Report _report;
+        public ReportsFRServices()
+        {
+            _report = new Report();
+        }
+        private const string REPORT_PATH = "ReportsTemplates";
         public async Task<byte[]> GetMonthlyAbsenteeReportFRAAsync(IEnumerable<MontlhyAbsenteeReportDto> data)
         {
-            Report report = new Report();
 
-            report.Load(REPORT_PATH);
+            _report.Load($"{REPORT_PATH}/MonthlyAbsenteeReport.frx");
 
             if (data == null || data.Count() == 0)
             {
-                report.RegisterData(data, "MontlhyAbsenteeReportRef");
-                report.SetParameterValue("Month", 0);
+                _report.RegisterData(data, "MontlhyAbsenteeReportRef");
+                _report.SetParameterValue("Month", 0);
             }
             else
             {
-                report.RegisterData(data, "MontlhyAbsenteeReportRef");
-                report.SetParameterValue("Month", data.FirstOrDefault().Month);
+                _report.RegisterData(data, "MontlhyAbsenteeReportRef");
+                _report.SetParameterValue("Month", data.FirstOrDefault().Month);
             }
 
-            if (report.Prepare())
+            return await BuildReport();
+        }
+
+        private async Task<byte[]> BuildReport()
+        {
+            if (_report.Prepare())
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
                     PDFSimpleExport pdfExport = new PDFSimpleExport();
-                    report.Export(pdfExport, ms);
+                    _report.Export(pdfExport, ms);
 
                     ms.Position = 0;
 
                     byte[] result = new byte[ms.Length];
                     await ms.ReadAsync(result, 0, (int)ms.Length);
 
-                    report.Dispose();
+                    _report.Dispose();
                     pdfExport.Dispose();
 
                     return result;
@@ -49,6 +58,5 @@ namespace ClinicApp.Reports.Services
                 return [];
             }
         }
-
     }
 }
