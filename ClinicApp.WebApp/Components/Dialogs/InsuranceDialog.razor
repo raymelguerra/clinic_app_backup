@@ -1,0 +1,107 @@
+﻿@using ClinicApp.Core.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(slValidator.ValidateValue)" ValidationDelay="0">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Name"
+                                  For="@(() => Model.Name)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Name" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudDatePicker @bind-Date="Model.EntryDate"
+                                   For="@(() => Model.EntryDate)"
+                                   Immediate="true"
+                                   Variant="Variant.Outlined"
+                                   Label="Date Created" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudDatePicker @bind-Date="Model.ExpirationDate"
+                                   For="@(() => Model.ExpirationDate)"
+                                   Immediate="true"
+                                   Variant="Variant.Outlined"
+                                   Label="Date Created" />
+                </MudItem>
+            </MudGrid>
+            <MudGrid Class="mt-2">
+                <MudItem xs="12" sm="12" xl="12">
+                    <MudTable Items="@Model.InsuranceProcedures"
+                              Dense="true"
+                              Hover="true"
+                              ReadOnly="false"
+                              CanCancelEdit="true"
+                              Breakpoint="Breakpoint.Sm"
+                              HorizontalScrollbar="true"
+                              @bind-SelectedItem="SelectedItem"
+                              CommitEditTooltip="Commit Edit"
+                              CancelEditTooltip="Cancel Edit"
+                              OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))"
+                              RowEditPreview="BackupItem"
+                              RowEditCancel="ResetItemToOriginalValues"
+                              RowEditCommit="ItemHasBeenCommitted"
+                              IsEditRowSwitchingBlocked="false"
+                              ApplyButtonPosition="TableApplyButtonPosition.End"
+                              EditButtonPosition="TableEditButtonPosition.End"
+                              EditTrigger="TableEditTrigger.EditButton">
+                        <ToolBarContent>
+                            <MudText Typo="Typo.h6">Unit Details</MudText>
+                            <MudSpacer />
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" />
+                        </ToolBarContent>
+                        <HeaderContent>
+                            <MudTh>Contractor Type</MudTh>
+                            <MudTh>Procedure</MudTh>
+                            <MudTh>Rate</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Contractor Type">@(context.Procedure != null ? context.Procedure.ContractorType!.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Procedure">@(context.Procedure != null ? context.Procedure.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Rate"> @context.Rate</MudTd>
+                        </RowTemplate>
+                        <RowEditingTemplate>
+                            <MudTd DataLabel="Contractor Type">
+                                <MudDatePicker Immediate="true"
+                                               Variant="Variant.Outlined"
+                                               Label="Date Created" />
+                            </MudTd>
+                            <MudTd DataLabel="Procedure">
+                                <MudSelect T="string" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelectItem Value="@("1")">2014</MudSelectItem>
+                                    <MudSelectItem Value="@("2")">7019</MudSelectItem>
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd DataLabel="Rate">
+                                <MudNumericField Label="Rate" Variant="Variant.Outlined" Min="0" Max="20" />
+                            </MudTd>
+                        </RowEditingTemplate>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                        <EditButtonContent Context="button">
+                            <MudGrid Spacing="2" Justify="Justify.FlexEnd">
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                                <MudItem sm="6" md="6" lg="6">
+                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" />
+                                </MudItem>
+                            </MudGrid>
+                        </EditButtonContent>
+
+                    </MudTable>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+            <MudItem>
+                <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+                <MudButton OnClick="Cancel">Cancel</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>

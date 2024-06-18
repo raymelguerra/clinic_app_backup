@@ -3,33 +3,31 @@
 
 <PageTitle>Insurance</PageTitle>
 
-<ClinicApp.WebApp.Components.ContentPage Title="Insurance"
+<ClinicApp.WebApp.Components.ContentPage Title="Insurances"
                                          Icon="@Icons.Material.Filled.Security"
                                          HiddenAddButton="false"
                                          HiddenDownloadButton="true" AddButtonAction="AddInsurance">
 
-    <MudDataGrid Items="@ServiceLogs" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <MudDataGrid Items="@Insurances" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
-            <PropertyColumn Property="@(x => x.CreatedDate.HasValue ? x.CreatedDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Created Date" />
-            <PropertyColumn Property="x => x.Period.PayPeriod" Title="Pay Period" />
-            <PropertyColumn Property="x => x.Biller" Title="Insurance" /> @*Cambiar es to a la nueva tabla insurance*@
-            <PropertyColumn Property="x => x.Contractor.Name" Title="Contractor" />
-            <PropertyColumn Property="x => x.Client.Name" Title="Client" />
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <PropertyColumn Property="@(x => x.EntryDate!.Value.ToString("MM-dd-yyyy"))" Title="Entry Date" />
+            <PropertyColumn Property="@(x => x.ExpirationDate!.Value.ToString("MM-dd-yyyy"))" Title="Expiration Date" />
             <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
                 <CellTemplate>
                     <MudGrid Spacing="1" Justify="Justify.FlexEnd">
                         <MudItem sm="6" md="6" lg="6">
-                            <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" />
+                            <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@((args) => EditInsurance(data.Item.Id))" />
                         </MudItem>
                         <MudItem sm="6" md="6" lg="6">
-                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" />
+                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" OnClick="@((args) => RemoveInsurance(data.Item.Id))" />
                         </MudItem>
                     </MudGrid>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
         <PagerContent>
-            <MudDataGridPager T="ServiceLog" />
+            <MudDataGridPager T="Insurance" />
         </PagerContent>
     </MudDataGrid>
 

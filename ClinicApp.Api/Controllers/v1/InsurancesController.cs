@@ -7,11 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Persistence;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicApp.Api.Controllers.v1
 {
+    [Produces("application/json")]
     [Route("api/v1/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     public class InsurancesController : ControllerBase
     {
         private readonly InsuranceContext _context;
@@ -32,7 +37,11 @@ namespace ClinicApp.Api.Controllers.v1
         [HttpGet("{id}")]
         public async Task<ActionResult<Insurance>> GetInsurance(int id)
         {
-            var insurance = await _context.Insurances.FindAsync(id);
+            var insurance = await _context.Insurances
+                .Include(i => i.InsuranceProcedures)
+                .ThenInclude(x => x.Procedure)
+                .ThenInclude(x => x.ContractorType)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (insurance == null)
             {

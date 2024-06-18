@@ -51,6 +51,8 @@ public partial class ServiceLogPage : ComponentBase
     {
         var sl = new ServiceLog();
 
+        sl.UnitDetails = new List<UnitDetail>();
+
         sl.UnitDetails.Add(new UnitDetail
         {
             DateOfService = DateTime.Now,

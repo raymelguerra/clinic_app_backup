@@ -12,10 +12,10 @@ public class Insurance
     public string Name { get; set; } = null!;
 
     [Required]
-    public DateTime EntryDate { get; set; }
+    public DateTime? EntryDate { get; set; }
 
     [Required]
-    public DateTime ExpirationDate { get; set; }
+    public DateTime? ExpirationDate { get; set; }
 
     public string? Logo { get; set; }
 
