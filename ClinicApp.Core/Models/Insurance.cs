@@ -17,8 +17,6 @@ public class Insurance
     [Required]
     public DateTime? ExpirationDate { get; set; }
 
-    public string? Logo { get; set; }
-
     public virtual List<InsuranceProcedure>? InsuranceProcedures { get; set; }
 
 }

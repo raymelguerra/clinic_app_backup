@@ -27,7 +27,7 @@ namespace ClinicApp.Api.Controllers.v1
         [EnableQuery]
         public async Task<ActionResult<IEnumerable<Procedure>>> GetProcedures()
         {
-            return await _context.Procedures.ToListAsync();
+            return await _context.Procedures.Include("ContractorType").ToListAsync();
         }
 
         // GET: api/Procedures/5

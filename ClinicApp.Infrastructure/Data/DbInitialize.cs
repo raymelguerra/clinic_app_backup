@@ -55,7 +55,6 @@ public class DbInitializer : IDbInitialize
             {
                 new Procedure{Name="97155", ContractorTypeId=1},
                 new Procedure{Name="97156", ContractorTypeId = 1},
-                new Procedure{Name="97153", ContractorTypeId = 1},
                 new Procedure{Name="97155HN", ContractorTypeId = 1},
                 new Procedure{Name="97156HN", ContractorTypeId = 1},
                 new Procedure{Name="97153", ContractorTypeId=1},

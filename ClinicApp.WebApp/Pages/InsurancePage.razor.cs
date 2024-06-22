@@ -38,7 +38,13 @@ public partial class InsurancePage : ComponentBase
         ins.InsuranceProcedures = new();
 
         var parameters = new DialogParameters<InsuranceDialog> { { x => x.Model, ins } };
-        var result = await DialogService.ShowAsync<InsuranceDialog>("Add Insurance", parameters);
+        var dialog = await DialogService.ShowAsync<InsuranceDialog>("Add Insurance", parameters);
+        var result = await dialog.Result;
+        if (!result.Canceled && (bool)result.Data)
+        {
+            Snackbar.Add($"Insurance successfully created", Severity.Success);
+            await OnInitializedAsync();
+        }
     }
 
     private async Task EditInsurance(int insuranceId)

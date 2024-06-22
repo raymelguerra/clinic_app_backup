@@ -61,7 +61,39 @@ namespace ClinicApp.Api.Controllers.v1
                 return BadRequest();
             }
 
-            _context.Entry(insurance).State = EntityState.Modified;
+            var existingInsurance = await _context.Insurances
+                .Include(i => i.InsuranceProcedures)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingInsurance == null) { return NotFound(); }
+
+            // Update insurance with the new values
+            _context.Entry(existingInsurance).CurrentValues.SetValues(insurance);
+
+            // Remove the insurance procedures that are not in the new list
+            foreach (var insuranceproc in insurance.InsuranceProcedures!.ToList())
+            {
+                if (insuranceproc.Id == 0)
+                {
+                    existingInsurance.InsuranceProcedures!.Add(insuranceproc);
+                }
+                else
+                {
+                    var existingInsuranceProc = existingInsurance.InsuranceProcedures!
+                        .Where(x => x.Id == insuranceproc.Id)
+                        .SingleOrDefault();
+                    _context.Entry(existingInsuranceProc).CurrentValues.SetValues(insuranceproc);
+                }
+
+            }
+
+            // Add the new insurance procedures
+            foreach (var existingInsProc in existingInsurance.InsuranceProcedures!)
+            {
+                if (!insurance.InsuranceProcedures!.Any(p => p.Id == existingInsProc.Id)) { 
+                    _context.InsuranceProcedures.Remove(existingInsProc);
+                }
+            }
 
             try
             {
