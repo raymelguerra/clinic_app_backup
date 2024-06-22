@@ -1,0 +1,32 @@
+﻿@using ClinicApp.Core.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(diagnosisValidator.ValidateValue)" ValidationDelay="0">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Name"
+                                  For="@(() => Model.Name)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Name" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Description"
+                                  For="@(() => Model.Description)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Description" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+            <MudItem>
+                <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+                <MudButton OnClick="Cancel">Cancel</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>

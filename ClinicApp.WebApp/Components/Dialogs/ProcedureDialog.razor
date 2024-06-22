@@ -1,0 +1,41 @@
+﻿@using ClinicApp.Core.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(procedureValidator.ValidateValue)" ValidationDelay="0">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Name"
+                                  For="@(() => Model.Name)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Pay Period" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect T=ContractorType For="@(() => Model.ContractorType)" @bind-Value="Model.ContractorType" ToStringFunc="@converter" Label="Contractor Type" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        @*TextChanged="@(x=> OnContractorTypeChanged(x))"*@
+                        @if (_contractorTypes == null || _contractorTypes.Count() == 0)
+                        {
+                            <MudSelectItem T="ContractorType" Value="null">No matching records found</MudSelectItem>
+                        }
+                        else
+                        {
+                            @foreach (var ctr in _contractorTypes)
+                            {
+                                <MudSelectItem Value="@ctr" />
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+            <MudItem>
+                <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+                <MudButton OnClick="Cancel">Cancel</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>

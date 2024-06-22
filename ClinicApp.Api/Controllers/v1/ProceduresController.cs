@@ -34,7 +34,7 @@ namespace ClinicApp.Api.Controllers.v1
         [HttpGet("{id}")]
         public async Task<ActionResult<Procedure>> GetProcedure(int id)
         {
-            var procedure = await _context.Procedures.FindAsync(id);
+            var procedure = await _context.Procedures.Include("ContractorType").FirstOrDefaultAsync(x=> x.Id == id);
 
             if (procedure == null)
             {

@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 namespace ClinicApp.WebApp.Components.Dialogs;
 
-public partial class PeriodDialog : ComponentBase
+public partial class DiagnosisDialog : ComponentBase
 {
     [Parameter]
-    public Period Model { get; set; } = null!;
+    public Diagnosis Model { get; set; } = null!;
     [Inject] ISnackbar Snackbar { get; set; } = null!;
-    [Inject] IPeriod PeriodService { get; set; } = null!;
+    [Inject] IDiagnosis DiagnosisService { get; set; } = null!;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
 
     private MudForm? form;
-    private PeriodValidator periodValidator = new();
+    private DiagnosisValidator diagnosisValidator = new();
 
     protected override Task OnParametersSetAsync()
     {
@@ -30,11 +30,11 @@ public partial class PeriodDialog : ComponentBase
         try
         {
 
-            var result = MudDialog!.Title.Contains("Add") ? await PeriodService.PostPeriodAsync(Model!) : await PeriodService!.PutPeriodAsync(Model!.Id, Model);
+            var result = MudDialog!.Title.Contains("Add") ? await DiagnosisService.PostDiagnosisAsync(Model!) : await DiagnosisService!.PutDiagnosisAsync(Model!.Id, Model);
             if (result)
                 MudDialog!.Close(DialogResult.Ok(true));
             else
-                Snackbar!.Add($"Oops, there was an error adding a new Period.", Severity.Error);
+                Snackbar!.Add($"Oops, there was an error adding a new Diagnosis.", Severity.Error);
         }
         catch (Exception ex)
         {

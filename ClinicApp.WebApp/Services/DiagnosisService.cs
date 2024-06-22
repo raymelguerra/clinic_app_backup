@@ -52,5 +52,40 @@ namespace ClinicApp.WebApp.Services
         {
             GC.SuppressFinalize(this);
         }
+
+        public async Task<bool> PutDiagnosisAsync(int id, Diagnosis Diagnosis)
+        {
+            var json = JsonConvert.SerializeObject(Diagnosis);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(HttpMethod.Put, $"{apiSettings.Endpoint}/Diagnoses/{id}")
+            {
+                Content = content
+            };
+
+            var response = await SendAsync(request);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> PostDiagnosisAsync(Diagnosis Diagnosis)
+        {
+            var json = JsonConvert.SerializeObject(Diagnosis);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{apiSettings.Endpoint}/Diagnoses")
+            {
+                Content = content
+            };
+
+            var response = await SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteDiagnosisAsync(int id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"{apiSettings.Endpoint}/Diagnoses/{id}");
+            var response = await SendAsync(request);
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }
