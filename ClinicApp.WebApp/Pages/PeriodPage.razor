@@ -1,0 +1,36 @@
+﻿@page "/period"
+@using ClinicApp.Core.Models
+
+<PageTitle>Period</PageTitle>
+
+<ClinicApp.WebApp.Components.ContentPage Title="Periods"
+                                         Icon="@Icons.Material.Filled.Security"
+                                         HiddenAddButton="false"
+                                         HiddenDownloadButton="true" AddButtonAction="AddPeriod">
+
+    <MudDataGrid Items="@Periods" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+        <Columns>
+            <PropertyColumn Property="x => x.PayPeriod" Title="Pay Period" />
+            <PropertyColumn Property="@(x => x.StartDate!.Value.ToString("MM-dd-yyyy"))" Title="Start Date" />
+            <PropertyColumn Property="@(x => x.EndDate!.Value.ToString("MM-dd-yyyy"))" Title="End Date" />
+            <PropertyColumn Property="@(x => x.DocumentDeliveryDate!.Value.ToString("MM-dd-yyyy"))" Title="Document Delivery Date" />
+            <PropertyColumn Property="@(x => x.PaymentDate!.Value.ToString("MM-dd-yyyy"))" Title="Payment Date" />
+            <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+                        <MudItem sm="6" md="6" lg="6">
+                            <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@((args) => EditPeriod(data.Item.Id))" />
+                        </MudItem>
+                        <MudItem sm="6" md="6" lg="6">
+                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" OnClick="@((args) => RemovePeriod(data.Item.Id))" />
+                        </MudItem>
+                    </MudGrid>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Period" />
+        </PagerContent>
+    </MudDataGrid>
+
+</ClinicApp.WebApp.Components.ContentPage>

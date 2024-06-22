@@ -8,10 +8,10 @@ public class Period
     public int Id { get; set; }
 
     [Required]
-    public DateTime StartDate { get; set; }
+    public DateTime? StartDate { get; set; }
 
     [Required]
-    public DateTime EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
     [Required]
     public bool Active { get; set; }
@@ -20,8 +20,8 @@ public class Period
     public string PayPeriod { get; set; } = string.Empty;
 
     [Required]
-    public DateTime DocumentDeliveryDate { get; set; }
+    public DateTime? DocumentDeliveryDate { get; set; }
 
     [Required]
-    public DateTime PaymentDate { get; set; }
+    public DateTime? PaymentDate { get; set; }
 }

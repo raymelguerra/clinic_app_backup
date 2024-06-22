@@ -7,11 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Persistence;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicApp.Api.Controllers.v1
 {
+    [Produces("application/json")]
     [Route("api/v1/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     public class PeriodsController : ControllerBase
     {
         private readonly InsuranceContext _context;
