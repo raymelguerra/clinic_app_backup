@@ -17,7 +17,7 @@
         public List<string>? RequiredActions { get; set; }
         public int? NotBefore { get; set; }
         public Access? Access { get; set; }
-        public IEnumerable<string>? Roles { get; set; }
+        public IEnumerable<Role>? Roles { get; set; }
     }
 
     public class Access

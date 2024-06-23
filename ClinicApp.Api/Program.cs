@@ -1,5 +1,6 @@
 using ClinicApp.Api.DependencyInjection;
 using ClinicApp.Api.Interfaces;
+using ClinicApp.Api.MappingProfiles;
 using ClinicApp.Api.Middlewares;
 using ClinicApp.Api.Services;
 using ClinicApp.Core.Models;
@@ -15,6 +16,10 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 // OData configuration
 builder.Services.AddControllers().AddOData(opt =>
 {
@@ -29,6 +34,9 @@ builder.Services.AddDbContext<InsuranceContext>(config =>
 {
     config.UseNpgsql(contextconfig.Insurance_ConnectionString);
 });
+
+// add automapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Security configuration
 builder.Services.AddOpenApiEntries();
@@ -47,6 +55,7 @@ builder.Services.Configure<MenuConfiguration>(
 builder.Services.AddScoped<IMenusService, MenusService>();
 builder.Services.AddScoped<IReportsFR, ReportsFRServices>();
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
+builder.Services.AddTransient<IUsersService, UsersService>();
 
 var app = builder.Build();
 
@@ -66,12 +75,28 @@ app.UseSwagger()
         c.RoutePrefix = string.Empty;
     });
 
+
+app.UseMiddleware<CustomExceptionMiddleware>();
+// Configurar Middleware para Logging
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An unhandled exception occurred.");
+        throw;
+    }
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<CustomExceptionMiddleware>();
 
 app.MapControllers();
 

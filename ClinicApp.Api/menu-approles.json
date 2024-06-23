@@ -106,13 +106,6 @@
             "Disabled": false,
             "Icon": "ArrowRight",
             "Roles": [ "admin", "biller" ]
-          },
-          {
-            "Name": "Reports config",
-            "Path": "/reports-config",
-            "Disabled": true,
-            "Icon": "ArrowRight",
-            "Roles": [ "admin" ]
           }
         ],
         "Disabled": false,

@@ -2,8 +2,6 @@
 using ClinicApp.Api.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Oauth2.sdk;
 
 namespace ClinicApp.Api.Controllers.v1
 {
@@ -12,34 +10,17 @@ namespace ClinicApp.Api.Controllers.v1
     [ApiVersion("1.0")]
     [ApiController]
     [Authorize]
-    public class MenuController(IMenusService _menuService, IUserManagementService _userManagement) : ControllerBase
+    public class MenuController(IMenusService _menuService) : ControllerBase
     {
         private readonly IMenusService menuService = _menuService;
-        private readonly IUserManagementService userManagement = _userManagement;
 
-        [HttpGet("{role}")]
-        public IActionResult GetMenus(string role)
+        [HttpGet("{roles}")]
+        public IActionResult GetMenus(string roles)
         {
-            //var claims = HttpContext.User.Claims.ToList();
+            if(roles == null)
+                return Unauthorized();
 
-            //foreach (var claim in claims)
-            //{
-            //    Console.WriteLine($"{claim.Type}: {claim.Value}");
-            //}
-
-            //string roleString = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "resource_access")?.Value!;
-
-            //var roleContainer = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<string>>>>(roleString);
-
-            //string role = "";
-            //if (roleContainer!.TryGetValue("clinicapp-api", out var clinicAppData) && clinicAppData.TryGetValue("roles", out var roles) && roles.Count > 0)
-            //    role = roles.FirstOrDefault()!;
-
-
-            //if (role == "" || role == "guest")
-            //    return Unauthorized();
-
-            var menus = menuService.GetMenusByRole(role);
+            var menus = menuService.GetMenusByRole(roles.Split(","));
 
             if (menus == null)
                 return NotFound();

@@ -108,6 +108,7 @@ namespace Oauth2.sdk.DependencyInjection
             services.AddHttpContextAccessor();
 
             services.AddScoped<IUserManagementService, UserManagementService_KeycloakProvider>();
+            services.AddScoped<IRolesManagementService, RolesManagementService_KeycloakProvider>();
 
             return services;
         }

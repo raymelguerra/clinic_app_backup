@@ -1,0 +1,42 @@
+﻿@page "/users"
+@using ClinicApp.Core.Dtos
+@using ClinicApp.Core.Models
+
+<PageTitle>Users</PageTitle>
+
+<ClinicApp.WebApp.Components.ContentPage Title="Users"
+                                         Icon="@Icons.Material.Filled.Update"
+                                         HiddenAddButton="false"
+                                         HiddenDownloadButton="true" AddButtonAction="AddUser">
+
+    <MudDataGrid Loading="_loading" Items="@Users" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <PropertyColumn Property="x => x.SurName" Title="Surname" />
+            <PropertyColumn Property="x => x.Email" Title="Email" />
+            <TemplateColumn Title="Active" Context="data" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudToggleIconButton @bind-Toggled="data.Item.Enabled"
+                                         Icon="@Icons.Material.Filled.PersonOff" Color="@Color.Error" Title="Blocked"
+                                         ToggledIcon="@Icons.Material.Filled.Person" ToggledColor="@Color.Success" ToggledTitle="Active" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+                        <MudItem sm="6" md="6" lg="6">
+                            <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@((args) => EditUser(data.Item.Id!))" />
+                        </MudItem>
+                        <MudItem sm="6" md="6" lg="6">
+                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" OnClick="@((args) => RemoveUser(data.Item.Id!))" />
+                        </MudItem>
+                    </MudGrid>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="UserVM" />
+        </PagerContent>
+    </MudDataGrid>
+
+</ClinicApp.WebApp.Components.ContentPage>

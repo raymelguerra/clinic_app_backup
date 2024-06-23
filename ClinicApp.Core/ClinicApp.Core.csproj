@@ -29,4 +29,8 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Oauth2.sdk\Oauth2.sdk.csproj" />
+  </ItemGroup>
+
 </Project>

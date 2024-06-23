@@ -1,0 +1,51 @@
+﻿@using ClinicApp.Core.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@Model" @ref="@form" Validation="@(userValidator.ValidateValue)" ValidationDelay="0">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Name"
+                                  For="@(() => Model.Name)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Name" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.SurName"
+                                  For="@(() => Model.SurName)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Last Name" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudTextField @bind-Value="Model.Email"
+                                  For="@(() => Model.Email)"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Label="Email" />
+                </MudItem>
+                <MudItem xs="12" sm="6" xl="4">
+                    <MudSelect MultiSelection="true" @bind-SelectedValues="Model.Roles" Label="Roles" ToStringFunc="converter" AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        @if (_roles == null || _roles.Count() == 0)
+                        {
+                            <MudSelectItem T="Oauth2.sdk.Models.Role" Value="null">No matching records found</MudSelectItem>
+                        }
+                        @foreach (var state in _roles)
+                        {
+                            <MudSelectItem Value="@state" />
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudGrid Spacing="1" Justify="Justify.FlexEnd">
+            <MudItem>
+                <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+                <MudButton OnClick="Cancel">Cancel</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>

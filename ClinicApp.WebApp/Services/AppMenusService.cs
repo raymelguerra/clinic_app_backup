@@ -26,13 +26,13 @@ namespace ClinicApp.WebApp.Services
 
         public async Task<IEnumerable<ParentMenu>> GetMenusAsync()
         {
-            var role = userIdpManagement.GetUserRoles().FirstOrDefault();
-            if (role == null)
+            var role = userIdpManagement.GetUserRoles();
+            if (role == null || role.Count() == 0)
             {
                 return Array.Empty<ParentMenu>();
             }
             var request = new HttpRequestMessage(
-                HttpMethod.Get, $"{apiSettings.Endpoint}/Menu/{role}");
+                HttpMethod.Get, $"{apiSettings.Endpoint}/Menu/{string.Join(",", role)}");
 
             using var response = await SendAsync(request);
 

@@ -32,13 +32,16 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 .GetResult();
         }
 
-        protected async Task<string?> GetIdClient()
+        protected async Task<string?> GetIdClient(string clientId = "")
         {
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetToken());
 
+            if(string.IsNullOrEmpty(clientId))
+                clientId = credentials.ClientId;
+
             var response = await client.GetAsync(
-            $"{credentials.Authority}admin/realms/{credentials.Realm}/clients?clientId={credentials.ClientId}");
+            $"{credentials.Authority}admin/realms/{credentials.Realm}/clients?clientId={clientId}");
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
                 throw new UnauthorizedAccessException();

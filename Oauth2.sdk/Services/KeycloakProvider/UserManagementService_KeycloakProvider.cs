@@ -11,10 +11,15 @@ namespace Oauth2.sdk.Services.KeycloakProvider
 {
     public class UserManagementService_KeycloakProvider : KeycloakProviderBase, IUserManagementService
     {
+        private readonly IRolesManagementService rolesManagementService;
         public UserManagementService_KeycloakProvider(
             IOptions<CredentialsSettings> _options,
-            IHttpContextAccessor _httpContextAccessor
-        ) : base(_options, _httpContextAccessor) { }
+            IHttpContextAccessor _httpContextAccessor,
+            IRolesManagementService _rolesManagementService
+        ) : base(_options, _httpContextAccessor)
+        {
+            rolesManagementService = _rolesManagementService;
+        }
 
         public async Task<IEnumerable<User>?> GetUsers()
         {
@@ -89,7 +94,7 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 {
                     new {
                             type = "password",
-                            value = user.Username,
+                            value = "Temporal00*",
                             temporary = true
                         }
                 },
@@ -106,8 +111,10 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 var locationHeader = response.Headers.GetValues("Location").FirstOrDefault();
                 var userId = locationHeader?.Split('/').Last();
 
-                //if(string.IsNullOrEmpty(user.Password))
-                //    await GrantUserChangePasswordAsync(userId);
+                // Add role to new user
+                var result = await rolesManagementService.AddRoleToUser(userId!, user.Roles!);
+                if (!result)
+                    throw new Exception("Error adding roles to user");
 
                 return userId;
             }
@@ -149,6 +156,15 @@ namespace Oauth2.sdk.Services.KeycloakProvider
 
             if (response.StatusCode == HttpStatusCode.Forbidden)
                 throw new ForbiddenAccessException();
+
+            // delete current roles
+            var delRole = await rolesManagementService.RemoveRoleFromUser(u);
+            if (!delRole)
+                throw new Exception("Error deleting existings roles from user");
+            // add new roles
+            var result = await rolesManagementService.AddRoleToUser(u, user.Roles!);
+            if (!result)
+                throw new Exception("Error adding roles to user");
 
             return response.IsSuccessStatusCode;
         }

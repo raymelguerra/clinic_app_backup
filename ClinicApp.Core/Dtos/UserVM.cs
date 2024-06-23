@@ -7,7 +7,6 @@ public class UserVM
 {
     public string? Id { get; set; }
     [Required(ErrorMessage = "Username is required")]
-    [NotNullOrOnlyNumbers(ErrorMessage = "Invalid Username")]
     public string? Username { get; set; }
 
     public bool Enabled { get; set; } = true;
@@ -26,7 +25,7 @@ public class UserVM
 
     public string? Department { get; set; }
 
-    public List<string>? Roles { get; set; }
+    public IEnumerable<Oauth2.sdk.Models.Role>? Roles { get; set; }
 
     public IEnumerable<ValidationResult> Validate()
     {

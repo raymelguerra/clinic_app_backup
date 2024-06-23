@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Oauth2.sdk.Exceptions;
 using Oauth2.sdk.Models;
+using System;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -21,8 +22,9 @@ namespace Oauth2.sdk.Services.KeycloakProvider
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetToken());
 
+            var clientUuid = await GetIdClient();
             var response = await client.GetAsync(
-                $"{credentials.Authority}admin/realms/{credentials.Realm}/users/{userId}/roles/");
+                $"{credentials.Authority}admin/realms/{credentials.Realm}/users/{userId}/role-mappings/clients/{clientUuid}");
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
                 throw new UnauthorizedAccessException();
@@ -112,13 +114,13 @@ namespace Oauth2.sdk.Services.KeycloakProvider
             return true;
         }
 
-        public async Task<IEnumerable<Role>?> GetListClientRoles()
+        public async Task<IEnumerable<Role>?> GetListClientRoles(string clientId = "")
         {
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetToken());
 
             var response = await client.GetAsync(
-                $"{credentials.Authority}admin/realms/{credentials.Realm}/clients/{await GetIdClient()}/roles");
+                $"{credentials.Authority}admin/realms/{credentials.Realm}/clients/{await GetIdClient(clientId)}/roles");
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
                 throw new UnauthorizedAccessException();
@@ -154,6 +156,50 @@ namespace Oauth2.sdk.Services.KeycloakProvider
                 return roleList!.Contains(role);
 
             return false;
+        }
+
+        public async Task<bool> AddRoleToUser(string userId, IEnumerable<Role> roles)
+        {
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetToken());
+
+            var clientUuid = await GetIdClient();
+            bool[] results = new bool[roles.Count()];
+
+            foreach (var role in roles)
+            {
+                var response = await client.PostAsync(
+                                   $"{credentials.Authority}admin/realms/{credentials.Realm}/users/{userId}/role-mappings/clients/{clientUuid}",
+                                                  new StringContent($"[{{\"id\":\"{role.Id}\",\"name\":\"{role.Name}\"}}]", Encoding.UTF8, "application/json"));
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    throw new UnauthorizedAccessException();
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                    throw new ForbiddenAccessException();
+
+                results[roles.ToList().IndexOf(role)] = response.IsSuccessStatusCode;
+            }
+            return results.All(x => x);
+        }
+
+        public async Task<bool> RemoveRoleFromUser(string userId)
+        {
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetToken());
+
+            var clientUuid = await GetIdClient();
+
+            var response = await client.DeleteAsync(
+                                   $"{credentials.Authority}admin/realms/{credentials.Realm}/users/{userId}/role-mappings/clients/{clientUuid}");
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+                throw new UnauthorizedAccessException();
+
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+                throw new ForbiddenAccessException();
+
+            return response.IsSuccessStatusCode;
         }
     }
 }

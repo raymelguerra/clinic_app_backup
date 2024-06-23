@@ -6,6 +6,7 @@ using MudBlazor.Services;
 using Oauth2.sdk.Models;
 using Oauth2.sdk.DependencyInjection;
 using ClinicApp.WebApp.Middlewares;
+using ClinicApp.Infrastructure.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,7 @@ builder.Services.AddTransient<ISecurityManagement, SecurityManagementService>();
 builder.Services.AddTransient<IAppMenusService, AppMenusService>();
 builder.Services.AddTransient<IReport, ReportService>();
 builder.Services.AddTransient<IPeriod, PeriodService>();
+builder.Services.AddTransient<IUsersService, UserService>();
 
 // Add convert to https middleware
 builder.Services.AddTransient<ConvertToHttpsUriMiddleware>();

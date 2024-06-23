@@ -4,5 +4,5 @@ namespace ClinicApp.Api.Interfaces;
 
 public interface IMenusService
 {
-    List<ParentMenu>? GetMenusByRole(string role);
+    List<ParentMenu>? GetMenusByRole(string[] role);
 }
