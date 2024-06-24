@@ -26,11 +26,16 @@ public partial class UserDialog : ComponentBase
 
     private IEnumerable<Oauth2.sdk.Models.Role>? _roles = new List<Oauth2.sdk.Models.Role>();
     Func<Oauth2.sdk.Models.Role, string> converter = p => p?.Name;
-
+    private string? _selectedRole;
+    private IEnumerable<string>? _selectedRoles;
 
     protected async override Task OnParametersSetAsync()
     {
+        _selectedRoles = new List<string>();
         _roles = await RolesManagementService.GetListClientRoles(credentials.Value.ClientApiId!);
+        if (MudDialog!.Title.Contains("Edit")) {
+             _selectedRoles = Model.Roles.Select(x => x.Name);
+        }
     }
 
     async void Submit()
@@ -38,6 +43,7 @@ public partial class UserDialog : ComponentBase
         await form!.Validate();
         if (!form.IsValid) return;
 
+        AsignRoles();
         try
         {
             var result = MudDialog!.Title.Contains("Add") ? await UsersService.CreateUser(Model) : await UsersService!.UpdateUser(Model.Id!, Model);
@@ -52,5 +58,9 @@ public partial class UserDialog : ComponentBase
         }
     }
     void Cancel() => MudDialog.Cancel();
+
+    private void AsignRoles() {
+        Model.Roles = _roles!.Where(x => _selectedRoles!.Contains(x.Name)).ToList();
+    }
 
 }

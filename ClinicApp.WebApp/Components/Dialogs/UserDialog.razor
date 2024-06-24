@@ -26,14 +26,14 @@
                                   Label="Email" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect MultiSelection="true" @bind-SelectedValues="Model.Roles" Label="Roles" ToStringFunc="converter" AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string" MultiSelection="true" @bind-Value="_selectedRole" @bind-SelectedValues="_selectedRoles" Label="Roles" AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                         @if (_roles == null || _roles.Count() == 0)
                         {
-                            <MudSelectItem T="Oauth2.sdk.Models.Role" Value="null">No matching records found</MudSelectItem>
+                            <MudSelectItem T="string" Value="null">No matching records found</MudSelectItem>
                         }
                         @foreach (var state in _roles)
                         {
-                            <MudSelectItem Value="@state" />
+                            <MudSelectItem Value="@state.Name" />
                         }
                     </MudSelect>
                 </MudItem>

@@ -136,8 +136,6 @@ namespace ClinicApp.Api.Controllers.v1
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         [HttpDelete("{userId}")]
-        [EnableQuery]
-        [Authorize(Policy = "Administration")]
         public async Task<IActionResult> DeleteUser(
             string userId
         )

@@ -60,7 +60,6 @@ namespace ClinicApp.Api.Services
 
         public async Task<bool> DeleteUser(string userId)
         {
-            var user = await _userManagement.GetUserData(userId);
             var result = await _userManagement.RemoveUser(userId);
 
             if (!result)
