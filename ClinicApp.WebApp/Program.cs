@@ -71,6 +71,8 @@ builder.Services.AddCors(options =>
 
 
 // Add open telemetry
+
+// buscar como hacer batcher, para enviar los datos en bloques y configurar default trace provider, tracer propagator, processor
 builder.Services.AddOpenTelemetry().WithTracing(b =>
 {
     b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName));
