@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using ClinicApp.Core.Dtos;
+using ClinicApp.Infrastructure.Dto;
 using ClinicApp.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -142,6 +143,29 @@ namespace ClinicApp.Api.Controllers.v1
         {
             var deleted = await usersService.DeleteUser(userId);
             if (deleted)
+                return Ok();
+
+            return BadRequest();
+        }
+
+        /// <summary>
+        /// Change Password.
+        /// </summary>
+        /// <response code="200">Password changed.</response>
+        /// <response code="401">Invalid authentication.</response>
+        /// <response code="403">Invalid authorization.</response>
+        /// <response code="404">User Not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [HttpPut("{userId}/ChangePassword")]
+        public async Task<IActionResult> ChangePassword(string userId, [FromBody] ChangePasswordDto pass)
+        {
+            var changed = await usersService.ChangePassword(userId, pass);
+            if (changed)
                 return Ok();
 
             return BadRequest();

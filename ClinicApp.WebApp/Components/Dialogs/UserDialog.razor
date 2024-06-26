@@ -4,28 +4,28 @@
     <DialogContent>
         <MudForm Model="@Model" @ref="@form" Validation="@(userValidator.ValidateValue)" ValidationDelay="0">
             <MudGrid Spacing="2">
-                <MudItem xs="12" sm="6" xl="4">
+                <MudItem xs="12" sm="6" xl="6">
                     <MudTextField @bind-Value="Model.Name"
                                   For="@(() => Model.Name)"
                                   Immediate="true"
                                   Variant="Variant.Outlined"
                                   Label="Name" />
                 </MudItem>
-                <MudItem xs="12" sm="6" xl="4">
+                <MudItem xs="12" sm="6" xl="6">
                     <MudTextField @bind-Value="Model.SurName"
                                   For="@(() => Model.SurName)"
                                   Immediate="true"
                                   Variant="Variant.Outlined"
                                   Label="Last Name" />
                 </MudItem>
-                <MudItem xs="12" sm="6" xl="4">
+                <MudItem xs="12" sm="6" xl="6">
                     <MudTextField @bind-Value="Model.Email"
                                   For="@(() => Model.Email)"
                                   Immediate="true"
                                   Variant="Variant.Outlined"
                                   Label="Email" />
                 </MudItem>
-                <MudItem xs="12" sm="6" xl="4">
+                <MudItem xs="12" sm="6" xl="6">
                     <MudSelect T="string" MultiSelection="true" @bind-Value="_selectedRole" @bind-SelectedValues="_selectedRoles" Label="Roles" AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                         @if (_roles == null || _roles.Count() == 0)
                         {

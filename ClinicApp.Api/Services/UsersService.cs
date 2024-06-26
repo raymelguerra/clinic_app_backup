@@ -1,5 +1,6 @@
 using AutoMapper;
 using ClinicApp.Core.Dtos;
+using ClinicApp.Infrastructure.Dto;
 using ClinicApp.Infrastructure.Interfaces;
 using Oauth2.sdk;
 
@@ -61,6 +62,16 @@ namespace ClinicApp.Api.Services
         public async Task<bool> DeleteUser(string userId)
         {
             var result = await _userManagement.RemoveUser(userId);
+
+            if (!result)
+                return false;
+
+            return true;
+        }
+
+        public async Task<bool> ChangePassword(string userId, ChangePasswordDto pass)
+        {
+            var result = await _userManagement.ChangePassword(userId, pass.NewPassword);
 
             if (!result)
                 return false;

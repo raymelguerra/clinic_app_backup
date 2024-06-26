@@ -54,6 +54,16 @@ namespace ClinicApp.Api.Middlewares
                 }.ToString());
             }
 
+            if (exception is ValidationException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.PreconditionFailed;
+                return context.Response.WriteAsync(new ErrorDetails()
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = exception.Message
+                }.ToString());
+            }
+
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return context.Response.WriteAsync(new ErrorDetails()
             {

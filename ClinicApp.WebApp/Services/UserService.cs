@@ -1,5 +1,6 @@
 ﻿using ClinicApp.Core.Dtos;
 using ClinicApp.Infrastructure.Data;
+using ClinicApp.Infrastructure.Dto;
 using ClinicApp.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
@@ -66,7 +67,7 @@ namespace ClinicApp.WebApp.Services
             };
 
             var response = await SendAsync(request);
-            
+
             return response.IsSuccessStatusCode;
         }
 
@@ -84,6 +85,19 @@ namespace ClinicApp.WebApp.Services
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<bool> ChangePassword(string userId, ChangePasswordDto newPassword)
+        {
+            var json = JsonConvert.SerializeObject(newPassword);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(HttpMethod.Put, $"{apiSettings.Endpoint}/Users/{userId}/ChangePassword")
+            {
+                Content = content
+            };
+
+            var response = await SendAsync(request);
+
+            return response.IsSuccessStatusCode;
+        }
         public void Dispose()
         {
             GC.SuppressFinalize(this);

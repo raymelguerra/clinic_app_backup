@@ -268,5 +268,37 @@ namespace Oauth2.sdk.Services.KeycloakProvider
 
             throw new Exception($"Error ensuring access to password change: {response.StatusCode}");
         }
+
+        public async Task<bool> ChangePassword(string userId, string newPassword)
+        {
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetToken());
+
+            var json = JsonConvert.SerializeObject(new
+            {
+                type = "password",
+                temporary = false,
+                value = newPassword
+            });
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync(
+                               $"{credentials.Authority}admin/realms/{credentials.Realm}/users/{userId}/reset-password", data);
+            if (!response.IsSuccessStatusCode) {
+                // catch error keycloak erro for validation
+                var error = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+                                       await response.Content.ReadAsStringAsync());
+                if (error != null && error.ContainsKey("error"))
+                {
+                    if (error.ContainsKey("error_description")) {
+                        throw new ValidationException(error["error_description"].ToString());
+                    }
+                    throw new ValidationException(error["error"].ToString());
+                }
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }

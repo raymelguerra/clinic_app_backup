@@ -16,5 +16,6 @@ namespace Oauth2.sdk
         string? GetUserId();
         Task<bool> GrantUserChangePasswordAsync(string userId);
         Task<User> GetUserContextMainData();
+        Task<bool> ChangePassword(string userId, string newPassword);
     }
 }

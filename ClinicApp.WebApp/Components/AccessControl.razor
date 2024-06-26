@@ -1,4 +1,5 @@
 ﻿@using ClinicApp.Infrastructure.Data
+@using ClinicApp.WebApp.Components.Dialogs
 @using Microsoft.Extensions.Options
 @using Oauth2.sdk.Models
 @inject NavigationManager Navigation
@@ -7,7 +8,7 @@
 <AuthorizeView>
     <Authorized>
         <MudGrid Spacing="4" Justify="Justify.FlexEnd">
-            <MudItem>
+            @* <MudItem>  COMING SOON!!!!
                 <MudBadge Elevation="2" Origin="Origin.TopRight" Color="Color.Error" Dot="true">
                     <MudMenu>
                         <ActivatorContent>
@@ -22,14 +23,14 @@
                         </ChildContent>
                     </MudMenu>
                 </MudBadge>
-            </MudItem>
+            </MudItem> *@
             <MudItem>
                 <MudMenu>
                     <ActivatorContent>
                         <MudIcon Title="@context.User.Identity?.Name" Icon="@Icons.Material.Filled.Person" Size="Size.Medium"></MudIcon>
                     </ActivatorContent>
                     <ChildContent>
-                        <MudMenuItem>Profile</MudMenuItem>
+                        <MudMenuItem OnClick=OpenChangePasswordDialog>Change Password</MudMenuItem>
                         <MudMenuItem OnClick="OnClick">Logout</MudMenuItem>
                     </ChildContent>
                 </MudMenu>
@@ -38,10 +39,17 @@
     </Authorized>
     <NotAuthorized>
         <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit" Size="Size.Medium" Href="@($"login?redirectUri={Uri.EscapeDataString(Navigation.Uri)}")"></MudIconButton>
-       
+
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
+    [Inject] private IDialogService DialogService { get; set; } = null!;
     private void OnClick(MouseEventArgs args) => Navigation.NavigateTo($"Logout", true);
+
+    private void OpenChangePasswordDialog(MouseEventArgs args)
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth=MaxWidth.ExtraSmall };
+        DialogService.Show<ChangePasswordDialog>("Change Password", options);
+    }
 }
