@@ -107,7 +107,7 @@ public partial class UserPage : ComponentBase
         user.Roles = fullUser.Roles;
         user.Enabled = !user.Enabled;
         var result = await UserSevice.UpdateUser(userId, user);
-        if(result)
+        if (result)
             Snackbar.Add($"User status successfully updated", Severity.Success);
         else
             Snackbar.Add($"Oops! An error has occurred. This User is not in the database.", Severity.Error);
