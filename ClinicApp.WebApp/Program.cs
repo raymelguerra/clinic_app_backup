@@ -7,6 +7,8 @@ using Oauth2.sdk.Models;
 using Oauth2.sdk.DependencyInjection;
 using ClinicApp.WebApp.Middlewares;
 using ClinicApp.Infrastructure.Interfaces;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +67,16 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowCredentials();
     });
+});
+
+
+// Add open telemetry
+builder.Services.AddOpenTelemetry().WithTracing(b =>
+{
+    b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName));
+    b.AddAspNetCoreInstrumentation();
+    b.AddHttpClientInstrumentation();
+    b.AddOtlpExporter( opts => { opts.Endpoint = new Uri("http://localhost:4317"); });
 });
 
 var app = builder.Build();

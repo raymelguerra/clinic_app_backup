@@ -12,6 +12,8 @@ using ClinicApp.Reports.Interfaces;
 using ClinicApp.Reports.Services;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +58,13 @@ builder.Services.AddScoped<IMenusService, MenusService>();
 builder.Services.AddScoped<IReportsFR, ReportsFRServices>();
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
 builder.Services.AddTransient<IUsersService, UsersService>();
+
+// Add OPen telemetry
+builder.Services.AddOpenTelemetry().WithTracing( b => {
+    b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName))
+    .AddAspNetCoreInstrumentation()
+    .AddOtlpExporter(opts => { opts.Endpoint = new Uri("http://localhost:4317"); });
+});
 
 var app = builder.Build();
 

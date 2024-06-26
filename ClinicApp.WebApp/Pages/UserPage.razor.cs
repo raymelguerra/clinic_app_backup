@@ -95,9 +95,17 @@ public partial class UserPage : ComponentBase
     }
 
     public async void ChangeStatusUser(string userId) {
-        var user = Users.Where(x => x.Id == userId).First();
-        user.Enabled = !user.Enabled;
         _loading = true;
+        StateHasChanged();
+        var user = Users.Where(x => x.Id == userId).First();
+        var fullUser = await UserSevice.GetUser(userId);
+        if (fullUser is null)
+        {
+            Snackbar.Add($"Oops! An error has occurred. This User is not in the database.", Severity.Error);
+            return;
+        }
+        user.Roles = fullUser.Roles;
+        user.Enabled = !user.Enabled;
         var result = await UserSevice.UpdateUser(userId, user);
         if(result)
             Snackbar.Add($"User status successfully updated", Severity.Success);
