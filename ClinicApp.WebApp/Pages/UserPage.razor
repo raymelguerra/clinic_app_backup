@@ -16,9 +16,9 @@
             <PropertyColumn Property="x => x.Email" Title="Email" />
             <TemplateColumn Title="Active" Context="data" Filterable="false" Sortable="false">
                 <CellTemplate>
-                    <MudToggleIconButton @bind-Toggled="data.Item.Enabled"
-                                         Icon="@Icons.Material.Filled.PersonOff" Color="@Color.Error" Title="Blocked"
-                                         ToggledIcon="@Icons.Material.Filled.Person" ToggledColor="@Color.Success" ToggledTitle="Active" />
+                        <MudToggleIconButton Toggled="data.Item.Enabled" ToggledChanged="@(() => ChangeStatusUser(data.Item.Id))"
+                                             Icon="@Icons.Material.Filled.PersonOff" Color="@Color.Error" Title="Blocked"
+                                             ToggledIcon="@Icons.Material.Filled.Person" ToggledColor="@Color.Success" ToggledTitle="Active" />
                 </CellTemplate>
             </TemplateColumn>
             <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">

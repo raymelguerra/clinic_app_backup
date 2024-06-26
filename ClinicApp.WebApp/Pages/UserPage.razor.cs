@@ -5,6 +5,7 @@ using ClinicApp.WebApp.Components.Dialogs;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Oauth2.sdk.Models;
+using System.Runtime.CompilerServices;
 
 namespace ClinicApp.WebApp.Pages;
 
@@ -92,4 +93,19 @@ public partial class UserPage : ComponentBase
             }
         }
     }
+
+    public async void ChangeStatusUser(string userId) {
+        var user = Users.Where(x => x.Id == userId).First();
+        user.Enabled = !user.Enabled;
+        _loading = true;
+        var result = await UserSevice.UpdateUser(userId, user);
+        if(result)
+            Snackbar.Add($"User status successfully updated", Severity.Success);
+        else
+            Snackbar.Add($"Oops! An error has occurred. This User is not in the database.", Severity.Error);
+
+        _loading = false;
+        StateHasChanged();
+    }
+
 }

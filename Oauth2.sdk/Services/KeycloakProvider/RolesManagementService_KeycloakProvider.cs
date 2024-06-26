@@ -5,6 +5,7 @@ using Oauth2.sdk.Exceptions;
 using Oauth2.sdk.Models;
 using System;
 using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 
@@ -131,8 +132,10 @@ namespace Oauth2.sdk.Services.KeycloakProvider
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Error: {response.StatusCode}");
 
-            return JsonConvert.DeserializeObject<IEnumerable<Role>>(
-                await response.Content.ReadAsStringAsync());
+            // remove uma_protection role from this list
+            var result = JsonConvert.DeserializeObject<IEnumerable<Role>>(
+                               await response.Content.ReadAsStringAsync());
+            return result?.Where(x => x.Name != "uma_protection");
         }
 
         public List<string> GetUserRoles()

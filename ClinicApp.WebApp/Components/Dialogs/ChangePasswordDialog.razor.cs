@@ -52,8 +52,10 @@ public partial class ChangePasswordDialog : ComponentBase
         {
             var userId = UserManagementService.GetUserId()!;
             ChangePasswordDto pass = new() { NewPassword = pwField.Value };
-            if (await UsersService.ChangePassword(userId, pass))
+            if (await UsersService.ChangePassword(userId, pass)) { 
+                Snackbar!.Add($"Your password has been changed.", Severity.Success);
                 MudDialog!.Close(DialogResult.Ok(true));
+            }
             else
                 Snackbar!.Add($"Oops, there was an error changing the password. Please check that this password has not been used before.", Severity.Error);
         }
