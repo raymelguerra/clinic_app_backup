@@ -101,7 +101,6 @@
                               @bind-SelectedItem="SelectedItem"
                               CommitEditTooltip="Commit Edit"
                               CancelEditTooltip="Cancel Edit"
-                              OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))"
                               RowEditPreview="BackupItem"
                               RowEditCancel="ResetItemToOriginalValues"
                               RowEditCommit="ItemHasBeenCommitted"
@@ -115,38 +114,19 @@
                             <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="AddRow" />
                         </ToolBarContent>
                         <HeaderContent>
-                            <MudTh>Physician</MudTh>
                             <MudTh>Payroll</MudTh>
                             <MudTh>Rate Employees</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="Physician"></MudTd>
-                            <MudTd DataLabel="Payroll">@(context.Payroll != null && context.Payroll.InsuranceProcedure != null ? context.Payroll.InsuranceProcedure.Procedure.Name : string.Empty)</MudTd>
+                            <MudTd DataLabel="Payroll">@(context.Payroll != null && context.Payroll.Contractor != null ? context.Payroll.Contractor.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="Rate employees">@context.RateEmployees</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>
-                            <MudTd DataLabel="Physician">
-                                <MudAutocomplete Variant="Variant.Outlined" T="Contractor" Label="Physician" SearchFunc="@SearchContractor" ToStringFunc="@converter"
-                                                 ResetValueOnEmptyText="true" DebounceInterval=100 @bind-Value="ctrSelected"
-                                                 CoerceText="false" CoerceValue="false" />
-                            </MudTd>
                             <MudTd DataLabel="Payroll">
-                                <MudSelect For="@(() => context.Payroll)" @bind-Value="context.Payroll" ToStringFunc="@converterPy" Label="Payroll" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    @if (ctrSelected == null || ctrSelected.Payrolls == null || ctrSelected.Payrolls.Count() == 0)
-                                    {
-                                        <MudSelectItem T="Payroll" Value="null">No matching records found</MudSelectItem>
-                                    }
-                                    else
-                                    {
-                                        @foreach (var ins in ctrSelected.Payrolls)
-                                        {
-                                            <MudSelectItem Value="@ins" />
-                                        }
-                                    }
-                                </MudSelect>
+                                <MudAutocomplete For="@(() => context.Payroll)" Variant="Variant.Outlined" T="Payroll" Label="Payroll" SearchFunc="@SearchPayroll" ToStringFunc="@converterPy" DebounceInterval=100 @bind-Value="context.Payroll" Validation="@aggValidator.ValidateValue" />
                             </MudTd>
                             <MudTd DataLabel="RateEmployees">
-                                <MudNumericField T="double" Label="Rate Employees" Format="F1" Variant="Variant.Outlined" />
+                                <MudNumericField T="double" For="@(() => context.RateEmployees)" Label="Rate Employees" Format="F1" Variant="Variant.Outlined" @bind-Value="context.RateEmployees" Validation="@aggValidator.ValidateValue" />
                             </MudTd>
                         </RowEditingTemplate>
                         <PagerContent>
@@ -158,14 +138,14 @@
                                     <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
                                 </MudItem>
                                 <MudItem sm="6" md="6" lg="6">
-                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" />
+                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" OnClick="@(() => DeleteItem(button.Item))" Disabled="@button.ButtonDisabled" />
                                 </MudItem>
                             </MudGrid>
                         </EditButtonContent>
                     </MudTable>
                 </MudItem>
             </MudGrid>
-            <MudText>@(ctrSelected != null ? string.Join(", ", ctrSelected.Payrolls.Select(x=> x.InsuranceProcedure.Insurance.Name)) : string.Empty)</MudText>
+            @* <MudText>@(ctrSelected != null ? string.Join(", ", ctrSelected.Payrolls.Select(x=> x.InsuranceProcedure.Insurance.Name)) : string.Empty)</MudText> *@
         </MudForm>
     </DialogContent>
     <DialogActions>

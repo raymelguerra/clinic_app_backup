@@ -39,7 +39,7 @@ namespace ClinicApp.Api.Controllers.v1
                     PhysicianName = g.First().Contractor.Name,
                     RenderingProvider = g.First().Contractor.RenderingProvider ?? "Not present",
                     Extra = g.First().Contractor.Extra,
-                    AttendanceCount = g.First().UnitDetails!.Select(ud => ud.DateOfService.Date).Distinct().Count(),
+                    AttendanceCount = g.First().UnitDetails!.Select(ud => ud.DateOfService!.Value.Date).Distinct().Count(),
                 })
                 .AsEnumerable();
 

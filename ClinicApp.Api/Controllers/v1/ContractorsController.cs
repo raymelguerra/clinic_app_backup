@@ -4,6 +4,10 @@ using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Asp.Versioning;
+using MediatR;
+using ClinicApp.Infrastructure.Commands;
+using ClinicApp.Infrastructure.Dtos.Application;
+using ClinicApp.Infrastructure.Queries;
 
 namespace ClinicApp.Api.Controllers.v1
 {
@@ -12,15 +16,20 @@ namespace ClinicApp.Api.Controllers.v1
     [ApiVersion("1.0")]
     [ApiController]
     [Authorize]
-    public class ContractorsController(InsuranceContext context) : ControllerBase
+    public class ContractorsController(InsuranceContext context, IMediator mediator) : ControllerBase
     {
         private readonly InsuranceContext _context = context;
+        private readonly IMediator _mediator = mediator;
+
 
         // GET: api/Contractors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contractor>>> GetContractors()
+        public async Task<ActionResult<IEnumerable<GetAllContractorsResponse>>> GetContractors()
         {
-            return await _context.Contractors.ToListAsync();
+            // return await _context.Contractors.ToListAsync();
+            var command = new ContractorGetAllQuery();
+            var response = await _mediator.Send(command);
+            return Ok(response);
         }
 
         // GET: api/Contractors/5
@@ -40,11 +49,6 @@ namespace ClinicApp.Api.Controllers.v1
                 .Include(c => c.Payrolls)
                     .ThenInclude(p => p.Company)
                 .FirstOrDefaultAsync();
-
-            if (contractor == null)
-            {
-                return NotFound();
-            }
 
             return contractor;
         }
@@ -119,12 +123,16 @@ namespace ClinicApp.Api.Controllers.v1
         // POST: api/Contractors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Contractor>> PostContractor(Contractor contractor)
+        public async Task<ActionResult<CreateContractorResponse>> PostContractor(CreateContractorRequest contractor)
         {
-            _context.Contractors.Add(contractor);
-            await _context.SaveChangesAsync();
+            //_context.Contractors.Add(contractor);
+            //await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetContractor", new { id = contractor.Id }, contractor);
+            //return CreatedAtAction("GetContractor", new { id = contractor.Id }, contractor);
+
+            var command = new ContractorCreateCommand(contractor);
+            var response = await _mediator.Send(command);
+            return Ok(response);
         }
 
         // DELETE: api/Contractors/5
@@ -143,6 +151,23 @@ namespace ClinicApp.Api.Controllers.v1
             return NoContent();
         }
 
+        // Get contractors by procedure and insurance
+        [HttpGet("procedure/{procedureId}/insurance/{insuranceId}")]
+        public async Task<ActionResult<IEnumerable<Contractor>>> GetContractorsByProcedureAndInsurance(int procedureId, int insuranceId)
+        {
+            var contractors = await _context.Contractors
+     .Include(c => c.Payrolls)
+         .ThenInclude(p => p.InsuranceProcedure)
+             .ThenInclude(ip => ip.Insurance)
+     .Include(c => c.Payrolls)
+         .ThenInclude(p => p.InsuranceProcedure)
+             .ThenInclude(ip => ip.Procedure)
+     .Where(c => c.Payrolls.Any(p =>
+         p.InsuranceProcedure.ProcedureId == procedureId &&
+         p.InsuranceProcedure.InsuranceId == insuranceId))
+     .ToListAsync();
+            return Ok(contractors);
+        }
         private bool ContractorExists(int id)
         {
             return _context.Contractors.Any(e => e.Id == id);

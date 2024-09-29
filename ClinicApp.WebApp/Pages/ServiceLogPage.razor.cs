@@ -1,51 +1,38 @@
 ﻿using ClinicApp.Core.Models;
 using ClinicApp.WebApp.Components.Dialogs;
+using ClinicApp.WebApp.Interfaces;
+using ClinicApp.WebApp.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Oauth2.sdk.Models;
 
 namespace ClinicApp.WebApp.Pages;
 
 public partial class ServiceLogPage : ComponentBase
 {
     [Inject] IDialogService DialogService { get; set; }
+    [Inject] IServiceLog ServiceLogService { get; set; }
+    [Inject]
+    private ISnackbar Snackbar { get; set; }
 
-    IEnumerable<ServiceLog> ServiceLogs = new List<ServiceLog>();
+    public bool _loading = false;
+    IEnumerable<ServiceLog> ServiceLogs;
 
     protected override async Task OnInitializedAsync()
     {
-        ServiceLogs = new List<ServiceLog> {
-        new ServiceLog {
-            CreatedDate = DateTime.Now,
-            Period =new Period{
-                PayPeriod = "PP21"
-            },
-            Client = new Client{
-                Id = 1,
-                Name = "Pepe"
-            },
-            Contractor = new Contractor
-            {
-                Id = 1,
-                Name = "Juana"
-            },
-            UnitDetails = new List<UnitDetail> {
-                new UnitDetail
-                {
-                    DateOfService = DateTime.Now,
-                    Id = 1,
-                    PlaceOfService = new PlaceOfService
-                    {
-                        Name ="Home"
-                    },
-                    Unit = 18,
-                    Procedure = new Procedure
-                    {
-                        Name ="H2014"
-                    }
-                }
-            }
+        try
+        {
+            _loading = true;
+            ServiceLogs = await ServiceLogService.GetServiceLogAsync("");
         }
-       };
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Oops, an error occurred. The error type is: {ex.Message}.", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
     private async Task AddServiceLog()
     {
@@ -53,23 +40,61 @@ public partial class ServiceLogPage : ComponentBase
 
         sl.UnitDetails = new List<UnitDetail>();
 
-        sl.UnitDetails.Add(new UnitDetail
-        {
-            DateOfService = DateTime.Now,
-            Id = 1,
-            PlaceOfService = new PlaceOfService
-            {
-                Name = "Home"
-            },
-            Unit = 18,
-            Procedure = new Procedure
-            {
-                Name = "H2014"
-            }
-        });
-
         var parameters = new DialogParameters<ServiceLogDialog> { { x => x.Model, sl } };
 
-        var result = await DialogService.ShowAsync<ServiceLogDialog>("Add Service Log", parameters);
+        var dialog = await DialogService.ShowAsync<ServiceLogDialog>("Add Service Log", parameters);
+        var result = await dialog.Result;
+        if (!result.Canceled && (bool)result.Data)
+        {
+            Snackbar.Add($"Service Log successfully created", Severity.Success);
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task EditServiceLog(int serviceLogId)
+    {
+        var sl = await ServiceLogService.GetServiceLogAsync(serviceLogId);
+        if (sl != null)
+        {
+            sl.UnitDetails = sl.UnitDetails ?? new();
+
+            var parameters = new DialogParameters<ServiceLogDialog> { { x => x.Model, sl } };
+
+            var dialog = await DialogService.ShowAsync<ServiceLogDialog>("Edit Service Log", parameters);
+            var result = await dialog.Result;
+            if (!result.Canceled && (bool)result.Data)
+            {
+                Snackbar.Add($"Service Log successfully updated", Severity.Success);
+                await OnInitializedAsync();
+            }
+        }
+        else
+        {
+            Snackbar.Add($"Oops! An error has occurred. This service log is not in the database.", Severity.Error);
+        }
+    }
+    private async Task RemoveServiceLog(int serviceLog)
+    {
+        var options = new DialogOptions
+        {
+            DisableBackdropClick = false,
+            MaxWidth = MaxWidth.Small,
+            Position = DialogPosition.Center,
+        };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Service Log", options);
+        var result = await dialog.Result;
+        if (!result.Canceled && (bool)result.Data)
+        {
+            var delete = await ServiceLogService.DeleteServiceLogAsync(serviceLog);
+            if (delete)
+            {
+                Snackbar.Add($"Service Log successfully deleted", Severity.Success);
+                await OnInitializedAsync();
+            }
+            else
+            {
+                Snackbar.Add($"Oops! An error has occurred. This service log is not in the database.", Severity.Error);
+            }
+        }
     }
 }

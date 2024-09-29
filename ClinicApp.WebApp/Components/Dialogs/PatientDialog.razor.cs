@@ -13,10 +13,11 @@ public partial class PatientDialog : ComponentBase
     [Inject] private IClient ClientService { get; set; } = null!;
     [Inject] private IDiagnosis? DiagnosisService { get; set; }
     [Inject] private IReleaseInformation? ReleaseInformationService { get; set; }
-    [Inject] private IPhysician? PhysicianService { get; set; }
     [Inject] private ICompany? CompanyService { get; set; }
+    [Inject] private IPayroll? PayrollService { get; set; }
     [Inject] ISnackbar? Snackbar { get; set; }
     [Inject] IDialogService? DialogService { get; set; }
+    
 
     [Parameter]
     public Client? Model { get; set; }
@@ -26,31 +27,32 @@ public partial class PatientDialog : ComponentBase
     public IEnumerable<Diagnosis>? _diagnoses { get; set; }
     public IEnumerable<Contractor>? _contractors { get; set; }
     public IEnumerable<Company>? _companies { get; set; }
-
-    public Contractor ctrSelected { get; set; } // = new();
+    public IEnumerable<Payroll>? _payrolls { get; set; }
 
     private MudForm? form;
     private PatientValidator? ptValidator = new();
+    private AgreementValidator aggValidator = new();
 
     // Agreements table
     private Agreement? SelectedItem { get; set; } = new();
     private Agreement? elementBeforeEdit { get; set; }
 
     Func<dynamic, string> converter = p => p?.Name;
-    Func<Payroll, string> converterPy = p => p?.InsuranceProcedure != null ? $"{p?.InsuranceProcedure.Insurance.Name} | {p?.InsuranceProcedure.Procedure.Name}" : string.Empty;
+    Func<Payroll, string> converterPy = p => p?.InsuranceProcedure != null ? $"{p?.Contractor.Name} | {p?.InsuranceProcedure.Insurance.Name} | {p?.InsuranceProcedure.Procedure.Name}" : string.Empty;
     protected override async Task OnParametersSetAsync()
     {
         var relInf = ReleaseInformationService!.GetReleaseInformationAsync("");
         var diag = DiagnosisService!.GetDiagnosisAsync("");
-        var ctr = PhysicianService!.GetPhysicianAsync("");
         var cmp = CompanyService!.GetCompanyAsync("");
+        var pyr = PayrollService!.GetPayrollAsync("");
 
-        await Task.WhenAll(relInf, diag, ctr, cmp);
+
+        await Task.WhenAll(relInf, diag, cmp, pyr);
 
         _releaseInformations = relInf.Result;
         _diagnoses = diag.Result;
-        _contractors = ctr.Result;
         _companies = cmp.Result;
+        _payrolls = pyr.Result;
 
     }
 
@@ -79,19 +81,14 @@ public partial class PatientDialog : ComponentBase
     void Cancel() => MudDialog.Cancel();
 
     #region Contractor Search
-    private async Task<IEnumerable<Contractor>> SearchContractor(string value)
+    private async Task<IEnumerable<Payroll>> SearchPayroll(string value)
     {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5);
-
-        // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
-            return _contractors;
-        return _contractors!.Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return _payrolls;
+        // var completeName = 
+        return _payrolls!.Where(x => $"{x.Contractor.Name} {x.InsuranceProcedure.Insurance.Name} {x.InsuranceProcedure.Procedure.Name}".Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
     #endregion
-
-    #region Table agreements methods
 
     private void AddRow()
     {
@@ -113,22 +110,35 @@ public partial class PatientDialog : ComponentBase
         elementBeforeEdit = new()
         {
             Payroll = ((Agreement)element).Payroll,
+            PayrollId = ((Agreement)element).PayrollId,
             RateEmployees = ((Agreement)element).RateEmployees,
         };
     }
 
     private void ItemHasBeenCommitted(object element)
     {
-        // AddEditionEvent($"RowEditCommit event: Changes to Element {((Agreement)element).CompanyId} committed");
+        var agg = (Agreement)element;
+        try
+        {
+            agg.PayrollId = agg.Payroll.Id;
+        }
+        catch (Exception ex)
+        {
+            Snackbar!.Add($"Oops, an error occurred. The error type is: {ex.Message}.", Severity.Error);
+        }
+        finally
+        {
+            elementBeforeEdit = default!;
+        }
     }
 
     private void ResetItemToOriginalValues(object element)
     {
         ((Agreement)element).Payroll = elementBeforeEdit.Payroll;
         ((Agreement)element).RateEmployees = elementBeforeEdit.RateEmployees;
+        ((Agreement)element).PayrollId = elementBeforeEdit.PayrollId;
     }
-    #endregion
-
+    
     #region Patient account
     private async Task ShowPatienAccountDialog()
     {
@@ -151,6 +161,14 @@ public partial class PatientDialog : ComponentBase
             StateHasChanged();
         }
 
+    }
+
+    private void DeleteItem(object element)
+    {
+
+        var agg = (Agreement)element;
+        Model.Agreements.Remove(agg);
+        StateHasChanged();
     }
     #endregion
 }

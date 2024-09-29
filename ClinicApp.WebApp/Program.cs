@@ -49,12 +49,26 @@ builder.Services.AddTransient<IAppMenusService, AppMenusService>();
 builder.Services.AddTransient<IReport, ReportService>();
 builder.Services.AddTransient<IPeriod, PeriodService>();
 builder.Services.AddTransient<IUsersService, UserService>();
+builder.Services.AddTransient<IPayroll, PayrollService>();
+builder.Services.AddTransient<IServiceLog, ServiceLogService>();
+builder.Services.AddTransient<IPlaceOfService, PlaceOfServiceService>();
 
 // Add convert to https middleware
 builder.Services.AddTransient<ConvertToHttpsUriMiddleware>();
 
 builder.Services.AddSecurityClientApplication(builder.Configuration);
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("CustomClient")
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler();
+
+#if DEBUG
+            handler.ServerCertificateCustomValidationCallback =
+                (message, cert, chain, sslPolicyErrors) => true;
+#endif
+
+            return handler;
+        });
 
 builder.Services.AddSession();
 
@@ -73,13 +87,13 @@ builder.Services.AddCors(options =>
 // Add open telemetry
 
 // buscar como hacer batcher, para enviar los datos en bloques y configurar default trace provider, tracer propagator, processor
-builder.Services.AddOpenTelemetry().WithTracing(b =>
-{
-    b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName));
-    b.AddAspNetCoreInstrumentation();
-    b.AddHttpClientInstrumentation();
-    b.AddOtlpExporter( opts => { opts.Endpoint = new Uri("http://localhost:4317"); });
-});
+//builder.Services.AddOpenTelemetry().WithTracing(b =>
+//{
+//    b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName));
+//    b.AddAspNetCoreInstrumentation();
+//    b.AddHttpClientInstrumentation();
+//    b.AddOtlpExporter(opts => { opts.Endpoint = new Uri("http://localhost:4317"); });
+//});
 
 var app = builder.Build();
 

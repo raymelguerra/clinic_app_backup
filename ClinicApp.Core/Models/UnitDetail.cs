@@ -16,7 +16,7 @@ public class UnitDetail
     public int PlaceOfServiceId { get; set; }
 
     [Required]
-    public DateTime DateOfService { get; set; }
+    public DateTime? DateOfService { get; set; }
 
     [Required]
     public int Unit { get; set; }

@@ -8,7 +8,7 @@
                                          HiddenAddButton="false"
                                          HiddenDownloadButton="true" AddButtonAction="AddProcedure">
 
-    <MudDataGrid Items="@Procedures" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <MudDataGrid Loading="@_loading" Items="@Procedures" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
             <PropertyColumn Property="x => x.Name" Title="Name" />
             <PropertyColumn Property="x => x.ContractorType!.Name" Title="Contractor Type" />

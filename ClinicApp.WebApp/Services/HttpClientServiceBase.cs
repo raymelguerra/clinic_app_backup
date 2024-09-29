@@ -17,7 +17,7 @@ namespace ClinicApp.WebApp.Services
             IUserManagementService _userIdpManagement
         )
         {
-            client = _factory.CreateClient();
+            client = _factory.CreateClient("CustomClient");
             navigationManager = _navigationManager;
             userIdpManagement = _userIdpManagement;
         }

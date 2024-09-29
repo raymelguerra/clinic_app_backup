@@ -8,7 +8,7 @@
                                          HiddenAddButton="false"
                                          HiddenDownloadButton="true" AddButtonAction="AddPeriod">
 
-    <MudDataGrid Items="@Periods" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <MudDataGrid Loading="@_loading" Items="@Periods" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
             <PropertyColumn Property="x => x.PayPeriod" Title="Pay Period" />
             <PropertyColumn Property="@(x => x.StartDate!.Value.ToString("MM-dd-yyyy"))" Title="Start Date" />

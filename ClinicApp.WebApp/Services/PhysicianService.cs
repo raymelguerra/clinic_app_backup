@@ -86,5 +86,20 @@ namespace ClinicApp.WebApp.Services
         {
             GC.SuppressFinalize(this);
         }
+
+        public async Task<IEnumerable<Contractor>> GetContractoresByProcedureAndInsurance(int procedureId, int insuranceId)
+        {
+            var request = new HttpRequestMessage(
+                HttpMethod.Get, $"{apiSettings.Endpoint}/procedure/{procedureId}/insurance/{insuranceId}");
+
+            using var response = await SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"{response.StatusCode}");
+
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<IEnumerable<Contractor>>(
+                result) ?? Array.Empty<Contractor>();
+        }
     }
 }

@@ -1,7 +1,9 @@
+using AutoMapper;
 using ClinicApp.Api.DependencyInjection;
 using ClinicApp.Api.Interfaces;
 using ClinicApp.Api.MappingProfiles;
 using ClinicApp.Api.Middlewares;
+using ClinicApp.Api.Respositories.ClinicApp.Infrastructure.Repositories;
 using ClinicApp.Api.Services;
 using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Data;
@@ -12,8 +14,10 @@ using ClinicApp.Reports.Interfaces;
 using ClinicApp.Reports.Services;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,7 +42,8 @@ builder.Services.AddDbContext<InsuranceContext>(config =>
 });
 
 // add automapper
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 // Security configuration
 builder.Services.AddOpenApiEntries();
@@ -58,13 +63,18 @@ builder.Services.AddScoped<IMenusService, MenusService>();
 builder.Services.AddScoped<IReportsFR, ReportsFRServices>();
 builder.Services.AddTransient<IDbInitialize, DbInitializer>();
 builder.Services.AddTransient<IUsersService, UsersService>();
+builder.Services.AddTransient<IRepository, Repository>();
 
-// Add OPen telemetry
+
+// Add Open telemetry
 builder.Services.AddOpenTelemetry().WithTracing( b => {
     b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName))
     .AddAspNetCoreInstrumentation()
     .AddOtlpExporter(opts => { opts.Endpoint = new Uri("http://localhost:4317"); });
 });
+
+// Add Mediator
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
 var app = builder.Build();
 

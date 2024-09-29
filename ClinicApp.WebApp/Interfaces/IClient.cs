@@ -10,5 +10,6 @@ namespace ClinicApp.WebApp.Interfaces
         public Task<bool> PutClientAsync(int id, Client client);
         public Task<bool> PostClientAsync(Client client);
         public Task<bool> DeleteClientAsync(int id);
+        public Task<IEnumerable<Client>> GetClientsByContractorAndInsurance(int contractorId, int insuranceId);
     }
 }

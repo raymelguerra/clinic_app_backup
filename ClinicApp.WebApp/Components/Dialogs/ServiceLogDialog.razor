@@ -5,31 +5,41 @@
         <MudForm Model="@Model" @ref="@form" Validation="@(slValidator.ValidateValue)" ValidationDelay="0">
             <MudGrid Spacing="2">
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="@("Insurance 1")" />
-                        <MudSelectItem Value="@("Insurance 2")" />
-                        <MudSelectItem Value="@("Insurance 3")" />
+                    <MudSelect @bind-Value="Model.Insurance" For="@(() => Model.Insurance)" ToStringFunc="@converter" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TextChanged="OnInsuranceChanged" Disabled="@(!MudDialog!.Title.Contains(" Add"))">
+                        @if (_insurances == null || _insurances.Count() == 0)
+                        {
+                            <MudSelectItem T="Insurance" Value="null">No matching records found</MudSelectItem>
+                        }
+                        else
+                        {
+                            @foreach (var ins in _insurances)
+                            {
+                                <MudSelectItem Value="@ins" />
+                            }
+                        }
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect @bind-Value="Model.ContractorId" For="@(() => Model.ContractorId)" Label="Contractor" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="1">Physician 1</MudSelectItem>
-                        <MudSelectItem Value="2">Physician 2</MudSelectItem>
-                        <MudSelectItem Value="3">Physician 3</MudSelectItem>
-                    </MudSelect>
+                    <MudAutocomplete @ref="selContractor" For="@(() => Model.Contractor)" Variant="Variant.Outlined" T="Contractor" Label="Physician" SearchFunc="@SearchContractor" CoerceText="false" ToStringFunc="@converter" DebounceInterval=100 @bind-Value="Model.Contractor"
+                                     Disabled="@(!MudDialog!.Title.Contains(" Add"))" TextChanged="OnContractorChanged" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect @bind-Value="Model.ClientId" For="@(() => Model.ClientId)" Label="Client" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="1">Physician 1</MudSelectItem>
-                        <MudSelectItem Value="2">Physician 2</MudSelectItem>
-                        <MudSelectItem Value="3">Physician 3</MudSelectItem>
-                    </MudSelect>
+                    <MudAutocomplete @ref="selClient" For="@(() => Model.Client)" Variant="Variant.Outlined" T="Client" Label="Patient" SearchFunc="@SearchClient" CoerceText="false" ToStringFunc="@converter" DebounceInterval=100 @bind-Value="Model.Client"
+                                     Disabled="@(!MudDialog!.Title.Contains(" Add"))" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect @bind-Value="Model.PeriodId" For="@(() => Model.PeriodId)" Label="Period" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="1">Period 1</MudSelectItem>
-                        <MudSelectItem Value="2">Period 2</MudSelectItem>
-                        <MudSelectItem Value="3">Period 3</MudSelectItem>
+                    <MudSelect @bind-Value="Model.Period" For="@(() => Model.Period)" ToStringFunc="@converterPeriod" Label="Period" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Disabled="@(!MudDialog!.Title.Contains(" Add"))">
+                        @if (_periods == null || _periods.Count() == 0)
+                        {
+                            <MudSelectItem T="Period" Value="null">No matching records found</MudSelectItem>
+                        }
+                        else
+                        {
+                            @foreach (var perd in _periods)
+                            {
+                                <MudSelectItem Value="@perd" />
+                            }
+                        }
                     </MudSelect>
                 </MudItem>
             </MudGrid>
@@ -45,7 +55,6 @@
                               @bind-SelectedItem="SelectedItem"
                               CommitEditTooltip="Commit Edit"
                               CancelEditTooltip="Cancel Edit"
-                              OnCommitEditClick="@(() => Snackbar.Add("Commit Edit Handler Invoked"))"
                               RowEditPreview="BackupItem"
                               RowEditCancel="ResetItemToOriginalValues"
                               RowEditCommit="ItemHasBeenCommitted"
@@ -65,30 +74,50 @@
                             <MudTh>Procedure</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd DataLabel="DateOfService">@(context.DateOfService.ToString("MM-dd-yyyy"))</MudTd>
+                            <MudTd DataLabel="DateOfService">@(context.DateOfService?.ToString("MM-dd-yyyy"))</MudTd>
                             <MudTd DataLabel="Unit"> @context.Unit</MudTd>
                             <MudTd DataLabel="PlaceOfService">@(context.PlaceOfService != null ? context.PlaceOfService.Name : string.Empty)</MudTd>
                             <MudTd DataLabel="Procedure">@(context.Procedure != null ? context.Procedure.Name : string.Empty)</MudTd>
                         </RowTemplate>
                         <RowEditingTemplate>
                             <MudTd DataLabel="DateOfService">
-                                <MudDatePicker Immediate="true"
-                                               Variant="Variant.Outlined"
-                                               Label="Date Created" />
+                                <MudDatePicker Immediate="true" For="@(() => context.DateOfService)"
+                                               Variant="Variant.Outlined" @bind-Date="context.DateOfService"
+                                               Label="Date Created" Validation="@udValidator.ValidateValue" />
                             </MudTd>
                             <MudTd DataLabel="Unit">
-                                <MudNumericField Label="Unit" Variant="Variant.Outlined" Min="0" Max="20" />
+                                <MudNumericField For="() => context.Unit" Label="Unit" Validation="@udValidator.ValidateValue" @bind-Value="context.Unit" Variant="Variant.Outlined" />
                             </MudTd>
                             <MudTd DataLabel="PlaceOfService">
-                                <MudSelect T="string" Label="PlaceOfService" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    <MudSelectItem Value="@("1")">Home</MudSelectItem>
-                                    <MudSelectItem Value="@("2")">School</MudSelectItem>
+                                <MudSelect For="@(() => context.PlaceOfService)" @bind-Value="context.PlaceOfService" ToStringFunc="@converter" Label="Place of Service" Validation="@udValidator.ValidateValue" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+
+                                    @if (_placeOfService == null || _placeOfService.Count() == 0)
+                                    {
+                                        <MudSelectItem T="PlaceOfService" Value="null">No matching records found</MudSelectItem>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var plOfServ in _placeOfService)
+                                        {
+                                            <MudSelectItem Value="@plOfServ" />
+                                        }
+                                    }
                                 </MudSelect>
                             </MudTd>
                             <MudTd DataLabel="Procedure">
-                                <MudSelect T="string" Label="Procedure" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                                    <MudSelectItem Value="@("1")">2014</MudSelectItem>
-                                    <MudSelectItem Value="@("2")">7019</MudSelectItem>
+                                <MudSelect For="@(() => context.Procedure)" @bind-Value="context.Procedure" ToStringFunc="@converter" Label="Procedure" Variant="Variant.Outlined" Validation="@udValidator.ValidateValue" AnchorOrigin="Origin.BottomCenter">
+
+                                    @if (Model.Client == null || Model.Client.Agreements == null || Model.Client.Agreements.Count() == 0)
+                                    {
+                                        <MudSelectItem T="Procedure" Value="null">No matching records found</MudSelectItem>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var plOfServ in _getProceduresByAgreements(Model.Client.Agreements))
+                                        {
+                                            <MudSelectItem Value="@plOfServ" />
+                                        }
+                                    }
                                 </MudSelect>
                             </MudTd>
                         </RowEditingTemplate>
@@ -101,7 +130,7 @@
                                     <MudIconButton Title="Edit" Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" Color="Color.Info" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
                                 </MudItem>
                                 <MudItem sm="6" md="6" lg="6">
-                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" />
+                                    <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" Disabled="@button.ButtonDisabled" OnClick="@(() => DeleteItem(button.Item))" />
                                 </MudItem>
                             </MudGrid>
                         </EditButtonContent>

@@ -119,7 +119,7 @@ else
                                                 <MudTh>Procedure</MudTh>
                                             </HeaderContent>
                                             <RowTemplate>
-                                                <MudTd DataLabel="Date">@context.DateOfService.ToShortDateString()</MudTd>
+                                                <MudTd DataLabel="Date">@context.DateOfService?.ToShortDateString()</MudTd>
                                                 <MudTd DataLabel="Duration (Quarter)">@context.Unit</MudTd>
                                                 <MudTd DataLabel="Hours">@(context.Unit / 4)</MudTd>
                                                 <MudTd DataLabel="Place of services">@context.PlaceOfService.Name</MudTd>

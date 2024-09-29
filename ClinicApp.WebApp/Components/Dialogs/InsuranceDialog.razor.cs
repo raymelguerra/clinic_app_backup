@@ -128,7 +128,7 @@ public partial class InsuranceDialog : ComponentBase
     private void ResetItemToOriginalValues(object element)
     {
         ((InsuranceProcedure)element).Rate = elementBeforeEdit!.Rate;
-        ((UnitDetail)element).Procedure = elementBeforeEdit!.Procedure;
+        ((InsuranceProcedure)element).Procedure = elementBeforeEdit!.Procedure;
     }
 
     private bool HaveNewProcedure()

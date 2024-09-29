@@ -8,14 +8,14 @@ public class AgreementValidator : AbstractValidator<Agreement>
     public AgreementValidator()
     {
         RuleFor(a => a.Company)
-            .NotEmpty().WithMessage("Company es requerido.");
+            .NotEmpty().WithMessage("Company is required.");
 
         RuleFor(a => a.Payroll)
-            .NotEmpty().WithMessage("Payroll es requerido.");
+            .NotEmpty().WithMessage("Payroll is required.");
 
         RuleFor(a => a.RateEmployees)
-            .NotEmpty().WithMessage("RateEmployees es requerido.")
-            .GreaterThan(0).WithMessage("RateEmployees debe ser mayor que cero.");
+            .NotEmpty().WithMessage("RateEmployees is required.")
+            .GreaterThan(0).WithMessage("RateEmployee must be greater than 0");
     }
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
