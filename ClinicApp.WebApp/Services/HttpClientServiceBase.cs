@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Oauth2.sdk;
-using Oauth2.sdk.Models;
 using System.Net;
 
 namespace ClinicApp.WebApp.Services

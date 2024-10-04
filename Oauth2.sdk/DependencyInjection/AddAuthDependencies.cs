@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -60,7 +61,25 @@ namespace Oauth2.sdk.DependencyInjection
                     {
                         MapKeyCloakRolesToRoleClaims(context, credentialsSettings);
                         return Task.CompletedTask;
-                    }
+                    },
+                    OnTokenResponseReceived = context =>
+                    {
+                        var refreshToken = context.TokenEndpointResponse.RefreshToken;
+                        context.Properties.StoreTokens(new List<AuthenticationToken>
+                        {
+                            new AuthenticationToken
+                            {
+                                Name = OpenIdConnectParameterNames.RefreshToken,
+                                Value = refreshToken
+                            },
+                            new AuthenticationToken
+                            {
+                                Name = OpenIdConnectParameterNames.AccessToken,
+                                Value = context.TokenEndpointResponse.AccessToken
+                            }
+                        });
+                        return Task.CompletedTask;
+                    },
                 };
             });
 
