@@ -365,3 +365,5 @@ FodyWeavers.xsd
 node_modules
 obj/
 .vscode/
+ClinicApp.Api/appsettings.Development.json
+test.env
