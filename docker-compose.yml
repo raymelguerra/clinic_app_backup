@@ -1,7 +1,7 @@
 version: '3.4'
 services:
-  ep.clinicapp.frontend:
-    image: ep.clinicapp.frontend:v1.2
+  piper.clinicapp.frontend:
+    image: piper.clinicapp.frontend:v1.2
     build: 
       context: ./ClinicApp.FrontEnd
       dockerfile: Dockerfile
@@ -9,8 +9,8 @@ services:
     ports:
       - 9000:80
     depends_on:
-      - ep.clinicapp.backend.proxy 
-  ep.clinicapp.backend.proxy:
+      - piper.clinicapp.backend.proxy 
+  piper.clinicapp.backend.proxy:
     image: nginx:latest
     ports:
       - 9100:80
@@ -18,16 +18,16 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-    - ep.clinicapp.authorizationandusermanager
-    - ep.clinicapp.infrastructure
-    - ep.clinicapp.client
-    - ep.clinicapp.servicelog
-    - ep.clinicapp.contractor
-    - ep.clinicapp.billing
-    - ep.clinicapp.dashboard
-    - ep.clinicapp.excelgen
-  ep.clinicapp.billing:
-    image: ep.clinicapp.billing:v1.2
+    - piper.clinicapp.authorizationandusermanager
+    - piper.clinicapp.infrastructure
+    - piper.clinicapp.client
+    - piper.clinicapp.servicelog
+    - piper.clinicapp.contractor
+    - piper.clinicapp.billing
+    - piper.clinicapp.dashboard
+    - piper.clinicapp.excelgen
+  piper.clinicapp.billing:
+    image: piper.clinicapp.billing:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSBilling/Dockerfile
@@ -38,8 +38,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=piper;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  ep.clinicapp.dashboard:
-    image: ep.clinicapp.dashboard:v1.2
+  piper.clinicapp.dashboard:
+    image: piper.clinicapp.dashboard:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSDashboard/Dockerfile
@@ -50,8 +50,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=piper;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  ep.clinicapp.excelgen:
-    image: ep.clinicapp.excelgen:v1.2
+  piper.clinicapp.excelgen:
+    image: piper.clinicapp.excelgen:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSExcelGen/Dockerfile
@@ -62,8 +62,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=piper;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  ep.clinicapp.authorizationandusermanager:
-    image: ep.clinicapp.authorizationandusermanager:v1.2
+  piper.clinicapp.authorizationandusermanager:
+    image: piper.clinicapp.authorizationandusermanager:v1.2
     build:
       context: .
       dockerfile: ClinicApp.AuthorizationAndUserManager/Dockerfile
@@ -74,8 +74,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=piper;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  ep.clinicapp.client:
-    image: ep.clinicapp.client:v1.2
+  piper.clinicapp.client:
+    image: piper.clinicapp.client:v1.2
     build:
       context: .
       dockerfile: ClinicApp.Client/Dockerfile
@@ -86,8 +86,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=piper;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  ep.clinicapp.contractor:
-    image: ep.clinicapp.contractor:v1.2
+  piper.clinicapp.contractor:
+    image: piper.clinicapp.contractor:v1.2
     build:
       context: .
       dockerfile: ClinicApp.Contractor/Dockerfile
@@ -98,8 +98,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=piper;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  ep.clinicapp.infrastructure:
-    image: ep.clinicapp.infrastructure:v1.2
+  piper.clinicapp.infrastructure:
+    image: piper.clinicapp.infrastructure:v1.2
     build:
       context: .
       dockerfile: ClinicApp.MSInfrastructure/Dockerfile
@@ -110,8 +110,8 @@ services:
     environment: 
        - ASPNETCORE_ENVIRONMENT=Development
        - ConnectionStrings__ClinicbdMigrationContext="Host=lin-13704-4133-pgsql-primary.servers.linodedb.net;Database=piper;Username=linpostgres;Password=HxywGpAs2-2CnbGh"
-  ep.clinicapp.servicelog:
-    image: ep.clinicapp.servicelog:v1.2
+  piper.clinicapp.servicelog:
+    image: piper.clinicapp.servicelog:v1.2
     build:
       context: .
       dockerfile: ClinicApp.ServiceLog/Dockerfile
