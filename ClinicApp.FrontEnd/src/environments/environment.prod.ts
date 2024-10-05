@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://expanding.abaanalystgroup.live/api/'
+  apiUrl: 'https://ppec.abaanalystgroup.live/api/'
 };
