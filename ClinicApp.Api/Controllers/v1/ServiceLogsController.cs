@@ -43,6 +43,10 @@ namespace ClinicApp.Api.Controllers.v1
                     .ThenInclude(x => x.PlaceOfService)
                 .Include(x => x.Insurance)
                 .Include(x => x.Client)
+                    .ThenInclude(x => x.Agreements)
+                        .ThenInclude(x => x.Payroll)
+                            .ThenInclude( x=> x.InsuranceProcedure)
+                                .ThenInclude(x => x.Procedure)
                 .Include(x => x.Contractor)
                 .Include(x => x.Period)
                 .FirstOrDefaultAsync(x => x.Id == id);

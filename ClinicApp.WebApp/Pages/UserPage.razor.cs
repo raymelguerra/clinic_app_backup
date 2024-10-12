@@ -34,6 +34,7 @@ public partial class UserPage : ComponentBase
             _loading = false;
         }
     }
+
     private async Task AddUser()
     {
         var user = new UserVM();
@@ -73,7 +74,7 @@ public partial class UserPage : ComponentBase
     {
         var options = new DialogOptions
         {
-            DisableBackdropClick = false,
+            BackdropClick = false,
             MaxWidth = MaxWidth.Small,
             Position = DialogPosition.Center,
         };

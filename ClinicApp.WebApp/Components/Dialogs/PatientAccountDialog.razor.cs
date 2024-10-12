@@ -14,7 +14,7 @@ public partial class PatientAccountDialog : ComponentBase
 
     private PatientAccountValidator paValidator = new();
     private MudForm form = null!;
-    private MudListItem? selectedItem;
+    private MudListItem<Agreement>? selectedItem;
     private object selectedValue
     {
         get { return Model; }

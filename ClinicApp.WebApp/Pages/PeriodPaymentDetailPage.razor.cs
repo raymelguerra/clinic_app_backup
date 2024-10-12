@@ -43,8 +43,9 @@ public partial class PeriodPaymentDetailPage : ComponentBase
     }
 
     #region Contractor Search
-    private async Task<IEnumerable<string>> SearchContractor(string value)
+    private async Task<IEnumerable<string>> SearchContractor(string value, CancellationToken token)
     {
+        if(token.IsCancellationRequested) return null;
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(5);
 

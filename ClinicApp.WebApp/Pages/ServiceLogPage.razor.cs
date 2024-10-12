@@ -16,7 +16,7 @@ public partial class ServiceLogPage : ComponentBase
     private ISnackbar Snackbar { get; set; }
 
     public bool _loading = false;
-    IEnumerable<ServiceLog> ServiceLogs;
+    IEnumerable<ServiceLog> ServiceLogs = new List<ServiceLog>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,7 +77,7 @@ public partial class ServiceLogPage : ComponentBase
     {
         var options = new DialogOptions
         {
-            DisableBackdropClick = false,
+            BackdropClick = false,
             MaxWidth = MaxWidth.Small,
             Position = DialogPosition.Center,
         };

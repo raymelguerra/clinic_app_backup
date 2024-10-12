@@ -2,6 +2,7 @@
 using ClinicApp.WebApp.Interfaces;
 using ClinicApp.WebApp.Services.Validations;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 namespace ClinicApp.WebApp.Components.Dialogs;
 
@@ -22,6 +23,7 @@ public partial class ServiceLogDialog : ComponentBase
     private MudForm form;
     private ServiceLogValidator slValidator = new();
     private UnitValidator udValidator = new();
+    IList<IBrowserFile> _files = new List<IBrowserFile>();
 
     private IEnumerable<Insurance> _insurances;
     private IEnumerable<Payroll> _payrolls;
@@ -70,6 +72,7 @@ public partial class ServiceLogDialog : ComponentBase
                     DateOfService = x.DateOfService,
                     PlaceOfServiceId = x.PlaceOfService.Id,
                     ProcedureId = x.Procedure.Id,
+                    Unit = x.Unit,
                 }).ToList();
             }
 
@@ -87,7 +90,7 @@ public partial class ServiceLogDialog : ComponentBase
     void Cancel() => MudDialog.Cancel();
 
     #region Contractor Search
-    private async Task<IEnumerable<Contractor>> SearchContractor(string value)
+    private async Task<IEnumerable<Contractor>> SearchContractor(string value, CancellationToken token)
     {
         if (string.IsNullOrEmpty(value))
             return _contractors;
@@ -97,7 +100,7 @@ public partial class ServiceLogDialog : ComponentBase
     #endregion
 
     #region Client Search
-    private async Task<IEnumerable<Client>> SearchClient(string value)
+    private async Task<IEnumerable<Client>> SearchClient(string value, CancellationToken token)
     {
         if (string.IsNullOrEmpty(value))
             return _clients;
@@ -173,11 +176,11 @@ public partial class ServiceLogDialog : ComponentBase
         if (insurance != null)
         {
             if (selContractor != null) { 
-                await selContractor.Clear();
+                await selContractor.ClearAsync();
             }
             if (selClient != null)
             {
-                await selClient.Clear();
+                await selClient.ClearAsync();
             }
 
             if (_insurances == null || _insurances.Count() == 0)
@@ -198,7 +201,7 @@ public partial class ServiceLogDialog : ComponentBase
                 return;
 
             if (selContractor != null)
-                await selClient.Clear();
+                await selClient.ClearAsync();
 
             var ctrId = _contractors.First(x => x.Name == contractor).Id;
 
@@ -220,6 +223,14 @@ public partial class ServiceLogDialog : ComponentBase
             .ToList();
         // Remove all procedures duplicates
         return allProcedures.GroupBy(x => x.Id).Select(x => x.First());
+    }
+    #endregion
+
+    #region Load service by csv file
+    private void UploadFiles(IBrowserFile file)
+    {
+        _files.Add(file);
+        //TODO upload the files to the server
     }
     #endregion
 }

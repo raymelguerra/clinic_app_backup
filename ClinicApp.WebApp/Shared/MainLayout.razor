@@ -7,7 +7,7 @@
 <MudDialogProvider FullWidth="true"
                    MaxWidth="MaxWidth.Medium"
                    CloseButton="true"
-                   DisableBackdropClick="true"
+                   BackdropClick="true"
                    Position="DialogPosition.TopCenter"
                    CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
@@ -25,6 +25,7 @@
             @Body
         </MudContainer>
     </MudMainContent>
+    <MudPopoverProvider />
 </MudLayout>
 
 @code {
@@ -54,13 +55,13 @@
                 },
 
             },
-            Palette = new PaletteLight()
+            PaletteLight = new PaletteLight()
             {
                 Primary = Colors.Indigo.Default,
                 Secondary = Colors.Blue.Accent4,
                 AppbarBackground = Colors.Indigo.Darken4,
                 Success = Colors.Green.Darken3,
-                Background = Colors.Grey.Lighten4
+                Background = Colors.Gray.Lighten4
             },
             PaletteDark = new PaletteDark()
             {

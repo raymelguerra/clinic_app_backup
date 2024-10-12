@@ -81,7 +81,7 @@
                         </RowTemplate>
                         <RowEditingTemplate>
                             <MudTd DataLabel="DateOfService">
-                                <MudDatePicker Immediate="true" For="@(() => context.DateOfService)"
+                                <MudDatePicker Immediate="true" For="@(() => context.DateOfService)" PickerVariant="PickerVariant.Dialog"
                                                Variant="Variant.Outlined" @bind-Date="context.DateOfService"
                                                Label="Date Created" Validation="@udValidator.ValidateValue" />
                             </MudTd>
@@ -113,9 +113,9 @@
                                     }
                                     else
                                     {
-                                        @foreach (var plOfServ in _getProceduresByAgreements(Model.Client.Agreements))
+                                        @foreach (var proc in _getProceduresByAgreements(Model.Client.Agreements))
                                         {
-                                            <MudSelectItem Value="@plOfServ" />
+                                            <MudSelectItem Value="@proc" />
                                         }
                                     }
                                 </MudSelect>
@@ -143,17 +143,41 @@
     <DialogActions>
         <MudGrid Spacing="1" Justify="Justify.SpaceBetween">
             <MudItem>
-                <MudFileUpload T="IBrowserFile">
-                    <ButtonTemplate>
-                        <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.CloudUpload"
-                                   for="@context.Id">
-                            Import
-                        </MudButton>
-                    </ButtonTemplate>
-                </MudFileUpload>
+                <MudGrid>
+                    <MudItem>
+                        <MudButtonGroup Color="Color.Primary" OverrideStyles="false">
+                            <MudFileUpload T="IBrowserFile" Accept=".csv" FilesChanged="UploadFiles">
+                                <ActivatorContent>
+                                    <MudButton Variant="Variant.Filled" Disabled="@(_files.Count() > 0)"
+                                               Color="Color.Default">
+                                        Upload Files
+                                    </MudButton>
+                                </ActivatorContent>
+                            </MudFileUpload>
+                            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.DeleteOutline" Color="Color.Error" Disabled="@(_files.Count() == 0)" OnClick="() => _files = new List<IBrowserFile>()"></MudButton>
+                            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.DriveFolderUpload" Color="Color.Primary" Disabled="@(_files.Count() == 0)"></MudButton>
+                        </MudButtonGroup>
+                    </MudItem>
+                </MudGrid>
+                <MudGrid>
+                    <MudItem>
+                        <MudList T="string" Style="mt-4">
+                            <MudListItem>
+                                @if (_files.Count() > 0)
+                                {
+                                    <b>@_files[0].Name</b> <code>@_files[0].Size bytes</code>
+                                }
+                                else
+                                {
+                                    @("if you want to upload a file, please click the button above")
+                                }
+                            </MudListItem>
+                        </MudList>
+                        <MudInputLabel>
+
+                        </MudInputLabel>
+                    </MudItem>
+                </MudGrid>
             </MudItem>
             <MudItem>
                 <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>

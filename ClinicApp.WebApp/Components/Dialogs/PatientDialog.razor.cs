@@ -81,7 +81,7 @@ public partial class PatientDialog : ComponentBase
     void Cancel() => MudDialog.Cancel();
 
     #region Contractor Search
-    private async Task<IEnumerable<Payroll>> SearchPayroll(string value)
+    private async Task<IEnumerable<Payroll>> SearchPayroll(string value, CancellationToken token)
     {
         if (string.IsNullOrEmpty(value))
             return _payrolls;
@@ -147,7 +147,7 @@ public partial class PatientDialog : ComponentBase
         {
             CloseOnEscapeKey = true,
             FullWidth = true,
-            DisableBackdropClick = false,
+            BackdropClick = false,
             Position = DialogPosition.TopCenter,
         };
 

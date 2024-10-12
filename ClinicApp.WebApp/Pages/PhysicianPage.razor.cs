@@ -74,7 +74,7 @@ public partial class PhysicianPage : ComponentBase
     {
         var options = new DialogOptions
         {
-            DisableBackdropClick = false,
+            BackdropClick = false,
             MaxWidth = MaxWidth.Small,
             Position = DialogPosition.Center,
         };
