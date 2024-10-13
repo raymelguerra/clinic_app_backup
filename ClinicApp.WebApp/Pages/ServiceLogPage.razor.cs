@@ -4,7 +4,6 @@ using ClinicApp.WebApp.Interfaces;
 using ClinicApp.WebApp.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Oauth2.sdk.Models;
 
 namespace ClinicApp.WebApp.Pages;
 
@@ -97,4 +96,11 @@ public partial class ServiceLogPage : ComponentBase
             }
         }
     }
+
+    #region Pending
+    private Func<ServiceLog, int, string> _rowStyleFunc => (x, i) =>
+    {
+        return x.Pending != string.Empty ? "background-color:#ff9595" : "";
+    };
+    #endregion
 }

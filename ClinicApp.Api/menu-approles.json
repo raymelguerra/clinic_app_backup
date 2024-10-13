@@ -47,7 +47,7 @@
             "Path": "/pending",
             "Disabled": false,
             "Icon": "ArrowRight",
-            "Roles": [ "admin", "biller" ]
+            "Roles": [ "admin", "staff" ]
           }
         ],
         "Disabled": false,

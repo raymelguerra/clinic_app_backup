@@ -8,7 +8,7 @@
                                          HiddenAddButton="true"
                                          HiddenDownloadButton="true">
 
-    <MudDataGrid Items="@ServiceLogs" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <MudDataGrid Items="@ServiceLogs" Loading="_loading" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
             <PropertyColumn Property="@(x => x.CreatedDate.HasValue ? x.CreatedDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Created Date" />
             <PropertyColumn Property="x => x.Period.PayPeriod" Title="Pay Period" />
@@ -27,7 +27,7 @@
                 <CellTemplate>
                     <MudGrid Spacing="1" Justify="Justify.FlexEnd">
                         <MudItem>
-                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" />
+                            <MudIconButton Title="Delete" Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" Class="pa-0" OnClick="@((args) => RemovePending(data.Item.Id))" />
                         </MudItem>
                     </MudGrid>
                 </CellTemplate>

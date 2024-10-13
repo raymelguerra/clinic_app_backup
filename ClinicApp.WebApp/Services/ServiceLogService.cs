@@ -29,7 +29,7 @@ namespace ClinicApp.WebApp.Services
         public async Task<IEnumerable<ServiceLog>> GetServiceLogAsync(string filter)
         {
             var request = new HttpRequestMessage(
-                HttpMethod.Get, $"{apiSettings.Endpoint}/ServiceLogs{filter}");
+                HttpMethod.Get, $"{apiSettings.Endpoint}/ServiceLogs?{filter}");
 
             using var response = await SendAsync(request);
 

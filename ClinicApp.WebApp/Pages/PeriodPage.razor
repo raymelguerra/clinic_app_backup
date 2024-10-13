@@ -11,10 +11,10 @@
     <MudDataGrid Loading="@_loading" Items="@Periods" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
             <PropertyColumn Property="x => x.PayPeriod" Title="Pay Period" />
-            <PropertyColumn Property="@(x => x.StartDate!.Value.ToString("MM-dd-yyyy"))" Title="Start Date" />
-            <PropertyColumn Property="@(x => x.EndDate!.Value.ToString("MM-dd-yyyy"))" Title="End Date" />
-            <PropertyColumn Property="@(x => x.DocumentDeliveryDate!.Value.ToString("MM-dd-yyyy"))" Title="Document Delivery Date" />
-            <PropertyColumn Property="@(x => x.PaymentDate!.Value.ToString("MM-dd-yyyy"))" Title="Payment Date" />
+            <PropertyColumn Property="@(x => x.StartDate.HasValue ? x.StartDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Start Date" />
+            <PropertyColumn Property="@(x => x.EndDate.HasValue ? x.EndDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="End Date" />
+            <PropertyColumn Property="@(x => x.DocumentDeliveryDate.HasValue ? x.DocumentDeliveryDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Document Delivery Date" />
+            <PropertyColumn Property="@(x => x.PaymentDate.HasValue ? x.PaymentDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Payment Date" />
             <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
                 <CellTemplate>
                     <MudGrid Spacing="1" Justify="Justify.FlexEnd">

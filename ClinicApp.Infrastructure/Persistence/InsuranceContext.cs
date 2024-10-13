@@ -31,6 +31,8 @@ public class InsuranceContext : DbContext
     public DbSet<UnitDetail> UnitDetails { get; set; }
     public DbSet<Insurance> Insurances { get; set; }
     public DbSet<InsuranceProcedure> InsuranceProcedures { get; set; }
+
+    public DbSet<Issues> Issues { get; set; }
     #endregion
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -104,6 +106,12 @@ public class InsuranceContext : DbContext
             .HasForeignKey(ud => ud.PlaceOfServiceId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<Issues>()
+            .HasOne( issue => issue.Period)
+            .WithMany()
+            .HasForeignKey(ud => ud.PeriodId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<PatientAccount>().ToTable("PatientAccount");
         modelBuilder.Entity<Agreement>().ToTable("Agreement");
         modelBuilder.Entity<Client>().ToTable("Client");
@@ -120,6 +128,7 @@ public class InsuranceContext : DbContext
         modelBuilder.Entity<UnitDetail>().ToTable("UnitDetail");
         modelBuilder.Entity<Insurance>().ToTable("Insurance");
         modelBuilder.Entity<InsuranceProcedure>().ToTable("InsuranceProcedure");
+        modelBuilder.Entity<Issues>().ToTable("Issue");
     }
 
 }

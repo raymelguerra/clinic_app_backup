@@ -4,6 +4,8 @@ using ClinicApp.WebApp.Services.Validations;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+
+
 namespace ClinicApp.WebApp.Components.Dialogs;
 
 public partial class ServiceLogDialog : ComponentBase
@@ -231,6 +233,14 @@ public partial class ServiceLogDialog : ComponentBase
     {
         _files.Add(file);
         //TODO upload the files to the server
+    }
+    #endregion
+
+    #region Pending
+    private IEnumerable<string> MaxCharacters(string ch)
+    {
+        if (!string.IsNullOrEmpty(ch) && 250 < ch?.Length)
+            yield return "Max 250 characters";
     }
     #endregion
 }

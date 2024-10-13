@@ -9,7 +9,7 @@
                                          HiddenAddButton="false"
                                          HiddenDownloadButton="true" AddButtonAction="AddServiceLog">
 
-    <MudDataGrid Loading="_loading" Items="@ServiceLogs" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
+    <MudDataGrid Loading="_loading" Items="@ServiceLogs" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" RowStyleFunc="@_rowStyleFunc">
         <Columns>
             <PropertyColumn Property="@(x => x.CreatedDate.HasValue ? x.CreatedDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Created Date" />
             <PropertyColumn Property="x => x.Period.PayPeriod" Title="Pay Period" />

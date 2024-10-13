@@ -11,9 +11,9 @@
     <MudDataGrid Items="@Periods" FixedHeader="true" Filterable="true" FilterMode="DataGridFilterMode.ColumnFilterMenu" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive">
         <Columns>
             <PropertyColumn Property="x => x.PayPeriod" Title="Pay Period" />
-            <PropertyColumn Property="@(x => $"{x.StartDate!.Value.ToString("MM-dd-yyyy")} - {x.EndDate!.Value.ToString("MM-dd-yyyy")}")" Title="Period" />
-            <PropertyColumn Property="@(x => x.DocumentDeliveryDate!.Value.ToString("MM-dd-yyyy"))" Title="Document Delivery" />
-            <PropertyColumn Property="@(x => x.PaymentDate!.Value.ToString("MM-dd-yyyy"))" Title="Payment" />
+            <PropertyColumn Property="@(x => $"{(x.StartDate.HasValue ? x.StartDate.Value.ToString("MM-dd-yyyy") : string.Empty )} - {(x.EndDate.HasValue ? x.EndDate.Value.ToString("MM-dd-yyyy") : string.Empty )}")" Title="Period" />
+            <PropertyColumn Property="@(x => x.DocumentDeliveryDate.HasValue ? x.DocumentDeliveryDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Document Delivery" />
+            <PropertyColumn Property="@(x => x.PaymentDate.HasValue ? x.PaymentDate.Value.ToString("MM-dd-yyyy") : string.Empty)" Title="Payment" />
             <TemplateColumn Title="Actions" Context="data" Filterable="false" Sortable="false">
                 <CellTemplate>
                     <MudGrid Spacing="1" Justify="Justify.FlexEnd">
