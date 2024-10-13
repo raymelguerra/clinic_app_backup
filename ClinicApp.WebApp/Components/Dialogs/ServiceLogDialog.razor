@@ -5,7 +5,7 @@
         <MudForm Model="@Model" @ref="@form" Validation="@(slValidator.ValidateValue)" ValidationDelay="0">
             <MudGrid Spacing="2">
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect @bind-Value="Model.Insurance" For="@(() => Model.Insurance)" ToStringFunc="@converter" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TextChanged="OnInsuranceChanged" Disabled="@(!MudDialog!.Title.Contains(" Add"))">
+                    <MudSelect @bind-Value="Model.Insurance" For="@(() => Model.Insurance)" ToStringFunc="@converter" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TextChanged="OnInsuranceChanged" Disabled="@(!MudDialog!.Title.Contains("Add"))">
                         @if (_insurances == null || _insurances.Count() == 0)
                         {
                             <MudSelectItem T="Insurance" Value="null">No matching records found</MudSelectItem>
@@ -21,11 +21,11 @@
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
                     <MudAutocomplete @ref="selContractor" For="@(() => Model.Contractor)" Variant="Variant.Outlined" T="Contractor" Label="Physician" SearchFunc="@SearchContractor" CoerceText="false" ToStringFunc="@converter" DebounceInterval=100 @bind-Value="Model.Contractor"
-                                     Disabled="@(!MudDialog!.Title.Contains(" Add"))" TextChanged="OnContractorChanged" />
+                                     Disabled="@(!MudDialog!.Title.Contains("Add"))" TextChanged="OnContractorChanged" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
                     <MudAutocomplete @ref="selClient" For="@(() => Model.Client)" Variant="Variant.Outlined" T="Client" Label="Patient" SearchFunc="@SearchClient" CoerceText="false" ToStringFunc="@converter" DebounceInterval=100 @bind-Value="Model.Client"
-                                     Disabled="@(!MudDialog!.Title.Contains(" Add"))" />
+                                     Disabled="@(!MudDialog!.Title.Contains("Add"))" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
                     <MudSelect @bind-Value="Model.Period" For="@(() => Model.Period)" ToStringFunc="@converterPeriod" Label="Period" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Disabled="@(!MudDialog!.Title.Contains(" Add"))">
@@ -145,7 +145,7 @@
     </DialogContent>
     <DialogActions>
         <MudGrid Spacing="1" Justify="Justify.SpaceBetween">
-            <MudItem>
+            <MudItem hidden="@(!MudDialog!.Title!.Contains("Add"))">
                 <MudGrid>
                     <MudItem>
                         <MudButtonGroup Color="Color.Primary" OverrideStyles="false">
