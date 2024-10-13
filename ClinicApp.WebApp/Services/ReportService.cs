@@ -55,8 +55,7 @@ namespace ClinicApp.WebApp.Services
 
                 Console.WriteLine(url);
 
-                await jsRuntime.InvokeVoidAsync("downloadFile", base64, "report.pdf", "application/pdf");
-                // NavigationManager.NavigateTo(url, true);
+                await _jsRuntime.InvokeVoidAsync("downloadFile", base64, "report.pdf", "application/pdf");
             }
         }
         public void Dispose()

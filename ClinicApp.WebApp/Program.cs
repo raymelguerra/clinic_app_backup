@@ -7,8 +7,6 @@ using Oauth2.sdk.Models;
 using Oauth2.sdk.DependencyInjection;
 using ClinicApp.WebApp.Middlewares;
 using ClinicApp.Infrastructure.Interfaces;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +53,7 @@ builder.Services.AddTransient<IPlaceOfService, PlaceOfServiceService>();
 
 // Add convert to https middleware
 builder.Services.AddTransient<ConvertToHttpsUriMiddleware>();
+
 
 builder.Services.AddSecurityClientApplication(builder.Configuration);
 builder.Services.AddHttpClient("CustomClient")
