@@ -101,5 +101,20 @@ namespace ClinicApp.WebApp.Services
             return JsonConvert.DeserializeObject<IEnumerable<Contractor>>(
                 result) ?? Array.Empty<Contractor>();
         }
+
+        public async Task<IEnumerable<Contractor>> GetContractorsByInsurance(int insuranceId)
+        {
+            var request = new HttpRequestMessage(
+               HttpMethod.Get, $"{apiSettings.Endpoint}/contractors/insurance/{insuranceId}");
+
+            using var response = await SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"{response.StatusCode}");
+
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<IEnumerable<Contractor>>(
+                result) ?? Array.Empty<Contractor>();
+        }
     }
 }

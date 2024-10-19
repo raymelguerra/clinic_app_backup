@@ -1,5 +1,7 @@
 ﻿using ClinicApp.Core.Models;
 using ClinicApp.WebApp.Components.Dialogs;
+using ClinicApp.WebApp.Interfaces;
+using ClinicApp.WebApp.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,33 +9,15 @@ namespace ClinicApp.WebApp.Pages;
 
 public partial class PeriodPaymentPage : ComponentBase
 {
-    [Inject] IDialogService DialogService { get; set; }
-    [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] IDialogService DialogService { get; set; } = null!;
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private IPeriod PeriodService { get; set; } = null!;
 
     IEnumerable<Period> Periods = new List<Period>();
 
     protected override async Task OnInitializedAsync()
     {
-        Periods = new List<Period> {
-        new Period {
-            Active = true,
-            DocumentDeliveryDate = DateTime.Now,
-            EndDate = DateTime.Now,
-            PaymentDate = DateTime.Now,
-            Id = 1,
-            PayPeriod = "PP01",
-            StartDate = DateTime.Now
-        },
-        new Period {
-            Active = true,
-            DocumentDeliveryDate = DateTime.Now,
-            EndDate = DateTime.Now,
-            PaymentDate = DateTime.Now,
-            Id = 2,
-            PayPeriod = "PP02",
-            StartDate = DateTime.Now
-        }
-       };
+        Periods = await PeriodService.GetPeriodAsync("");
     }
     private async Task ShowPeriodDetails(int periodId)
     {

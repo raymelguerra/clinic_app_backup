@@ -3,13 +3,13 @@
 
 <PageTitle>Period and payments</PageTitle>
 
-@if (Period == null)
+@if (_period == null)
 {
     <p>...loading</p>
 }
 else
 {
-    <ClinicApp.WebApp.Components.ContentPage Title=@($"Periods and Payments Details: {Period.PayPeriod}")
+    <ClinicApp.WebApp.Components.ContentPage Title=@($"Periods and Payments Details: {_period.PayPeriod}")
                                              Icon="@Icons.Material.Outlined.CalendarMonth"
                                              HiddenGoBackButton="false"
                                              GoBackButtonAction="GoBack">
@@ -27,7 +27,7 @@ else
                                 <MudIcon Icon="@Icons.Material.Outlined.RequestPage" Color="Color.Default" Size="Size.Large" />
                             </MudItem>
                             <MudItem>
-                                <MudText Typo="Typo.h5">241,779.24 </MudText>
+                                <MudText Typo="Typo.h5">@calculationResult.BilledToInsurance </MudText>
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>
@@ -46,7 +46,7 @@ else
                                 <MudIcon Icon="@Icons.Material.Outlined.Payments" Color="Color.Default" Size="Size.Large" />
                             </MudItem>
                             <MudItem>
-                                <MudText Typo="Typo.h5">172,972.25</MudText>
+                                <MudText Typo="Typo.h5">@calculationResult.AmountPaidToContractors</MudText>
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>
@@ -65,7 +65,7 @@ else
                                 <MudIcon Icon="@Icons.Material.Outlined.AttachMoney" Color="Color.Default" Size="Size.Large" />
                             </MudItem>
                             <MudItem>
-                                <MudText Typo="Typo.h5"> 68,806.99 </MudText>
+                                <MudText Typo="Typo.h5"> @calculationResult.Profit </MudText>
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>
@@ -78,17 +78,26 @@ else
             <MudItem>
                 <MudGrid Spacing="2" Justify="Justify.FlexStart">
 
-                    <MudItem>
-                        <MudSelect T="string" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                            <MudSelectItem T="string" Value=@("Insurance 1") />
-                            <MudSelectItem T="string" Value=@("Insurance 2") />
-                            <MudSelectItem T="string" Value=@("Insurance 3") />
+                    <MudItem sm="12" md="5" lg="5">
+                        <MudSelect @bind-Value="insuranceSelect" For="@(() =>insuranceSelect)" ToStringFunc="@converter" Label="Insurance" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TextChanged="OnInsuranceChanged">
+                            @if (_insurances == null || _insurances.Count() == 0)
+                            {
+                                <MudSelectItem T="Insurance" Value="null">No matching records found</MudSelectItem>
+                            }
+                            else
+                            {
+                                @foreach (var ins in _insurances)
+                                {
+                                    <MudSelectItem Value="@ins" />
+                                }
+                            }
                         </MudSelect>
                     </MudItem>
-                    <MudItem>
-                        <MudAutocomplete Variant="Variant.Outlined" T="string" Label="Phisician" SearchFunc="@SearchContractor"
-                                         ResetValueOnEmptyText="true"
-                                         CoerceText="false" CoerceValue="false" />
+                    <MudItem sm="12" md="5" lg="5">
+                        <MudAutocomplete @ref="selContractor" For="@(() => _contractorSelect)" Variant="Variant.Outlined" T="Contractor" Label="Physician" SearchFunc="@SearchContractor" CoerceText="false" ToStringFunc="@converter" DebounceInterval=100 @bind-Value="_contractorSelect" />
+                    </MudItem>
+                    <MudItem sm="12" md="2" lg="2" Class="d-flex align-center">
+                        <MudIconButton Icon="@Icons.Material.Filled.Search" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Medium" OnClick="SearchClientByInsuranceAndContractor" Disabled="@((insuranceSelect == null || insuranceSelect == default) || (_contractorSelect == null || _contractorSelect == default))" />
                     </MudItem>
                 </MudGrid>
             </MudItem>
@@ -103,85 +112,63 @@ else
         <MudGrid Spacing="5">
             <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
                 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" Color="@Color.Default" Outlined="true" PanelClass="pa-6">
-                    @for (int i = 0; i < 10; i++)
+                    @if (_clients == null || _clients.Count() == 0)
                     {
-                        <MudTabPanel Text=@($"Patient prueba {i+1}")>
-                            <MudGrid Spacing="2" Justify="Justify.SpaceBetween">
-                                @for (int j = 0; j < 5; j++)
-                                {
-                                    <MudItem xs="12" sm="12" md="6" lg="6" xl="6">
-                                        <MudTable Items="@UnitDetails" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
-                                            <HeaderContent>
-                                                <MudTh>Date</MudTh>
-                                                <MudTh>Duration (Quarter)</MudTh>
-                                                <MudTh>Hours</MudTh>
-                                                <MudTh>Place of services</MudTh>
-                                                <MudTh>Procedure</MudTh>
-                                            </HeaderContent>
-                                            <RowTemplate>
-                                                <MudTd DataLabel="Date">@context.DateOfService?.ToShortDateString()</MudTd>
-                                                <MudTd DataLabel="Duration (Quarter)">@context.Unit</MudTd>
-                                                <MudTd DataLabel="Hours">@(context.Unit / 4)</MudTd>
-                                                <MudTd DataLabel="Place of services">@context.PlaceOfService.Name</MudTd>
-                                                <MudTd DataLabel="Procedure">@context.Procedure.Name</MudTd>
-                                            </RowTemplate>
-                                        </MudTable>
-                                    </MudItem>
-                                }
-                            </MudGrid>
-                        </MudTabPanel>
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem>
+                                <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
+                                    There are no associated clients
+                                </MudAlert>
+                            </MudItem>
+                        </MudGrid>
+                    }
+                    else
+                    {
+                        @foreach (var client in _clients)
+                        {
+                            <MudTabPanel Text=@(client.Name) ID="@client.Id" OnClick="@(() => ClientSelected(client.Id))">
+                                <MudGrid Spacing="2" Justify="Justify.SpaceBetween">
+                                    @if (_serviceLogs == null || _serviceLogs.Count() == 0)
+                                    {
+                                        <MudGrid Justify="Justify.Center">
+                                            <MudItem>
+                                                <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
+                                                    There are no associated service logs
+                                                </MudAlert>
+                                            </MudItem>
+                                        </MudGrid>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var sl in _serviceLogs)
+                                        {
+                                            <MudItem xs="12" sm="12" md="6" lg="6" xl="6">
+                                                <MudTable Items="@sl.UnitDetails" Hover="true" Breakpoint="Breakpoint.Sm"               Loading="@_loading" LoadingProgressColor="Color.Info">
+                                                    <HeaderContent>
+                                                        <MudTh>Date</MudTh>
+                                                        <MudTh>Duration (Quarter)</MudTh>
+                                                        <MudTh>Hours</MudTh>
+                                                        <MudTh>Place of services</MudTh>
+                                                        <MudTh>Procedure</MudTh>
+                                                    </HeaderContent>
+                                                    <RowTemplate>
+                                                        <MudTd DataLabel="Date">@context.DateOfService?.ToShortDateString()</MudTd>
+                                                        <MudTd DataLabel="Duration (Quarter)">@context.Unit</MudTd>
+                                                        <MudTd DataLabel="Hours">@(context.Unit / 4)</MudTd>
+                                                        <MudTd DataLabel="Place of services">@context.PlaceOfService.Name</MudTd>
+                                                        <MudTd DataLabel="Procedure">@context.Procedure.Name</MudTd>
+                                                    </RowTemplate>
+                                                </MudTable>
+                                            </MudItem>
+
+                                        }
+                                    }
+                                </MudGrid>
+                            </MudTabPanel>
+                        }
                     }
                 </MudTabs>
             </MudItem>
         </MudGrid>
     </MudPaper>
-}
-
-@code {
-    private List<UnitDetail> UnitDetails { get; set; } = new List<UnitDetail>();
-    private bool _loading = false;
-
-    protected override void OnInitialized()
-    {
-        _loading = true;
-        UnitDetails = GenerateStaticUnitDetails();
-        _loading = false;
-    }
-
-    private List<UnitDetail> GenerateStaticUnitDetails()
-    {
-        List<UnitDetail> unitDetails = new List<UnitDetail>
-        {
-            new UnitDetail
-            {
-                DateOfService = DateTime.Now.AddDays(-1),
-                Unit = 2,
-                PlaceOfService = new PlaceOfService { Name = "Hospital A" },
-                Procedure = new Procedure { Name = "Procedure A" }
-            },
-            new UnitDetail
-            {
-                DateOfService = DateTime.Now.AddDays(-2),
-                Unit = 1,
-                PlaceOfService = new PlaceOfService { Name = "Clinic B" },
-                Procedure = new Procedure { Name = "Procedure B" }
-            },
-            new UnitDetail
-            {
-                DateOfService = DateTime.Now.AddDays(-3),
-                Unit = 3,
-                PlaceOfService = new PlaceOfService { Name = "Hospital C" },
-                Procedure = new Procedure { Name = "Procedure C" }
-            },
-            new UnitDetail
-            {
-                DateOfService = DateTime.Now.AddDays(-4),
-                Unit = 4,
-                PlaceOfService = new PlaceOfService { Name = "Clinic D" },
-                Procedure = new Procedure { Name = "Procedure D" }
-            }
-        };
-
-        return unitDetails;
-    }
 }

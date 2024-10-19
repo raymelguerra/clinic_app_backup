@@ -54,7 +54,6 @@ builder.Services.AddTransient<IPlaceOfService, PlaceOfServiceService>();
 // Add convert to https middleware
 builder.Services.AddTransient<ConvertToHttpsUriMiddleware>();
 
-
 builder.Services.AddSecurityClientApplication(builder.Configuration);
 builder.Services.AddHttpClient("CustomClient")
         .ConfigurePrimaryHttpMessageHandler(() =>
@@ -68,6 +67,7 @@ builder.Services.AddHttpClient("CustomClient")
 
             return handler;
         });
+
 
 builder.Services.AddSession();
 

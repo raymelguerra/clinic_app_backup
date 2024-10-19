@@ -4,12 +4,18 @@ using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Persistence;
 using Microsoft.AspNetCore.OData.Query;
 using System.Security.Claims;
-using Oauth2.sdk.Models;
+using Microsoft.AspNetCore.SignalR;
+using ClinicApp.Infrastructure.Dto.Application;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClinicApp.Api.Controllers.v1
 {
+    [Produces("application/json")]
     [Route("api/v1/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     public class ServiceLogsController : ControllerBase
     {
         private readonly InsuranceContext _context;
@@ -45,7 +51,7 @@ namespace ClinicApp.Api.Controllers.v1
                 .Include(x => x.Client)
                     .ThenInclude(x => x.Agreements)
                         .ThenInclude(x => x.Payroll)
-                            .ThenInclude( x=> x.InsuranceProcedure)
+                            .ThenInclude(x => x.InsuranceProcedure)
                                 .ThenInclude(x => x.Procedure)
                 .Include(x => x.Contractor)
                 .Include(x => x.Period)
@@ -153,7 +159,6 @@ namespace ClinicApp.Api.Controllers.v1
 
             _context.ServiceLogs.Add(serviceLog);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetServiceLog", new { id = serviceLog.Id }, serviceLog);
         }
 
@@ -173,6 +178,99 @@ namespace ClinicApp.Api.Controllers.v1
             return NoContent();
         }
 
+        [HttpGet("client/{clientId}/contractor/{contractorId}/period/{periodId}/insurance/{insuranceId}")]
+        public async Task<ActionResult<IEnumerable<ServiceLog>>> GetAllServiceLogsByClientContractorPeriodInsurance(int clientId, int contractorId, int periodId, int insuranceId)
+        {
+
+            var servicelogs = await _context.ServiceLogs
+                .Include(x => x.UnitDetails)
+                    .ThenInclude(x => x.PlaceOfService)
+                .Include(x => x.UnitDetails)
+                    .ThenInclude(x => x.Procedure)
+                .Where(x =>
+                    x.ContractorId == contractorId &&
+                    x.PeriodId == periodId &&
+                    x.InsuranceId == insuranceId &&
+                    x.ClientId == clientId)
+                .ToListAsync();
+            return Ok(servicelogs);
+        }
+
+        [HttpGet("billing-profit/{periodId}")]
+        public async Task<ActionResult<PeriodCalculationResultDto>> CalculatePeriodAsync(int periodId)
+        {
+            try
+            {
+                var periodData = await _context.ServiceLogs
+                    .Include(x => x.UnitDetails)
+                    .Include(x => x.Insurance)
+                        .ThenInclude(x => x.InsuranceProcedures)
+                    .Include(x => x.Client)
+                        .ThenInclude(x => x.Agreements)
+                            .ThenInclude(x => x.Payroll)
+                                .ThenInclude(x => x.InsuranceProcedure)
+                    .Where(x => x.PeriodId == periodId)
+                    .ToListAsync();
+
+                if (!periodData.Any())
+                {
+                    throw new HubException("Period not found");
+                }
+
+                // Realizar los cálculos
+                decimal billedToInsurance = BilledToInsuranceMoney(periodData);
+                decimal amountPaidToContractors = AmountPaidToContractors(periodData);
+                decimal profit = billedToInsurance - amountPaidToContractors;
+
+                // Crear el DTO de respuesta
+                var result = new PeriodCalculationResultDto
+                {
+                    BilledToInsurance = billedToInsurance,
+                    AmountPaidToContractors = amountPaidToContractors,
+                    Profit = profit
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred during calculation: " + ex.Message);
+            }
+        }
+
+        private decimal BilledToInsuranceMoney(IEnumerable<ServiceLog> serviceLogs)
+        {
+            decimal total = 0;
+            foreach (var sl in serviceLogs)
+            {
+                if (sl.UnitDetails == null || sl.UnitDetails.Count() == 0) continue;
+
+                foreach (var item in sl.UnitDetails)
+                {
+                    decimal hour = (decimal)(item.Unit * 0.25);
+                    total += (decimal)sl.Insurance.InsuranceProcedures.FirstOrDefault(x => x.ProcedureId == item.ProcedureId).Rate * hour;
+                }
+            }
+            return total;
+        }
+
+        private decimal AmountPaidToContractors(IEnumerable<ServiceLog> serviceLogs)
+        {
+            decimal total = 0;
+
+            foreach (var sl in serviceLogs)
+            {
+                if (sl.UnitDetails == null || sl.UnitDetails.Count() == 0) continue;
+
+                foreach (var item in sl.UnitDetails)
+                {
+                    decimal hour = (decimal)(item.Unit * 0.25);
+                    total += (decimal)sl.Client.Agreements.FirstOrDefault(x => x.Payroll.InsuranceProcedure.ProcedureId == item.ProcedureId).RateEmployees * hour;
+                }
+            }
+
+            return total;
+        }
         private bool ServiceLogExists(int id)
         {
             return _context.ServiceLogs.Any(e => e.Id == id);

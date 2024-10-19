@@ -11,5 +11,6 @@ namespace ClinicApp.WebApp.Interfaces
         public Task<bool> PostPhysicianAsync(Contractor contractor);
         public Task<bool> DeletePhysicianAsync(int id);
         public Task<IEnumerable<Contractor>> GetContractoresByProcedureAndInsurance(int procedureId, int insuranceId);
+        public Task<IEnumerable<Contractor>> GetContractorsByInsurance(int insuranceId);
     }
 }

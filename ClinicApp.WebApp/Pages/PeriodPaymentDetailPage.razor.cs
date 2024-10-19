@@ -1,4 +1,7 @@
 ﻿using ClinicApp.Core.Models;
+using ClinicApp.Infrastructure.Dto.Application;
+using ClinicApp.WebApp.Interfaces;
+using ClinicApp.WebApp.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -6,72 +9,109 @@ namespace ClinicApp.WebApp.Pages;
 
 public partial class PeriodPaymentDetailPage : ComponentBase
 {
-    [Inject] IDialogService DialogService { get; set; }
-    [Inject] NavigationManager NavigationManager { get; set; }
-    [Parameter] public int PeriodId { get; set; }
+    [Inject] IDialogService DialogService { get; set; } = null!;
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
 
-    private Period Period = new Period();
+    [Inject] IPeriod PeriodService { get; set; } = null!;
+    [Inject] IInsurance InsuranceService { get; set; } = null!;
+    [Inject] IPhysician PhysicianService { get; set; } = null!;
+    [Inject] IServiceLog ServiceLogService { get; set; } = null!;
+    [Inject] IClient ClientService { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+
+
+    [Parameter] public int PeriodId { get; set; }
+    private IEnumerable<Insurance>? _insurances;
+    private IEnumerable<Contractor>? _contractors;
+    private Period _period = new Period();
+    private Insurance? insuranceSelect = null;
+    private Contractor? _contractorSelect = null;
+    private IEnumerable<Client>? _clients;
+    private IEnumerable<ServiceLog>? _serviceLogs;
+    private bool _loading = false;
+
+    private PeriodCalculationResultDto calculationResult = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var Periods = new List<Period> {
-        new Period {
-            Active = true,
-            DocumentDeliveryDate = DateTime.Now,
-            EndDate = DateTime.Now,
-            PaymentDate = DateTime.Now,
-            Id = 1,
-            PayPeriod = "PP01",
-            StartDate = DateTime.Now
-        },
-        new Period {
-            Active = true,
-            DocumentDeliveryDate = DateTime.Now,
-            EndDate = DateTime.Now,
-            PaymentDate = DateTime.Now,
-            Id = 2,
-            PayPeriod = "PP02",
-            StartDate = DateTime.Now
-        }
-       };
+        try
+        {
+            var periodProm = PeriodService.GetPeriodAsync(PeriodId);
+            var insProm = InsuranceService.GetInsuranceAsync("");
+            var profitProm = ServiceLogService.CalculatePeriodAsync(PeriodId);
 
-        Period = Periods.First(x => x.Id == PeriodId);
+            await Task.WhenAll([periodProm, insProm, profitProm]);
+
+            _period = periodProm.Result!;
+            _insurances = insProm.Result!;
+            calculationResult = profitProm.Result!;
+        }
+        catch (Exception ex)
+        {
+            Snackbar!.Add($"Oops, there was an error loading the page: {ex.Message}.", Severity.Error);
+        }
     }
+
+    Func<dynamic, string> converter = p => p?.Name;
+
     private async Task GoBack()
     {
         NavigationManager.NavigateTo("/periodpayment", true);
     }
 
-    #region Contractor Search
-    private async Task<IEnumerable<string>> SearchContractor(string value, CancellationToken token)
+    #region Insurance search
+    MudAutocomplete<Contractor>? selContractor;
+    private async void OnInsuranceChanged(string insurance)
     {
-        if(token.IsCancellationRequested) return null;
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5);
+        if (insurance != null)
+        {
+            if (selContractor != null)
+            {
+                await selContractor.ClearAsync();
+            }
 
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return states;
-        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            if (_insurances == null || _insurances.Count() == 0 || insuranceSelect == null || insuranceSelect.Name != insurance)
+                return;
+
+            _contractors = await PhysicianService.GetContractorsByInsurance(insuranceSelect.Id);
+        }
     }
-    private string[] states =
-  {
-        "María García",
-    "Juan Pérez",
-    "Ana Martínez",
-    "Carlos López",
-    "Laura Rodríguez",
-    "David González",
-    "Isabel Fernández",
-    "Alejandro Ramírez",
-    "Patricia Ruiz",
-    "Sergio Herrera",
-    "Claudia Medina",
-    "Ricardo Torres",
-    "Natalia Gómez",
-    "Andrés Vargas",
-    "Paula Sánchez"
-    };
-
     #endregion
+
+    #region Contractor Search
+    private async Task<IEnumerable<Contractor>> SearchContractor(string value, CancellationToken token)
+    {
+        if (token.IsCancellationRequested) return Enumerable.Empty<Contractor>();
+
+        if (string.IsNullOrEmpty(value))
+            return _contractors;
+
+        return _contractors!.Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+    #endregion
+
+    #region Service log step
+
+    private async void SearchClientByInsuranceAndContractor()
+    {
+        if (_contractorSelect == null || insuranceSelect == null) return;
+        _clients = await ClientService.GetClientsByContractorAndInsurance(_contractorSelect.Id, insuranceSelect.Id);
+
+        _serviceLogs = [];
+
+        if (_clients != null && _clients.Count() > 0)
+            ClientSelected(_clients.ElementAt(0).Id);
+
+        StateHasChanged();
+    }
+
+    private async void ClientSelected(int clientId)
+    {
+        _loading = true;
+        _serviceLogs = await ServiceLogService.GetAllServiceLogsByClientContractorPeriodInsurance(clientId, _contractorSelect!.Id, _period.Id, insuranceSelect!.Id);
+        _loading = false;
+        StateHasChanged();
+    }
+    #endregion
+
 }

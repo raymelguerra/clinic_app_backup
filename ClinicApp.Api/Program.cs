@@ -65,7 +65,6 @@ builder.Services.AddTransient<IDbInitialize, DbInitializer>();
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddTransient<IRepository, Repository>();
 
-
 // Add Open telemetry
 builder.Services.AddOpenTelemetry().WithTracing( b => {
     b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName))

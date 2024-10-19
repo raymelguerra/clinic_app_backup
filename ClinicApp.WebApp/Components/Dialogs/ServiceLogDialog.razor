@@ -28,7 +28,7 @@
                                      Disabled="@(!MudDialog!.Title.Contains("Add"))" />
                 </MudItem>
                 <MudItem xs="12" sm="6" xl="4">
-                    <MudSelect @bind-Value="Model.Period" For="@(() => Model.Period)" ToStringFunc="@converterPeriod" Label="Period" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Disabled="@(!MudDialog!.Title.Contains(" Add"))">
+                    <MudSelect @bind-Value="Model.Period" For="@(() => Model.Period)" ToStringFunc="@converterPeriod" Label="Period" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Disabled="@(!MudDialog!.Title.Contains("Add"))">
                         @if (_periods == null || _periods.Count() == 0)
                         {
                             <MudSelectItem T="Period" Value="null">No matching records found</MudSelectItem>

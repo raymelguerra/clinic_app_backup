@@ -168,6 +168,17 @@ namespace ClinicApp.Api.Controllers.v1
      .ToListAsync();
             return Ok(contractors);
         }
+
+        [HttpGet("insurance/{id}")]
+        public async Task<ActionResult<IEnumerable<Contractor>>> GetContractorsByInsurance(int id)
+        {
+            var contractors = await _context.Contractors
+                                            .Where(c => c.Payrolls.Any(p => p.InsuranceProcedure.InsuranceId == id))
+                                            .Distinct()
+                                            .ToListAsync();
+
+            return contractors;
+        }
         private bool ContractorExists(int id)
         {
             return _context.Contractors.Any(e => e.Id == id);

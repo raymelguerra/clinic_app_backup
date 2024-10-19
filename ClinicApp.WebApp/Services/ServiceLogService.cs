@@ -1,7 +1,9 @@
 ﻿using ClinicApp.Core.Models;
 using ClinicApp.Infrastructure.Data;
+using ClinicApp.Infrastructure.Dto.Application;
 using ClinicApp.WebApp.Interfaces;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Oauth2.sdk;
@@ -85,6 +87,35 @@ namespace ClinicApp.WebApp.Services
         public void Dispose()
         {
             GC.SuppressFinalize(this);
+        }
+
+        public async Task<IEnumerable<ServiceLog>> GetAllServiceLogsByClientContractorPeriodInsurance(int clientId, int contractorId, int periodId, int insuranceId)
+        {
+            var request = new HttpRequestMessage(
+                 HttpMethod.Get, $"{apiSettings.Endpoint}/ServiceLogs/client/{clientId}/contractor/{contractorId}/period/{periodId}/insurance/{insuranceId}");
+
+            using var response = await SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"{response.StatusCode}");
+
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<IEnumerable<ServiceLog>>(
+                result) ?? Array.Empty<ServiceLog>();
+        }
+
+        public async Task<PeriodCalculationResultDto> CalculatePeriodAsync(int periodId)
+        {
+            var request = new HttpRequestMessage(
+                 HttpMethod.Get, $"{apiSettings.Endpoint}/ServiceLogs/billing-profit/{periodId}");
+            using var response = await SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"{response.StatusCode}");
+
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<PeriodCalculationResultDto>(
+                result)!;
         }
     }
 }
